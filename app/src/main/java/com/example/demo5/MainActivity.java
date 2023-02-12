@@ -16,6 +16,8 @@ public class MainActivity extends AppCompatActivity {
     private OrientationService orientationService;
     private LocationService locationService;
 
+    public static final int DEGREES_IN_A_CIRCLE = 360;
+
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -27,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
         orientationService.getOrientation().observe(this, orientation ->{
             float deg = (float) Math.toDegrees(orientation);
-            compass.setRotation(360 - deg);
+            compass.setRotation(DEGREES_IN_A_CIRCLE - deg);
         });
 
 
