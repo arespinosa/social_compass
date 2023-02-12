@@ -16,6 +16,7 @@ import androidx.lifecycle.MutableLiveData;
 public class LocationService implements LocationListener {
     private static LocationService instance;
     private Activity activity;
+    //Austin comment
 
     private MutableLiveData<Pair<Double,Double>> locationValue;
 
