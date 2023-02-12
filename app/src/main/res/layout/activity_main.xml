@@ -10,10 +10,6 @@
         android:id="@+id/compass"
         android:layout_width="300dp"
         android:layout_height="300dp"
-        android:layout_marginStart="1dp"
-        android:layout_marginTop="1dp"
-        android:layout_marginEnd="1dp"
-        android:layout_marginBottom="1dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,18 +19,19 @@
             android:id="@+id/clock"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:contentDescription="TODO"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/clock_face"
-            android:contentDescription="TODO" />
+            app:srcCompat="@drawable/clock_face" />
 
         <ImageView
             android:id="@+id/arrow"
             android:layout_width="70dp"
             android:layout_height="25dp"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintCircle="@+id/clock"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
