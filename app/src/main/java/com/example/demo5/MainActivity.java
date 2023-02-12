@@ -25,11 +25,8 @@ public class MainActivity extends AppCompatActivity {
 
         ConstraintLayout compass = findViewById(R.id.compass);
 
-
-
         orientationService.getOrientation().observe(this, orientation ->{
-            LiveData<Float>rad = orientationService.getOrientation();
-            float deg = (float) Math.toDegrees(rad.getValue());
+            float deg = (float) Math.toDegrees(orientation);
             compass.setRotation(360 - deg);
         });
 
