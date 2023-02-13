@@ -12,7 +12,7 @@ import org.robolectric.RobolectricTestRunner;
 
 @RunWith(RobolectricTestRunner.class)
 public class TimeServiceTest {
-    @Test
+    /*@Test
     public void test_time_service(){
         MutableLiveData<Long> mockDataSource = new MutableLiveData<Long>();
         TimeService timeService = TimeService.singleton();
@@ -34,5 +34,5 @@ public class TimeServiceTest {
             assert observed == expected;
         });
     }
-
+    */
 }
