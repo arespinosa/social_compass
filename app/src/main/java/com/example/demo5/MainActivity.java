@@ -53,8 +53,8 @@ public class MainActivity extends AppCompatActivity {
                     Double.toString(loc.second));
 
             SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-            Double pLat =  Double.parseDouble(preferences.getString("parentLatitude", "wrong"));
-            Double pLong = Double.parseDouble(preferences.getString("parentLongitude", "wrong 2"));
+            Double pLat =  Double.parseDouble(preferences.getString("parentLatitude", "123"));
+            Double pLong = Double.parseDouble(preferences.getString("parentLongitude", "123"));
 
             double ang = Math.cos((pLong - loc.second)/(Math.sqrt(((pLat - loc.first)*(pLat - loc.first)) + ((pLong - loc.second)*(pLong - loc.second)))));
 
@@ -73,8 +73,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void loadProfile () {
         SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-        String s = preferences.getString("parentLatitude", "wrong");
-        String t = preferences.getString("parentLongitude", "wrong 2");
+        String s = preferences.getString("parentLatitude", "123");
+        String t = preferences.getString("parentLongitude", "123");
         TextView parentLatitude = findViewById(R.id.parentLatitude);
         TextView parentLongitude = findViewById(R.id.parentLongitude);
         parentLatitude.setText(s);
@@ -94,7 +94,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void save(View view) {
         saveProfile();
-        onCreate(null);
         loadProfile();
     }
 }
