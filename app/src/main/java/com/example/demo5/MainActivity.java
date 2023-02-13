@@ -1,6 +1,7 @@
 package com.example.demo5;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -32,10 +33,7 @@ public class MainActivity extends AppCompatActivity {
         ConstraintLayout compass = findViewById(R.id.compass);
 
 
-        orientationService.getOrientation().observe(this, orientation ->{
-            float deg = (float) Math.toDegrees(orientation);
-            compass.setRotation(DEGREES_IN_A_CIRCLE - deg);
-        });
+
 
 
 
@@ -56,13 +54,22 @@ public class MainActivity extends AppCompatActivity {
             Double pLat =  Double.parseDouble(preferences.getString("parentLatitude", "123"));
             Double pLong = Double.parseDouble(preferences.getString("parentLongitude", "123"));
 
-            double ang = Math.cos((pLong - loc.second)/(Math.sqrt(((pLat - loc.first)*(pLat - loc.first)) + ((pLong - loc.second)*(pLong - loc.second)))));
+            double adjacent = (pLong - loc.second);
+            double hypotenuse = Math.sqrt(((pLat - loc.first)*(pLat - loc.first)) + ((pLong - loc.second)*(pLong - loc.second)));
+
+            double ang = Math.acos(adjacent/hypotenuse);
 
             ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) parentHouse.getLayoutParams();
             layoutParams.circleAngle = DEGREES_IN_A_CIRCLE - (float)Math.toDegrees(ang);
         });
-
         loadProfile();
+
+        orientationService.getOrientation().observe(this, orientation ->{
+            float deg = (float) Math.toDegrees(orientation);
+            compass.setRotation(DEGREES_IN_A_CIRCLE - deg);
+        });
+
+
     }
 
     @Override
@@ -95,5 +102,7 @@ public class MainActivity extends AppCompatActivity {
     public void save(View view) {
         saveProfile();
         loadProfile();
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 }
