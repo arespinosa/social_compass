@@ -38,6 +38,18 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0"
             app:srcCompat="@drawable/arrow" />
+
+        <ImageView
+            android:id="@+id/parentHouse"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintCircle="@+id/clock"
+            app:layout_constraintCircleRadius="140dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/clock"
+            app:srcCompat="@drawable/house" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <EditText
