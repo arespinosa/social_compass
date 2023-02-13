@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
         locationService = LocationService.singleton(this);
 
+        ImageView parentHouse = findViewById(R.id.parentHouse);
         TextView textView = findViewById(R.id.timeTextView);
         locationService.getLocation().observe(this,loc->{
             textView.setText(Double.toString(loc.first)+" , "+
@@ -57,7 +58,10 @@ public class MainActivity extends AppCompatActivity {
 
             double ang = Math.cos((pLong - loc.second)/(Math.sqrt(((pLat - loc.first)*(pLat - loc.first)) + ((pLong - loc.second)*(pLong - loc.second)))));
 
+            ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) parentHouse.getLayoutParams();
+            layoutParams.circleAngle = DEGREES_IN_A_CIRCLE - (float)Math.toDegrees(ang);
         });
+
         loadProfile();
     }
 
@@ -90,5 +94,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void save(View view) {
         saveProfile();
+        onCreate(null);
+        loadProfile();
     }
 }
