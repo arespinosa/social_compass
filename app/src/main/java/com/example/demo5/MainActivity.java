@@ -50,6 +50,13 @@ public class MainActivity extends AppCompatActivity {
         locationService.getLocation().observe(this,loc->{
             textView.setText(Double.toString(loc.first)+" , "+
                     Double.toString(loc.second));
+
+            SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+            Double pLat =  Double.parseDouble(preferences.getString("parentLatitude", "wrong"));
+            Double pLong = Double.parseDouble(preferences.getString("parentLongitude", "wrong 2"));
+
+            double ang = Math.cos((pLong - loc.second)/(Math.sqrt(((pLat - loc.first)*(pLat - loc.first)) + ((pLong - loc.second)*(pLong - loc.second)))));
+
         });
         loadProfile();
     }
