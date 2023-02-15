@@ -103,6 +103,7 @@ public class MainActivity extends AppCompatActivity {
         saveProfile();
         loadProfile();
         Intent intent = new Intent(this, MainActivity.class);
+        finish();
         startActivity(intent);
     }
 }
