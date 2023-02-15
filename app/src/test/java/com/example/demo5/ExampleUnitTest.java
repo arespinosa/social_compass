@@ -1,5 +1,8 @@
 package com.example.demo5;
 
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -8,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.Lifecycle;
 import androidx.test.core.app.ActivityScenario;
 
@@ -27,15 +31,21 @@ public class ExampleUnitTest {
     @Test
 
     public void testParentHouseAngle() {
-        var scenario = ActivityScenario.launch(MainActivity.class);
+        ActivityScenario
+                <com.example.demo5.MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
         scenario.moveToState(Lifecycle.State.CREATED);
         scenario.moveToState(Lifecycle.State.STARTED);
 
+
         //need to have Activity in STARTED state for LiveData observer to be active
-        scenario.moveToState(Lifecycle.State.STARTED);
+        //android.Manifest.permission = PackageManager.PERMISSION_GRANTED;
+
+
         scenario.onActivity(activity -> {
+
             //assertEquals(activity.findViewById(R.id.btn_one).performClick(), true);
 
+            //ActivityCompat.setPermissionCompatDelegate(new ActivityCompat.PermissionCompatDelegate(PackageManager.PERMISSION_GRANTED));
 
             long expected = 12312312L;
 

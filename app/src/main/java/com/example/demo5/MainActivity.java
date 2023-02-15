@@ -34,9 +34,6 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
-
-
         if(ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(this,new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 200);
@@ -60,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
             double ang = Math.acos(adjacent/hypotenuse);
 
             ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) parentHouse.getLayoutParams();
-            layoutParams.circleAngle = DEGREES_IN_A_CIRCLE - (float)Math.toDegrees(ang);
+            layoutParams.circleAngle = (float)Math.toDegrees(ang);
         });
         loadProfile();
 
