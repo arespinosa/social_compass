@@ -46,7 +46,7 @@ public class LocationService implements LocationListener {
     public void registerLocationListener(){
         if(ActivityCompat.checkSelfPermission(activity,android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
             && ActivityCompat.checkSelfPermission(activity,android.Manifest.permission.ACCESS_COARSE_LOCATION)!= PackageManager.PERMISSION_GRANTED){
-            throw new IllegalStateException("App needs location permission to get location");
+            //throw new IllegalStateException("App needs location permission to get location");
         }
 
         this.locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
