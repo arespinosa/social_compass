@@ -19,7 +19,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.LiveData;
 
-public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class MainActivity extends AppCompatActivity {
     private TimeService timeService;
     private OrientationService orientationService;
     private LocationService locationService;
@@ -31,11 +31,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Spinner spinner = findViewById(R.id.house_labels);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,R.array.house_labels,android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-        spinner.setOnItemSelectedListener(this);
+
 
 
         orientationService = OrientationService.singleton(this);
@@ -53,6 +49,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         ImageView parentHouse = findViewById(R.id.parentHouse);
         TextView textView = findViewById(R.id.timeTextView);
+
+        //US-1 & 2b
         locationService.getLocation().observe(this, loc -> {
             textView.setText(Double.toString(loc.first) + " , " +
                     Double.toString(loc.second));
@@ -68,6 +66,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
             ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) parentHouse.getLayoutParams();
             layoutParams.circleAngle = (float) Math.toDegrees(ang);
+
+
+            //US-2b
+            TextView label = findViewById(R.id.labelTextView);
+            ConstraintLayout.LayoutParams houseLabelParam = (ConstraintLayout.LayoutParams) label.getLayoutParams();
+            houseLabelParam.circleAngle = (float)Math.toDegrees(ang);
+
         });
         loadProfile();
 
@@ -107,6 +112,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     */
     public void loadProfile() {
         SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+        //US-1
         String s = preferences.getString("parentLatitude", "123");
         String t = preferences.getString("parentLongitude", "123");
         TextView parentLatitude = findViewById(R.id.parentLatitude);
@@ -114,15 +120,34 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         parentLatitude.setText(s);
         parentLongitude.setText(t);
         System.out.println(preferences.getAll().toString());
+
+
+        //US-2b house labels
+        String label = preferences.getString("houseLabel","");
+        TextView houseLabel = findViewById(R.id.house_label);
+        houseLabel.setText(label);
+
+        //Creating the label - 2b
+        TextView labelText = findViewById(R.id.labelTextView);
+        labelText.setText(houseLabel.getText());
     }
 
     public void saveProfile() {
+
         SharedPreferences preferences = getPreferences(MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
+
+        //US-1
         TextView parentLatitude = findViewById(R.id.parentLatitude);
         editor.putString("parentLatitude", parentLatitude.getText().toString());
         TextView parentLongitude = findViewById(R.id.parentLongitude);
         editor.putString("parentLongitude", parentLongitude.getText().toString());
+
+        //US-2b house labels
+        TextView houseLabel = findViewById(R.id.house_label);
+        editor.putString("houseLabel", houseLabel.getText().toString());
+
+
         editor.apply();
     }
 
@@ -136,14 +161,5 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         startActivity(intent);
     }
 
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        String text = parent.getItemAtPosition(position).toString();
-        Toast.makeText(parent.getContext(),text,Toast.LENGTH_SHORT).show();
-    }
 
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
-    }
 }
