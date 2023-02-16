@@ -23,11 +23,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private TimeService timeService;
     private OrientationService orientationService;
     private LocationService locationService;
-
+    private boolean requestingLocationUpdates = false;
     public static final int DEGREES_IN_A_CIRCLE = 360;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState){
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -43,38 +43,35 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         ConstraintLayout compass = findViewById(R.id.compass);
 
 
-
-
-
-
-        if(ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(this,new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 200);
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 200);
+            requestingLocationUpdates = true;
         }
 
         locationService = LocationService.singleton(this);
 
         ImageView parentHouse = findViewById(R.id.parentHouse);
         TextView textView = findViewById(R.id.timeTextView);
-        locationService.getLocation().observe(this,loc->{
-            textView.setText(Double.toString(loc.first)+" , "+
+        locationService.getLocation().observe(this, loc -> {
+            textView.setText(Double.toString(loc.first) + " , " +
                     Double.toString(loc.second));
 
             SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-            Double pLat =  Double.parseDouble(preferences.getString("parentLatitude", "123"));
+            Double pLat = Double.parseDouble(preferences.getString("parentLatitude", "123"));
             Double pLong = Double.parseDouble(preferences.getString("parentLongitude", "123"));
 
             double adjacent = (pLong - loc.second);
-            double hypotenuse = Math.sqrt(((pLat - loc.first)*(pLat - loc.first)) + ((pLong - loc.second)*(pLong - loc.second)));
+            double hypotenuse = Math.sqrt(((pLat - loc.first) * (pLat - loc.first)) + ((pLong - loc.second) * (pLong - loc.second)));
 
-            double ang = Math.acos(adjacent/hypotenuse);
+            double ang = Math.acos(adjacent / hypotenuse);
 
             ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) parentHouse.getLayoutParams();
-            layoutParams.circleAngle = DEGREES_IN_A_CIRCLE - (float)Math.toDegrees(ang);
+            layoutParams.circleAngle = (float) Math.toDegrees(ang);
         });
         loadProfile();
 
-        orientationService.getOrientation().observe(this, orientation ->{
+        orientationService.getOrientation().observe(this, orientation -> {
             float deg = (float) Math.toDegrees(orientation);
             compass.setRotation(DEGREES_IN_A_CIRCLE - deg);
         });
@@ -82,13 +79,33 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     }
 
-    @Override
-    protected void onPause(){
+    protected void onPause(Bundle savedInstanceState) {
         super.onPause();
         orientationService.unregisterSensorListeners();
+        //onStop(savedInstanceState);
     }
 
-    public void loadProfile () {
+    /*
+        protected void onStop(Bundle savedInstanceState) {
+            super.onStop();
+            onCreate(savedInstanceState);
+        }
+
+        @Override
+        protected void onResume() {
+            super.onResume();
+            if (requestingLocationUpdates) {
+                startLocationUpdates();
+            }
+        }
+
+        private void startLocationUpdates() {
+            //fusedLocationClient.requestLocationUpdates(locationRequest,
+            //        locationCallback,
+            //        Looper.getMainLooper());
+        }
+    */
+    public void loadProfile() {
         SharedPreferences preferences = getPreferences(MODE_PRIVATE);
         String s = preferences.getString("parentLatitude", "123");
         String t = preferences.getString("parentLongitude", "123");
@@ -99,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         System.out.println(preferences.getAll().toString());
     }
 
-    public void saveProfile () {
+    public void saveProfile() {
         SharedPreferences preferences = getPreferences(MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         TextView parentLatitude = findViewById(R.id.parentLatitude);
@@ -112,6 +129,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void save(View view) {
         saveProfile();
         loadProfile();
+        //onPause(savedInstanceState);
+
         Intent intent = new Intent(this, MainActivity.class);
         finish();
         startActivity(intent);
