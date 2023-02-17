@@ -34,7 +34,7 @@
             android:layout_height="25dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintCircle="@+id/clock"
-            app:layout_constraintCircleRadius="170dp"
+            app:layout_constraintCircleRadius="175dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -43,8 +43,8 @@
 
         <ImageView
             android:id="@+id/parentHouse"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
+            android:layout_width="43dp"
+            android:layout_height="43dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintCircle="@+id/clock"
             app:layout_constraintCircleAngle="0"
