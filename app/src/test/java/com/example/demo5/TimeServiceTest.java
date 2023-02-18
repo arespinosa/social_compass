@@ -1,7 +1,5 @@
 package com.example.demo5;
 
-import android.widget.TextView;
-
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,10 +35,11 @@ public class TimeServiceTest {
             // No need to worry about telling the activity to refresh where it gets data.
 
             mockTime.setValue(testValue);
-            TextView textView = activity.findViewById(R.id.timeText);
+            //TextView textView = activity.findViewById(R.id.timeText);
 
             var expected = Utilities.formatTime(testValue);
-            var observed = textView.getText().toString();
+            //var observed = textView.getText().toString();
+            var observed = "";
 
             assertEquals(expected, observed);
         });
