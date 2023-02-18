@@ -100,17 +100,15 @@
         android:id="@+id/timeTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="174dp"
-        android:layout_marginTop="96dp"
-        android:layout_marginEnd="179dp"
-        android:layout_marginBottom="101dp"
+        android:layout_marginStart="206dp"
+        android:layout_marginTop="37dp"
+        android:layout_marginEnd="147dp"
+        android:layout_marginBottom="26dp"
         android:text="TextView"
         app:layout_constraintBottom_toTopOf="@+id/compass"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0"/>
+        app:layout_constraintTop_toBottomOf="@+id/orientation_text" />
 
     <Button
         android:id="@+id/saveCoords"
@@ -143,6 +141,81 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/parentLatitude" />
+
+    <EditText
+        android:id="@+id/orientation_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="9dp"
+        android:layout_marginBottom="86dp"
+        android:ems="10"
+        android:hint="Update Orientation"
+        android:inputType="textPersonName"
+        android:minHeight="48dp"
+        app:layout_constraintBottom_toTopOf="@+id/compass"
+        app:layout_constraintEnd_toStartOf="@+id/update_orr_btn"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/NewOrr_TextView" />
+
+    <TextView
+        android:id="@+id/NewOrr_TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="227dp"
+        android:layout_marginBottom="4dp"
+        android:text="Current Orientaion:"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/orientation_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/Lat_TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:text="Lattitude:"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/parentLatitude"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.193"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/compass" />
+
+    <TextView
+        android:id="@+id/Long_TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="2dp"
+        android:text="Longitude:"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/parentLongitude"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.685"
+        app:layout_constraintStart_toEndOf="@+id/Lat_TextView"
+        app:layout_constraintTop_toBottomOf="@+id/compass"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/update_orr_btn"
+        android:layout_width="91dp"
+        android:layout_height="52dp"
+        android:layout_marginStart="9dp"
+        android:layout_marginTop="42dp"
+        android:layout_marginEnd="85dp"
+        android:layout_marginBottom="84dp"
+        android:text="update"
+        android:textSize="12dp"
+        android:onClick="save"
+        app:layout_constraintBottom_toTopOf="@+id/compass"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/orientation_text"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
