@@ -19,20 +19,21 @@ public class OrientationService implements SensorEventListener {
     private MutableLiveData<Float> azimuth;
 
     /**
-     * constructor for orientationservice
-     * @param activity context needed to initiate sensormanager
+     * Constructor for OrientationService
+     *
+     * @param activity Context needed to initiate SensorManager
      */
-    protected OrientationService (Activity activity){
+    private OrientationService(Activity activity) {
         this.azimuth = new MutableLiveData<>();
         this.sensorManager = (SensorManager) activity.getSystemService(Context.SENSOR_SERVICE);
-        //register sensor listeners
+        // Register sensor listeners
         this.registerSensorListeners();
     }
 
     private void registerSensorListeners() {
-        //register our listener to accelerometer and magnetometer
-        //need both pieces of data to compute orientation
-        sensorManager.registerListener( this,
+        // Register our listener to the accelerometer and magnetometer.
+        // We need both pieces of data to compute the orientation!
+        sensorManager.registerListener(this,
                 sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
                 SensorManager.SENSOR_DELAY_NORMAL);
         sensorManager.registerListener(this,
@@ -40,77 +41,82 @@ public class OrientationService implements SensorEventListener {
                 SensorManager.SENSOR_DELAY_NORMAL);
     }
 
-    public static OrientationService singleton(Activity activity){
-        if(instance ==null){
+    public static OrientationService singleton(Activity activity) {
+        if (instance == null) {
             instance = new OrientationService(activity);
         }
         return instance;
     }
 
     /**
-     * this method is called when the sensor detects a change in value
-     * @param event the event containing the values we need
+     * This method is called when the sensor detects a change in value.
+     *
+     * @param event the event containing the values we need.
      */
-    @Override
     public void onSensorChanged(SensorEvent event) {
-        if(event.sensor.getType() ==Sensor.TYPE_ACCELEROMETER){
-            //if we only have this sensor, we can't compute the orientation with it alone
-            //but we should still save it for later
+        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            // If we only have this sensor, we can't compute the orientation with it alone.
+            // But we should still save it for later.
             accelerometerReading = event.values;
         }
-        if(event.sensor.getType() ==Sensor.TYPE_MAGNETIC_FIELD){
-            //if we only have this sensor, we can't compute the orientation with it alone
-            //but we should still save it for later
+        if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
+            // If we only have this sensor, we can't compute the orientation with it alone.
+            // But we should still save it for later.
             magnetometerReading = event.values;
         }
-        if(accelerometerReading != null && magnetometerReading !=null){
-            //we have both sensors, so we can compute the orientation
+        if (accelerometerReading != null && magnetometerReading != null) {
+            // We have both sensors, so we can compute the orientation!
             onBothSensorDataAvailable();
         }
     }
 
     /**
-     * called when we have readings for both sensors
+     * Called when we have readings for both sensors.
      */
     private void onBothSensorDataAvailable() {
-        //discount contract checking. think design by contract!
-        if(accelerometerReading == null ||magnetometerReading == null){
-            throw new IllegalStateException("Both sensors must be available to compute orientation");
+        // Discount contract checking. Think Design by Contract!
+        if (accelerometerReading == null || magnetometerReading == null) {
+            throw new IllegalStateException("Both sensors must be available to compute orientation.");
         }
 
-        float[] r = new float[9];
-        float[] i = new float[9];
-        //now we do some linear algebra magic using the two sensor readings
-        boolean success = SensorManager.getRotationMatrix(r, i, accelerometerReading, magnetometerReading);
-        //did it work?
-        if(success){
-            //ok we're good to go!
-            float[] orientation = new float[3];
-            SensorManager.getOrientation(r,orientation);
-            
-            //orientation now contains in order: azimuth, pitch and roll...
-            //these are coordinates in 3d space commonly used by aircraft
-            //but we only care about azimuth
-            //azimuth is the angle between the magnetic north pole and the y axis
-            //around the z axis (-pi to pi)
-            //an azimuth of 0 means that the device is pointer north, and pi means it's pointed south
-            //pi/2 means it's pointed east, and 3pi/2 means its pointer west
+        var r = new float[9];
+        var i = new float[9];
+        // Now we do some linear algebra magic using the two sensor readings.
+        var success = SensorManager.getRotationMatrix(r, i, accelerometerReading, magnetometerReading);
+        // Did it work?
+        if (success) {
+            // Ok we're good to go!
+            var orientation = new float[3];
+            SensorManager.getOrientation(r, orientation);
+
+            // Orientation now contains in order: azimuth, pitch and roll.
+            // These are coordinates in a 3D space commonly used by aircraft...
+            // but we only care about azimuth.
+            // Azimuth is the angle between the magnetic north pole and the y-axis,
+            // around the z-axis (-π to π).
+            // An azimuth of 0 means that the device is pointed north, and π means it's pointed south.
+            // π/2 means it's pointed east, and 3π/2 means it's pointed west.
             this.azimuth.postValue(orientation[0]);
         }
-    }
-
-    public void unregisterSensorListeners(){sensorManager.unregisterListener(this);}
-
-    public LiveData<Float> getOrientation(){return this.azimuth;}
-
-    public void setMockOrientationSource(MutableLiveData<Float> mockDataSource){
-        unregisterSensorListeners();
-        this.azimuth = mockDataSource;
     }
 
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        // Auto-generated method stub required by the interface
+        // we don't care about this at all lol
+    }
 
+    public void unregisterSensorListeners() {
+        sensorManager.unregisterListener(this);
+    }
+
+    public LiveData<Float> getOrientation() {
+        return this.azimuth;
+    }
+
+    public void setMockOrientationData(MutableLiveData<Float> mockData) {
+        unregisterSensorListeners();
+        this.azimuth = mockData;
     }
 }
