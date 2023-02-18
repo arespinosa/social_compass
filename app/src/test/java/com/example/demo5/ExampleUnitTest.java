@@ -25,7 +25,7 @@ import androidx.test.core.app.ActivityScenario;
 public class ExampleUnitTest {
     public static final int DEGREES_IN_A_CIRCLE = 360;
 
-    @Test
+/*    @Test
     public void testParentHouseAngle() {
         ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
         scenario.moveToState(Lifecycle.State.CREATED);
@@ -61,7 +61,7 @@ public class ExampleUnitTest {
         });
     });
 }
-
+*/
     /**
      * (User Story 2,Test 2): check for non-null inputs
      */

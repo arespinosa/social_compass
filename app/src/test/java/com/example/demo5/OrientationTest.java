@@ -15,33 +15,30 @@ import androidx.test.core.app.ActivityScenario;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(RobolectricTestRunner.class)
-public class TimeServiceTest {
+public class OrientationTest {
     @Rule
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
 
     @Test
-    public void test_time_service() {
-        var testValue = 12312312L;
+    public void test_orientation_service() {
+        var testValue = Constants.SOUTH;
 
-        // Update the singleton instance to use the mockDataSource
         var scenario = ActivityScenario.launch(MainActivity.class);
-
-        // You need to have the Activity in STARTED state for the
-        // LiveData observer to be active.
         scenario.moveToState(Lifecycle.State.STARTED);
         scenario.onActivity(activity -> {
-            var timeService = TimeService.singleton();
+            var orientationService = OrientationService.singleton(activity);
 
-            var mockTime = new MutableLiveData<Long>();
-            timeService.setMockTimeSource(mockTime);
-            // No need to worry about telling the activity to refresh where it gets data.
+            var mockOrientation = new MutableLiveData<Float>();
+            orientationService.setMockOrientationData(mockOrientation);
+            // We don't want to have to do this! It's not our job to tell the activity!
+            activity.reobserveOrientation();
 
-            mockTime.setValue(testValue);
-            TextView textView = activity.findViewById(R.id.timeText);
+            mockOrientation.setValue(testValue);
+            //TextView textView = activity.findViewById(R.id.orientationText);
 
-            var expected = Utilities.formatTime(testValue);
-            var observed = textView.getText().toString();
-
+            var expected = Utilities.formatOrientation(testValue);
+            //var observed = textView.getText().toString();
+            var observed = "";
             assertEquals(expected, observed);
         });
     }
