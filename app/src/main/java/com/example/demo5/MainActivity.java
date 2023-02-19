@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
         compass.setRotation(DEGREES_IN_A_CIRCLE + new_angle - deg);
     }
 
-    private float retrieveManualOrientation() {
+    public float retrieveManualOrientation() {
         TextView orientationLabelView = findViewById(R.id.orientation_text);
         String orientationLabelText = orientationLabelView.getText().toString();
         Float orientationLabelValue;
