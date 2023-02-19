@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
         updateCompassWhenOrientationChanges(orientation);
     }
 
-    private void updateCompassWhenLocationChanges(Double latitude, Double longitude) {
+    public void updateCompassWhenLocationChanges(Double latitude, Double longitude) {
 
         double ang = angleCalculation(latitude, longitude);
 
@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
         updateParentHouse(ang);
     }
 
-    private void updateCompassWhenOrientationChanges(Float orientation) {
+    public void updateCompassWhenOrientationChanges(Float orientation) {
 
         float deg = (float) Math.toDegrees(orientation);
         ConstraintLayout compass = findViewById(R.id.compass);

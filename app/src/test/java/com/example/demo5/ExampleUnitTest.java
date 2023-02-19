@@ -1,5 +1,8 @@
 package com.example.demo5;
 
+import static org.junit.Assert.assertEquals;
+
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -13,55 +16,14 @@ import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.MutableLiveData;
 import androidx.test.core.app.ActivityScenario;
 
-
-
-
-/**
- * (User Story 2,Test 1): Checking if the angles are calculated correctly
- *
- */
-
 @RunWith(RobolectricTestRunner.class)
 public class ExampleUnitTest {
     public static final int DEGREES_IN_A_CIRCLE = 360;
+    public static final float TWO_PIE_RADIANS = (float)6.28;
+    public static final float HALF_PIE_RADIANS = (float)1.57;
+    public static final Double NINETY_DEGREES = 90.0;
+    public static final long NINETY_DEGREES_LONG = 90;
 
-/*    @Test
-    public void testParentHouseAngle() {
-        ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
-        scenario.moveToState(Lifecycle.State.CREATED);
-        scenario.moveToState(Lifecycle.State.STARTED);
-
-
-        //need to have Activity in STARTED state for LiveData observer to be active
-        scenario.moveToState(Lifecycle.State.STARTED);
-        scenario.onActivity(activity -> {
-        //assertEquals(activity.findViewById(R.id.btn_one).performClick(), true);
-        MutableLiveData<Pair<Double,Double>> mockLocationSource = new MutableLiveData<Pair<Double,Double>>();
-        LocationService locationService = LocationService.singleton(activity);
-        locationService.setMockOrientationSource(mockLocationSource);
-
-        double expectedLat = (double)0;
-        double expectedLong = (double)90;
-
-        mockLocationSource.setValue(new Pair(expectedLat,expectedLong));
-        ImageView parentHouse = activity.findViewById(R.id.parentHouse);
-        ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) parentHouse.getLayoutParams();
-
-        TextView textView = activity.findViewById(R.id.timeTextView);
-
-        long expected =0;
-
-        locationService.getLocation().observe(activity, loc -> {
-            textView.setText(Double.toString(loc.first) + " , " +
-                    Double.toString(loc.second));
-
-            //check whether the values are equal
-            //assert layoutParams.circleAngle == expected;
-            assert layoutParams.circleAngle == expected;
-        });
-    });
-}
-*/
     /**
      * (User Story 2,Test 2): check for non-null inputs
      */
@@ -122,6 +84,111 @@ public class ExampleUnitTest {
             // Checking if the inputs are valid within the range
             assert (Math.abs(lat_cord) <= 180);
             assert (Math.abs(long_cord) <= 90);
+        });
+    }
+
+    @Test
+    public void testUpdateCompassWhenLocationChanges() {
+        ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
+        scenario.moveToState(Lifecycle.State.CREATED);
+        scenario.moveToState(Lifecycle.State.STARTED);
+
+        scenario.onActivity(activity -> {
+            MutableLiveData<androidx.core.util.Pair<Double, Double>> mockLocationSource = new MutableLiveData<>();
+            LocationService locationService = LocationService.singleton(activity);
+            locationService.setMockOrientationData(mockLocationSource);
+
+            double expectedLat = (double)0;
+            double expectedLong = (double)0;
+
+            mockLocationSource.setValue(new androidx.core.util.Pair(expectedLat,expectedLong));
+
+            ImageView parentHouse = activity.findViewById(R.id.parentHouse);
+            ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) parentHouse.getLayoutParams();
+
+            activity.updateCompassWhenLocationChanges(NINETY_DEGREES, 0.0);
+
+            long expected = NINETY_DEGREES_LONG + NINETY_DEGREES_LONG;
+
+            assert(layoutParams.circleAngle == expected);
+        });
+    }
+
+    @Test
+    public void testUpdateCompassWhenLocationChanges2() {
+        ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
+        scenario.moveToState(Lifecycle.State.CREATED);
+        scenario.moveToState(Lifecycle.State.STARTED);
+
+        scenario.onActivity(activity -> {
+            MutableLiveData<androidx.core.util.Pair<Double, Double>> mockLocationSource = new MutableLiveData<>();
+            LocationService locationService = LocationService.singleton(activity);
+            locationService.setMockOrientationData(mockLocationSource);
+
+            double expectedLat = (double)0;
+            double expectedLong = (double)0;
+
+            mockLocationSource.setValue(new androidx.core.util.Pair(expectedLat,expectedLong));
+
+            ImageView parentHouse = activity.findViewById(R.id.parentHouse);
+            ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) parentHouse.getLayoutParams();
+
+            activity.updateCompassWhenLocationChanges(0.0, NINETY_DEGREES);
+
+            long expected = -NINETY_DEGREES_LONG;
+
+            assert(layoutParams.circleAngle == expected);
+        });
+    }
+
+    @Test
+    public void testUpdateCompassWhenOrientationChanges() {
+        ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
+        scenario.moveToState(Lifecycle.State.CREATED);
+        scenario.moveToState(Lifecycle.State.STARTED);
+
+        scenario.onActivity(activity -> {
+            MutableLiveData<androidx.core.util.Pair<Double, Double>> mockLocationSource = new MutableLiveData<>();
+            LocationService locationService = LocationService.singleton(activity);
+            locationService.setMockOrientationData(mockLocationSource);
+
+            double expectedLat = (double)0;
+            double expectedLong = (double)0;
+
+            mockLocationSource.setValue(new androidx.core.util.Pair(expectedLat,expectedLong));
+
+            ConstraintLayout compass = activity.findViewById(R.id.compass);
+
+            activity.updateCompassWhenOrientationChanges(HALF_PIE_RADIANS);
+
+            long expected = DEGREES_IN_A_CIRCLE - NINETY_DEGREES_LONG;
+            System.out.println(compass.getRotation() + " vs " + expected);
+            assert((long)compass.getRotation() == expected);
+        });
+    }
+
+    @Test
+    public void testUpdateCompassWhenOrientationChanges2() {
+        ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
+        scenario.moveToState(Lifecycle.State.CREATED);
+        scenario.moveToState(Lifecycle.State.STARTED);
+
+        scenario.onActivity(activity -> {
+            MutableLiveData<androidx.core.util.Pair<Double, Double>> mockLocationSource = new MutableLiveData<>();
+            LocationService locationService = LocationService.singleton(activity);
+            locationService.setMockOrientationData(mockLocationSource);
+
+            double expectedLat = (double)0;
+            double expectedLong = (double)0;
+
+            mockLocationSource.setValue(new androidx.core.util.Pair(expectedLat,expectedLong));
+
+            ConstraintLayout compass = activity.findViewById(R.id.compass);
+
+            activity.updateCompassWhenOrientationChanges(TWO_PIE_RADIANS);
+
+            long expected = 0;
+            assert((long)compass.getRotation() == expected);
         });
     }
 }
