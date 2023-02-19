@@ -4,12 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:labelFor="@id/arrow"
     tools:context=".MainActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/compass"
         android:layout_width="300dp"
-        android:layout_height="300dp"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -20,6 +21,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:contentDescription="TODO"
+            android:labelFor="@id/arrow"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -32,7 +34,7 @@
             android:layout_height="25dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintCircle="@+id/clock"
-            app:layout_constraintCircleRadius="140dp"
+            app:layout_constraintCircleRadius="175dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -41,8 +43,8 @@
 
         <ImageView
             android:id="@+id/parentHouse"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
+            android:layout_width="43dp"
+            android:layout_height="43dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintCircle="@+id/clock"
             app:layout_constraintCircleAngle="0"
@@ -51,6 +53,19 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/clock"
             app:srcCompat="@drawable/house" />
+
+        <TextView
+            android:id= "@+id/labelTextView"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:text ="house_label"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintCircle="@+id/clock"
+            app:layout_constraintCircleAngle="0"
+            app:layout_constraintCircleRadius="95dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/clock"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <EditText
@@ -85,15 +100,15 @@
         android:id="@+id/timeTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="174dp"
-        android:layout_marginTop="96dp"
-        android:layout_marginEnd="179dp"
-        android:layout_marginBottom="101dp"
+        android:layout_marginStart="206dp"
+        android:layout_marginTop="37dp"
+        android:layout_marginEnd="147dp"
+        android:layout_marginBottom="26dp"
         android:text="TextView"
         app:layout_constraintBottom_toTopOf="@+id/compass"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/orientation_text" />
 
     <Button
         android:id="@+id/saveCoords"
@@ -103,10 +118,104 @@
         android:layout_marginTop="38dp"
         android:layout_marginEnd="159dp"
         android:layout_marginBottom="49dp"
-        android:text="Save"
         android:onClick="save"
+        android:text="Save"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/parentLatitude" />
+
+    <EditText
+        android:id="@+id/house_label"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="7dp"
+        android:layout_marginBottom="9dp"
+        android:ems="10"
+        android:hint="Label"
+        android:inputType="textPersonName"
+        app:layout_constraintBottom_toTopOf="@+id/saveCoords"
+        app:layout_constraintEnd_toStartOf="@+id/parentLongitude"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/parentLatitude" />
+
+    <EditText
+        android:id="@+id/orientation_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="9dp"
+        android:layout_marginBottom="86dp"
+        android:ems="10"
+        android:hint="Update Orientation"
+        android:inputType="textPersonName"
+        android:minHeight="48dp"
+        app:layout_constraintBottom_toTopOf="@+id/compass"
+        app:layout_constraintEnd_toStartOf="@+id/update_orr_btn"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/NewOrr_TextView" />
+
+    <TextView
+        android:id="@+id/NewOrr_TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="227dp"
+        android:layout_marginBottom="4dp"
+        android:text="Current Orientaion:"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/orientation_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/Lat_TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:text="Lattitude:"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/parentLatitude"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.193"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/compass" />
+
+    <TextView
+        android:id="@+id/Long_TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="2dp"
+        android:text="Longitude:"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/parentLongitude"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.685"
+        app:layout_constraintStart_toEndOf="@+id/Lat_TextView"
+        app:layout_constraintTop_toBottomOf="@+id/compass"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/update_orr_btn"
+        android:layout_width="91dp"
+        android:layout_height="52dp"
+        android:layout_marginStart="9dp"
+        android:layout_marginTop="42dp"
+        android:layout_marginEnd="85dp"
+        android:layout_marginBottom="84dp"
+        android:text="update"
+        android:textSize="12dp"
+        android:onClick="save"
+        app:layout_constraintBottom_toTopOf="@+id/compass"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/orientation_text"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

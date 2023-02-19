@@ -1,8 +1,7 @@
 package com.example.demo5;
 
-import android.content.Context;
-import android.content.pm.PackageManager;
-import android.location.LocationManager;
+import static org.junit.Assert.assertEquals;
+
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -39,38 +38,38 @@ public class ExampleUnitTest {
         //need to have Activity in STARTED state for LiveData observer to be active
         scenario.moveToState(Lifecycle.State.STARTED);
         scenario.onActivity(activity -> {
-        //assertEquals(activity.findViewById(R.id.btn_one).performClick(), true);
-        MutableLiveData<Pair<Double,Double>> mockLocationSource = new MutableLiveData<Pair<Double,Double>>();
-        LocationService locationService = LocationService.singleton(activity);
-        locationService.setMockOrientationSource(mockLocationSource);
+            //assertEquals(activity.findViewById(R.id.btn_one).performClick(), true);
+            MutableLiveData<Pair<Double, Double>> mockLocationSource = new MutableLiveData<Pair<Double, Double>>();
+            LocationService locationService = LocationService.singleton(activity);
+            locationService.setMockOrientationSource(mockLocationSource);
 
-        double expectedLat = (double)0;
-        double expectedLong = (double)90;
+            double expectedLat = (double) 0;
+            double expectedLong = (double) 90;
 
-        mockLocationSource.setValue(new Pair(expectedLat,expectedLong));
-        ImageView parentHouse = activity.findViewById(R.id.parentHouse);
-        ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) parentHouse.getLayoutParams();
+            mockLocationSource.setValue(new Pair(expectedLat, expectedLong));
+            ImageView parentHouse = activity.findViewById(R.id.parentHouse);
+            ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) parentHouse.getLayoutParams();
 
-        TextView textView = activity.findViewById(R.id.timeTextView);
+            TextView textView = activity.findViewById(R.id.timeTextView);
 
-        long expected =0;
+            long expected = 0;
 
-        locationService.getLocation().observe(activity, loc -> {
-            textView.setText(Double.toString(loc.first) + " , " +
-                    Double.toString(loc.second));
+            locationService.getLocation().observe(activity, loc -> {
+                textView.setText(Double.toString(loc.first) + " , " +
+                        Double.toString(loc.second));
 
-            //check whether the values are equal
-            //assert layoutParams.circleAngle == expected;
-            assert layoutParams.circleAngle == expected;
+                //check whether the values are equal
+                //assert layoutParams.circleAngle == expected;
+                assert layoutParams.circleAngle == expected;
+            });
         });
-    });
-}
+    }
 
     /**
      * (User Story 2,Test 2): check for non-null inputs
      */
     @Test
-    public void checkNum(){
+    public void checkNum() {
         ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
 
 
@@ -112,7 +111,7 @@ public class ExampleUnitTest {
      * (User Story 2, Test 3) : Checking if the coordinates are within the range for longitude and latitude
      */
     @Test
-    public void validCord(){
+    public void validCord() {
         ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
 
         scenario.moveToState(Lifecycle.State.CREATED);
@@ -140,5 +139,86 @@ public class ExampleUnitTest {
             assert (Math.abs(long_cord) <= 90);
         });
     }
+
+
+    @Test
+    public void FoundLabel() {
+        ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
+
+        scenario.moveToState(Lifecycle.State.CREATED);
+        scenario.moveToState(Lifecycle.State.STARTED);
+
+        //need to have Activity in STARTED state for LiveData observer to be active
+        scenario.moveToState(Lifecycle.State.STARTED);
+        scenario.onActivity(activity -> {
+
+            ImageView parentHouse = activity.findViewById(R.id.parentHouse);
+            ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) parentHouse.getLayoutParams();
+
+            TextView Momma = activity.findViewById(R.id.house_label);
+
+            Momma.setText("mom");
+
+            assertEquals(activity.findViewById(R.id.house_label).isShown(), true);
+
+            //Parsing the string inputs as a double
+
+
+        });
+    }
+
+    @Test
+    public void NoLabel() {
+        ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
+
+        scenario.moveToState(Lifecycle.State.CREATED);
+        scenario.moveToState(Lifecycle.State.STARTED);
+
+        //need to have Activity in STARTED state for LiveData observer to be active
+        scenario.moveToState(Lifecycle.State.STARTED);
+        scenario.onActivity(activity -> {
+
+            ImageView parentHouse = activity.findViewById(R.id.parentHouse);
+            ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) parentHouse.getLayoutParams();
+
+            TextView nobody = activity.findViewById(R.id.house_label);
+
+            nobody.setText("");
+
+            assertEquals(nobody.getText().toString(), "");
+
+            //Parsing the string inputs as a double
+
+
+        });
+    }
+
+
+    @Test
+    public void MatchingLabel() {
+        ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
+
+        scenario.moveToState(Lifecycle.State.CREATED);
+        scenario.moveToState(Lifecycle.State.STARTED);
+
+        //need to have Activity in STARTED state for LiveData observer to be active
+        scenario.moveToState(Lifecycle.State.STARTED);
+        scenario.onActivity(activity -> {
+
+            ImageView parentHouse = activity.findViewById(R.id.parentHouse);
+            ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) parentHouse.getLayoutParams();
+
+            TextView Parents = activity.findViewById(R.id.house_label);
+
+            Parents.setText("parent");
+
+            assertEquals(Parents.getText().toString(), "parent");
+
+            //Parsing the string inputs as a double
+
+
+        });
+    }
 }
+
 
