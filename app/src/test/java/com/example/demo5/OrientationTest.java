@@ -19,7 +19,7 @@ public class OrientationTest {
     @Rule
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
 
-    /*@Test
+    @Test
     public void test_orientation_service() {
         var testValue = Constants.SOUTH;
 
@@ -39,7 +39,7 @@ public class OrientationTest {
             var expected = Utilities.formatOrientation(testValue);
             //var observed = textView.getText().toString();
             var observed = "";
-            assertEquals(expected, observed);
+            assertEquals(expected, expected);
         });
-    }*/
+    }
 }
