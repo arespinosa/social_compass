@@ -2,6 +2,7 @@ package com.example.demo5;
 
 import static org.junit.Assert.assertEquals;
 
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -18,6 +19,10 @@ import androidx.test.core.app.ActivityScenario;
 
 @RunWith(RobolectricTestRunner.class)
 public class ExampleUnitTest {
+    public static final String EMPTY_STRING = "";
+    private static final String P_LAT_STRING = "parentLatitude";
+    private static final String P_LONG_STRING = "parentLongitude";
+    private static final String ZERO_STRING = "0";
     public static final int DEGREES_IN_A_CIRCLE = 360;
     public static final float TWO_PIE_RADIANS = (float)6.28;
     public static final float HALF_PIE_RADIANS = (float)1.57;
@@ -44,8 +49,8 @@ public class ExampleUnitTest {
             TextView latitude = activity.findViewById(R.id.parentLatitude);
             TextView longitude = activity.findViewById(R.id.parentLongitude);
 
-            latitude.setText("90.4");
-            longitude.setText("1234.5");
+            latitude.setText(NINETY_DEGREES+EMPTY_STRING);
+            longitude.setText(DEGREES_IN_A_CIRCLE+DEGREES_IN_A_CIRCLE+EMPTY_STRING);
 
             // Checking if both the parents coordinates are not null
             assert (longitude.getText() != null);
@@ -74,8 +79,8 @@ public class ExampleUnitTest {
             TextView latitude = activity.findViewById(R.id.parentLatitude);
             TextView longitude = activity.findViewById(R.id.parentLongitude);
 
-            latitude.setText("10.4");
-            longitude.setText("-67.5");
+            latitude.setText(NINETY_DEGREES+EMPTY_STRING);
+            longitude.setText(-NINETY_DEGREES+EMPTY_STRING);
 
             //Parsing the string inputs as a double
             double lat_cord = Double.parseDouble(latitude.getText().toString());
@@ -162,7 +167,6 @@ public class ExampleUnitTest {
             activity.updateCompassWhenOrientationChanges(HALF_PIE_RADIANS);
 
             long expected = DEGREES_IN_A_CIRCLE - NINETY_DEGREES_LONG;
-            System.out.println(compass.getRotation() + " vs " + expected);
             assert((long)compass.getRotation() == expected);
         });
     }
@@ -189,6 +193,162 @@ public class ExampleUnitTest {
 
             long expected = 0;
             assert((long)compass.getRotation() == expected);
+        });
+    }
+
+    @Test
+    public void testRetrieveManualOrientationWhenOverDegrees() {
+        ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
+        scenario.moveToState(Lifecycle.State.CREATED);
+        scenario.moveToState(Lifecycle.State.STARTED);
+
+        scenario.onActivity(activity -> {
+            MutableLiveData<androidx.core.util.Pair<Double, Double>> mockLocationSource = new MutableLiveData<>();
+            LocationService locationService = LocationService.singleton(activity);
+            locationService.setMockOrientationData(mockLocationSource);
+
+            double expectedLat = (double)0;
+            double expectedLong = (double)0;
+
+            mockLocationSource.setValue(new androidx.core.util.Pair(expectedLat,expectedLong));
+
+            TextView orientationLabelView = activity.findViewById(R.id.orientation_text);
+            orientationLabelView.setText(DEGREES_IN_A_CIRCLE+DEGREES_IN_A_CIRCLE+ EMPTY_STRING);
+
+            Float orientation= activity.retrieveManualOrientation();
+
+            long expected = DEGREES_IN_A_CIRCLE-1;
+            assert(orientation == (float) expected);
+        });
+    }
+
+    @Test
+    public void testRetrieveManualOrientationWhenUnderDegrees() {
+        ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
+        scenario.moveToState(Lifecycle.State.CREATED);
+        scenario.moveToState(Lifecycle.State.STARTED);
+
+        scenario.onActivity(activity -> {
+            MutableLiveData<androidx.core.util.Pair<Double, Double>> mockLocationSource = new MutableLiveData<>();
+            LocationService locationService = LocationService.singleton(activity);
+            locationService.setMockOrientationData(mockLocationSource);
+
+            double expectedLat = (double)0;
+            double expectedLong = (double)0;
+
+            mockLocationSource.setValue(new androidx.core.util.Pair(expectedLat,expectedLong));
+
+            TextView orientationLabelView = activity.findViewById(R.id.orientation_text);
+            orientationLabelView.setText(-NINETY_DEGREES+EMPTY_STRING);
+
+            Float orientation= activity.retrieveManualOrientation();
+
+            long expected = 0;
+            assert(orientation == (float) expected);
+        });
+    }
+
+    @Test
+    public void testAngleCalculationWhenPositive() {
+        ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
+        scenario.moveToState(Lifecycle.State.CREATED);
+        scenario.moveToState(Lifecycle.State.STARTED);
+
+        scenario.onActivity(activity -> {
+            MutableLiveData<androidx.core.util.Pair<Double, Double>> mockLocationSource = new MutableLiveData<>();
+            LocationService locationService = LocationService.singleton(activity);
+            locationService.setMockOrientationData(mockLocationSource);
+
+            double expectedLat = (double)0;
+            double expectedLong = (double)0;
+
+            mockLocationSource.setValue(new androidx.core.util.Pair(expectedLat,expectedLong));
+
+            int observed = (int) activity.angleCalculation(NINETY_DEGREES,NINETY_DEGREES);
+            int expected = (int) Math.atan2(-NINETY_DEGREES,-NINETY_DEGREES);
+
+            assert(observed == expected);
+        });
+    }
+
+    @Test
+    public void testAngleCalculationWhenNegativeOrZero() {
+        ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
+        scenario.moveToState(Lifecycle.State.CREATED);
+        scenario.moveToState(Lifecycle.State.STARTED);
+
+        scenario.onActivity(activity -> {
+            MutableLiveData<androidx.core.util.Pair<Double, Double>> mockLocationSource = new MutableLiveData<>();
+            LocationService locationService = LocationService.singleton(activity);
+            locationService.setMockOrientationData(mockLocationSource);
+
+            double expectedLat = (double)0;
+            double expectedLong = (double)0;
+
+            mockLocationSource.setValue(new androidx.core.util.Pair(expectedLat,expectedLong));
+
+            int observed = (int) activity.angleCalculation(-NINETY_DEGREES,0.0);
+            int expected = (int) Math.atan2(0.0,NINETY_DEGREES);
+
+            assert(observed == expected);
+        });
+    }
+
+    @Test
+    public void testRetrieveParentLocationWhenPLatEmpty() {
+        ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
+        scenario.moveToState(Lifecycle.State.CREATED);
+        scenario.moveToState(Lifecycle.State.STARTED);
+
+        scenario.onActivity(activity -> {
+            MutableLiveData<androidx.core.util.Pair<Double, Double>> mockLocationSource = new MutableLiveData<>();
+            LocationService locationService = LocationService.singleton(activity);
+            locationService.setMockOrientationData(mockLocationSource);
+
+            double expectedLat = (double)0;
+            double expectedLong = (double)0;
+
+            mockLocationSource.setValue(new androidx.core.util.Pair(expectedLat,expectedLong));
+
+            TextView parentLatView = activity.findViewById(R.id.parentLatitude);
+            TextView parentLongView = activity.findViewById(R.id.parentLongitude);
+
+            parentLatView.setText(EMPTY_STRING);
+            parentLongView.setText(NINETY_DEGREES+EMPTY_STRING);
+
+            SharedPreferences preferences = activity.getPreferences(activity.MODE_PRIVATE);
+            String parentLat = preferences.getString(P_LAT_STRING, ZERO_STRING);
+
+            assert parentLat.equals(ZERO_STRING);
+        });
+    }
+
+    @Test
+    public void testRetrieveParentLocationWhenPLongEmpty() {
+        ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
+        scenario.moveToState(Lifecycle.State.CREATED);
+        scenario.moveToState(Lifecycle.State.STARTED);
+
+        scenario.onActivity(activity -> {
+            MutableLiveData<androidx.core.util.Pair<Double, Double>> mockLocationSource = new MutableLiveData<>();
+            LocationService locationService = LocationService.singleton(activity);
+            locationService.setMockOrientationData(mockLocationSource);
+
+            double expectedLat = (double)0;
+            double expectedLong = (double)0;
+
+            mockLocationSource.setValue(new androidx.core.util.Pair(expectedLat,expectedLong));
+
+            TextView parentLatView = activity.findViewById(R.id.parentLatitude);
+            TextView parentLongView = activity.findViewById(R.id.parentLongitude);
+
+            parentLongView.setText(EMPTY_STRING);
+            parentLatView.setText(NINETY_DEGREES+EMPTY_STRING);
+
+            SharedPreferences preferences = activity.getPreferences(activity.MODE_PRIVATE);
+            String parentLong = preferences.getString(P_LONG_STRING, ZERO_STRING);
+
+            assert parentLong.equals(ZERO_STRING);
         });
     }
 }

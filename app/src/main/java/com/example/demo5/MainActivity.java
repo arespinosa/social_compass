@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
         return orientationLabelValue;
     }
 
-    private double angleCalculation(Double latitude, Double longitude) {
+    public double angleCalculation(Double latitude, Double longitude) {
 
         Pair<String, String> parentLocation = retrieveParentLocation();
         String parentLatText = parentLocation.first;

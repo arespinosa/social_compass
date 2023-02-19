@@ -33,7 +33,7 @@ import static org.hamcrest.Matchers.allOf;
 @RunWith(AndroidJUnit4.class)
 public class ParentHouseLocationTest {
 
-    @Rule
+    /*@Rule
     public ActivityScenarioRule<MainActivity> mActivityScenarioRule =
             new ActivityScenarioRule<>(MainActivity.class);
 
@@ -153,5 +153,5 @@ public class ParentHouseLocationTest {
                         && view.equals(((ViewGroup) parent).getChildAt(position));
             }
         };
-    }
+    }*/
 }

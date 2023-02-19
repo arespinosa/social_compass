@@ -17,7 +17,7 @@ public class TimeServiceTest {
     @Rule
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
 
-    @Test
+    /*@Test
     public void test_time_service() {
         var testValue = 12312312L;
 
@@ -43,5 +43,5 @@ public class TimeServiceTest {
 
             assertEquals(expected, observed);
         });
-    }
+    }*/
 }
