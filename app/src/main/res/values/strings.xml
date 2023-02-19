@@ -1,9 +1,4 @@
 <resources>
     <string name="app_name">Demo 5</string>
-
-    <string-array name="house_labels">
-        <item>Parent</item>
-        <item>Friend</item>
-        <item>Sister</item>
-    </string-array>
+    <string name="social_compass">Social Compass</string>
 </resources>
