@@ -21,47 +21,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.541" />
 
-    <EditText
-        android:id="@+id/parentLongitude"
-        android:layout_width="165dp"
-        android:layout_height="48dp"
-        android:ems="10"
-        android:hint="Parent's Longitude"
-        android:inputType="numberSigned|number"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.897"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/compass"
-        app:layout_constraintVertical_bias="0.195" />
-
-    <EditText
-        android:id="@+id/house_label"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:ems="10"
-        android:hint="Parent's House Label"
-        android:inputType="textPersonName"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.159"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/parentLatitude" />
-
-    <EditText
-        android:id="@+id/parentLatitude"
-        android:layout_width="165dp"
-        android:layout_height="48dp"
-        android:ems="10"
-        android:hint="Parent's Latitude"
-        android:inputType="numberSigned"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.065"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/compass"
-        app:layout_constraintVertical_bias="0.197" />
-
     <TextView
         android:id="@+id/locationText"
         android:layout_width="wrap_content"

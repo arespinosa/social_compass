@@ -1,25 +1,20 @@
 package com.example.demo5;
 
-import static org.junit.Assert.assertEquals;
-
 import android.content.SharedPreferences;
-import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
-import android.util.Pair;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.MutableLiveData;
 import androidx.test.core.app.ActivityScenario;
 
 @RunWith(RobolectricTestRunner.class)
-public class ExampleUnitTest {
+public class UnitTest {
     public static final String EMPTY_STRING = "";
     private static final String P_LAT_STRING = "parentLatitude";
     private static final String P_LONG_STRING = "parentLongitude";
@@ -30,34 +25,19 @@ public class ExampleUnitTest {
     public static final Double NINETY_DEGREES = 90.0;
     public static final long NINETY_DEGREES_LONG = 90;
 
-    /**
-     * (User Story 2,Test 2): check for non-null inputs
-     */
     @Test
     public void checkNum() {
         ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
 
-
         scenario.moveToState(Lifecycle.State.CREATED);
         scenario.moveToState(Lifecycle.State.STARTED);
 
-
-        //need to have Activity in STARTED state for LiveData observer to be active
-        //android.Manifest.permission = PackageManager.PERMISSION_GRANTED;
-
-
         scenario.onActivity(activity -> {
-
-
-            //assertEquals(activity.findViewById(R.id.btn_one).performClick(), true);
-
-            //ActivityCompat.setPermissionCompatDelegate(new ActivityCompat.PermissionCompatDelegate(PackageManager.PERMISSION_GRANTED));
-
             long expected = 12312312L;
 
-
             ImageView parentHouse = activity.findViewById(R.id.parentHouse);
-            ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) parentHouse.getLayoutParams();
+            ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams)
+                                                          parentHouse.getLayoutParams();
 
             TextView latitude = activity.findViewById(R.id.parentLatitude);
             TextView longitude = activity.findViewById(R.id.parentLongitude);
@@ -71,10 +51,6 @@ public class ExampleUnitTest {
         });
     }
 
-
-    /**
-     * (User Story 2, Test 3) : Checking if the coordinates are within the range for longitude and latitude
-     */
     @Test
     public void validCord() {
         ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
@@ -87,7 +63,8 @@ public class ExampleUnitTest {
         scenario.onActivity(activity -> {
 
             ImageView parentHouse = activity.findViewById(R.id.parentHouse);
-            ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) parentHouse.getLayoutParams();
+            ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams)
+                                                          parentHouse.getLayoutParams();
 
             TextView latitude = activity.findViewById(R.id.parentLatitude);
             TextView longitude = activity.findViewById(R.id.parentLongitude);
@@ -105,7 +82,6 @@ public class ExampleUnitTest {
         });
     }
 
-
     @Test
     public void testUpdateCompassWhenLocationChanges() {
         ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
@@ -113,7 +89,8 @@ public class ExampleUnitTest {
         scenario.moveToState(Lifecycle.State.STARTED);
 
         scenario.onActivity(activity -> {
-            MutableLiveData<androidx.core.util.Pair<Double, Double>> mockLocationSource = new MutableLiveData<>();
+            MutableLiveData<androidx.core.util.Pair<Double, Double>>
+                                                    mockLocationSource = new MutableLiveData<>();
             LocationService locationService = LocationService.singleton(activity);
             locationService.setMockOrientationData(mockLocationSource);
 
@@ -123,7 +100,8 @@ public class ExampleUnitTest {
             mockLocationSource.setValue(new androidx.core.util.Pair(expectedLat,expectedLong));
 
             ImageView parentHouse = activity.findViewById(R.id.parentHouse);
-            ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) parentHouse.getLayoutParams();
+            ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams)
+                                                                   parentHouse.getLayoutParams();
 
             activity.updateCompassWhenLocationChanges(NINETY_DEGREES, 0.0);
 
@@ -140,7 +118,8 @@ public class ExampleUnitTest {
         scenario.moveToState(Lifecycle.State.STARTED);
 
         scenario.onActivity(activity -> {
-            MutableLiveData<androidx.core.util.Pair<Double, Double>> mockLocationSource = new MutableLiveData<>();
+            MutableLiveData<androidx.core.util.Pair<Double, Double>> mockLocationSource =
+                                                                          new MutableLiveData<>();
             LocationService locationService = LocationService.singleton(activity);
             locationService.setMockOrientationData(mockLocationSource);
 
@@ -150,7 +129,8 @@ public class ExampleUnitTest {
             mockLocationSource.setValue(new androidx.core.util.Pair(expectedLat,expectedLong));
 
             ImageView parentHouse = activity.findViewById(R.id.parentHouse);
-            ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) parentHouse.getLayoutParams();
+            ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams)
+                                                                    parentHouse.getLayoutParams();
 
             activity.updateCompassWhenLocationChanges(0.0, NINETY_DEGREES);
 
@@ -167,7 +147,8 @@ public class ExampleUnitTest {
         scenario.moveToState(Lifecycle.State.STARTED);
 
         scenario.onActivity(activity -> {
-            MutableLiveData<androidx.core.util.Pair<Double, Double>> mockLocationSource = new MutableLiveData<>();
+            MutableLiveData<androidx.core.util.Pair<Double, Double>> mockLocationSource =
+                                                                          new MutableLiveData<>();
             LocationService locationService = LocationService.singleton(activity);
             locationService.setMockOrientationData(mockLocationSource);
 
@@ -192,7 +173,8 @@ public class ExampleUnitTest {
         scenario.moveToState(Lifecycle.State.STARTED);
 
         scenario.onActivity(activity -> {
-            MutableLiveData<androidx.core.util.Pair<Double, Double>> mockLocationSource = new MutableLiveData<>();
+            MutableLiveData<androidx.core.util.Pair<Double, Double>> mockLocationSource =
+                                                                           new MutableLiveData<>();
             LocationService locationService = LocationService.singleton(activity);
             locationService.setMockOrientationData(mockLocationSource);
 
@@ -217,7 +199,8 @@ public class ExampleUnitTest {
         scenario.moveToState(Lifecycle.State.STARTED);
 
         scenario.onActivity(activity -> {
-            MutableLiveData<androidx.core.util.Pair<Double, Double>> mockLocationSource = new MutableLiveData<>();
+            MutableLiveData<androidx.core.util.Pair<Double, Double>> mockLocationSource =
+                                                                         new MutableLiveData<>();
             LocationService locationService = LocationService.singleton(activity);
             locationService.setMockOrientationData(mockLocationSource);
 
@@ -243,7 +226,8 @@ public class ExampleUnitTest {
         scenario.moveToState(Lifecycle.State.STARTED);
 
         scenario.onActivity(activity -> {
-            MutableLiveData<androidx.core.util.Pair<Double, Double>> mockLocationSource = new MutableLiveData<>();
+            MutableLiveData<androidx.core.util.Pair<Double, Double>> mockLocationSource =
+                                                                      new MutableLiveData<>();
             LocationService locationService = LocationService.singleton(activity);
             locationService.setMockOrientationData(mockLocationSource);
 
@@ -269,7 +253,8 @@ public class ExampleUnitTest {
         scenario.moveToState(Lifecycle.State.STARTED);
 
         scenario.onActivity(activity -> {
-            MutableLiveData<androidx.core.util.Pair<Double, Double>> mockLocationSource = new MutableLiveData<>();
+            MutableLiveData<androidx.core.util.Pair<Double, Double>> mockLocationSource =
+                                                                          new MutableLiveData<>();
             LocationService locationService = LocationService.singleton(activity);
             locationService.setMockOrientationData(mockLocationSource);
 
@@ -292,7 +277,8 @@ public class ExampleUnitTest {
         scenario.moveToState(Lifecycle.State.STARTED);
 
         scenario.onActivity(activity -> {
-            MutableLiveData<androidx.core.util.Pair<Double, Double>> mockLocationSource = new MutableLiveData<>();
+            MutableLiveData<androidx.core.util.Pair<Double, Double>> mockLocationSource =
+                                                                        new MutableLiveData<>();
             LocationService locationService = LocationService.singleton(activity);
             locationService.setMockOrientationData(mockLocationSource);
 
@@ -315,7 +301,8 @@ public class ExampleUnitTest {
         scenario.moveToState(Lifecycle.State.STARTED);
 
         scenario.onActivity(activity -> {
-            MutableLiveData<androidx.core.util.Pair<Double, Double>> mockLocationSource = new MutableLiveData<>();
+            MutableLiveData<androidx.core.util.Pair<Double, Double>> mockLocationSource =
+                                                                         new MutableLiveData<>();
             LocationService locationService = LocationService.singleton(activity);
             locationService.setMockOrientationData(mockLocationSource);
 
@@ -344,7 +331,8 @@ public class ExampleUnitTest {
         scenario.moveToState(Lifecycle.State.STARTED);
 
         scenario.onActivity(activity -> {
-            MutableLiveData<androidx.core.util.Pair<Double, Double>> mockLocationSource = new MutableLiveData<>();
+            MutableLiveData<androidx.core.util.Pair<Double, Double>> mockLocationSource =
+                                                                        new MutableLiveData<>();
             LocationService locationService = LocationService.singleton(activity);
             locationService.setMockOrientationData(mockLocationSource);
 

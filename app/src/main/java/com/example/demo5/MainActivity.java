@@ -2,11 +2,8 @@ package com.example.demo5;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -23,7 +20,6 @@ public class MainActivity extends AppCompatActivity {
     private LocationService locationService;
     private OrientationService orientationService;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,14 +28,9 @@ public class MainActivity extends AppCompatActivity {
         locationService = LocationService.singleton(this);
         this.reobserveLocation();
 
-
-
         orientationService = OrientationService.singleton(this);
         this.reobserveOrientation();
 
-        // We don't need a public reobserveTime to use in the test!
-        // This is because the timeData returned here never goes bad.
-        // Behind the scenes, it is a MediatorLiveData.
         var timeService = TimeService.singleton();
         var timeData = timeService.getTimeData();
         timeData.observe(this, this::onTimeChanged);
@@ -64,13 +55,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onOrientationChanged(Float orientation) {
-        //TextView orientationText = findViewById(R.id.orientationText);
-        //orientationText.setText(Utilities.formatOrientation(orientation));
         updateCompassWhenOrientationChanges(orientation);
     }
 
     public void updateCompassWhenLocationChanges(Double latitude, Double longitude) {
-
         double ang = angleCalculation(latitude, longitude);
 
         //US-2b
@@ -82,13 +70,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void updateCompassWhenOrientationChanges(Float orientation) {
-
         float deg = (float) Math.toDegrees(orientation);
         ConstraintLayout compass = findViewById(R.id.compass);
 
         //US-10
         float new_angle = retrieveManualOrientation();
-
 
         compass.setRotation(DEGREES_IN_A_CIRCLE + new_angle - deg);
     }
@@ -117,7 +103,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public double angleCalculation(Double latitude, Double longitude) {
-
         Pair<String, String> parentLocation = retrieveParentLocation();
         String parentLatText = parentLocation.first;
         String parentLongText = parentLocation.second;
@@ -143,14 +128,16 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateParentHouseLabel(double ang) {
         TextView label = findViewById(R.id.labelTextView);
-        ConstraintLayout.LayoutParams houseLabelParam = (ConstraintLayout.LayoutParams) label.getLayoutParams();
+        ConstraintLayout.LayoutParams houseLabelParam = (ConstraintLayout.LayoutParams)
+                                                         label.getLayoutParams();
         houseLabelParam.circleAngle = (float) Math.toDegrees(ang);
         label.setLayoutParams(houseLabelParam);
     }
 
     private void updateParentHouse(double ang) {
         ImageView parentHouse = findViewById(R.id.parentHouse);
-        ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) parentHouse.getLayoutParams();
+        ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams)
+                                                      parentHouse.getLayoutParams();
         layoutParams.circleAngle = (float) Math.toDegrees(ang);
         parentHouse.setLayoutParams(layoutParams);
     }
@@ -196,10 +183,7 @@ public class MainActivity extends AppCompatActivity {
         editor.apply();
     }
 
-    private void onTimeChanged(Long time) {
-        //TextView timeText = findViewById(R.id.timeText);
-        //timeText.setText(Utilities.formatTime(time));
-    }
+    private void onTimeChanged(Long time) {}
 
     public void loadProfile() {
         SharedPreferences preferences = getPreferences(MODE_PRIVATE);
@@ -217,6 +201,4 @@ public class MainActivity extends AppCompatActivity {
         parentLabel.setText(u);
         parentLabelField.setText(u);
     }
-
-
 }
