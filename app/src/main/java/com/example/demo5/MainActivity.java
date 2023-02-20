@@ -227,10 +227,6 @@ public class MainActivity extends AppCompatActivity {
         editor.apply();
     }
 
-    private void onTimeChanged(Long time) {
-        //TextView timeText = findViewById(R.id.timeText);
-        //timeText.setText(Utilities.formatTime(time));
-    }
 
     public void loadProfile() {
         SharedPreferences preferences = getPreferences(MODE_PRIVATE);
