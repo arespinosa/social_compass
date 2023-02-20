@@ -147,7 +147,7 @@ public class ExampleUnitTest {
     }
 
     @Test
-    public void testUpdateCompassWhenOrientationChanges() {
+    public void testUpdateCompassWhenOrientationChangesWhenRotatedRight() {
         ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
         scenario.moveToState(Lifecycle.State.CREATED);
         scenario.moveToState(Lifecycle.State.STARTED);
@@ -172,7 +172,7 @@ public class ExampleUnitTest {
     }
 
     @Test
-    public void testUpdateCompassWhenOrientationChanges2() {
+    public void testUpdateCompassWhenOrientationChangesWhenRotatedAround() {
         ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
         scenario.moveToState(Lifecycle.State.CREATED);
         scenario.moveToState(Lifecycle.State.STARTED);

@@ -59,8 +59,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onOrientationChanged(Float orientation) {
-        //TextView orientationText = findViewById(R.id.orientationText);
-        //orientationText.setText(Utilities.formatOrientation(orientation));
         updateCompassWhenOrientationChanges(orientation);
     }
 
