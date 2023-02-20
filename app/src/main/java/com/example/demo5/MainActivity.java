@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
         //US-10
         float new_angle = retrieveManualOrientation();
 
-        compass.setRotation(DEGREES_IN_A_CIRCLE + new_angle - deg);
+        compass.setRotation(DEGREES_IN_A_CIRCLE - new_angle - deg);
     }
 
     public float retrieveManualOrientation() {
