@@ -64,6 +64,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onOrientationChanged(Float orientation) {
+        //TextView orientationText = findViewById(R.id.orientationText);
+        //orientationText.setText(Utilities.formatOrientation(orientation));
         updateCompassWhenOrientationChanges(orientation);
     }
 
@@ -148,40 +150,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateParentHouse(double ang) {
         ImageView parentHouse = findViewById(R.id.parentHouse);
-        TextView textView = findViewById(R.id.timeTextView);
-
-        //US-1 & 2b
-        locationService.getLocation().observe(this, loc -> {
-            textView.setText(Double.toString(loc.first) + " , " +
-                    Double.toString(loc.second));
-
-            SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-            Double pLat = Double.parseDouble(preferences.getString("parentLatitude", "123"));
-            Double pLong = Double.parseDouble(preferences.getString("parentLongitude", "123"));
-
-            double adjacent = (pLong - loc.second);
-            double hypotenuse = Math.sqrt(((pLat - loc.first) * (pLat - loc.first)) + ((pLong - loc.second) * (pLong - loc.second)));
-
-            double ang = Math.acos(adjacent / hypotenuse);
-
-            ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) parentHouse.getLayoutParams();
-            layoutParams.circleAngle = (float) Math.toDegrees(ang);
-
-
-            //US-2b
-            TextView label = findViewById(R.id.labelTextView);
-            ConstraintLayout.LayoutParams houseLabelParam = (ConstraintLayout.LayoutParams) label.getLayoutParams();
-            houseLabelParam.circleAngle = (float)Math.toDegrees(ang);
-
-        });
-        loadProfile();
-
-        orientationService.getOrientation().observe(this, orientation -> {
-            float deg = (float) Math.toDegrees(orientation);
-            compass.setRotation(DEGREES_IN_A_CIRCLE - deg);
-        });
-
-
+        ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) parentHouse.getLayoutParams();
+        layoutParams.circleAngle = (float) Math.toDegrees(ang);
+        parentHouse.setLayoutParams(layoutParams);
     }
 
     private Pair<String, String> retrieveParentLocation() {
@@ -225,6 +196,10 @@ public class MainActivity extends AppCompatActivity {
         editor.apply();
     }
 
+    private void onTimeChanged(Long time) {
+        //TextView timeText = findViewById(R.id.timeText);
+        //timeText.setText(Utilities.formatTime(time));
+    }
 
     public void loadProfile() {
         SharedPreferences preferences = getPreferences(MODE_PRIVATE);
@@ -235,43 +210,12 @@ public class MainActivity extends AppCompatActivity {
         parentLatitude.setText(s);
         parentLongitude.setText(t);
 
-        //US-2b house labels
-        String label = preferences.getString("houseLabel","");
-        TextView houseLabel = findViewById(R.id.house_label);
-        houseLabel.setText(label);
-
-        //Creating the label - 2b
-        TextView labelText = findViewById(R.id.labelTextView);
-        labelText.setText(houseLabel.getText());
-    }
-
-    public void saveProfile() {
-
-        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
-
-        //US-1
-        TextView parentLatitude = findViewById(R.id.parentLatitude);
-        editor.putString("parentLatitude", parentLatitude.getText().toString());
-        TextView parentLongitude = findViewById(R.id.parentLongitude);
-        editor.putString("parentLongitude", parentLongitude.getText().toString());
-
-        //US-2b house labels
-        TextView houseLabel = findViewById(R.id.house_label);
-        editor.putString("houseLabel", houseLabel.getText().toString());
-
-
-        editor.apply();
-    }
-
-    public void save(View view) {
-        saveProfile();
-        loadProfile();
-        //onPause(savedInstanceState);
-
-        Intent intent = new Intent(this, MainActivity.class);
-        finish();
-        startActivity(intent);
+        // US-2b
+        String u = preferences.getString(HOUSE_LABEL_STRING, BLANK_STRING);
+        TextView parentLabel = findViewById(R.id.labelTextView);
+        TextView parentLabelField = findViewById(R.id.house_label);
+        parentLabel.setText(u);
+        parentLabelField.setText(u);
     }
 
 
