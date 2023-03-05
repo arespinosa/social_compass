@@ -19,13 +19,47 @@ public class MainActivity extends AppCompatActivity {
     private static final String HOUSE_LABEL_STRING = "houseLabel";
     private LocationService locationService;
     private OrientationService orientationService;
+    private bestFriend bestFriend = new bestFriend();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_compass);
 
+        locationService = LocationService.singleton(this);
+        this.reobserveLocation();
     }
 
-//    @Override
+    private void reobserveLocation() {
+        var locationData = locationService.getLocation();
+        locationData.observe(this, this::onLocationChanged);
+    }
+
+    private void onLocationChanged(Pair<Double, Double> latLong) {
+        TextView locationText = findViewById(R.id.locationText);
+        locationText.setText(Utilities.formatLocation(latLong.first, latLong.second));
+        updateCompassWhenLocationChanges(latLong.first, latLong.second);
+    }
+
+    public void whenFriendLocationChanges(Double latitude, Double longitude) {
+        double ang = angleCalculation(latitude, longitude);
+
+        updateFriendDirection(ang);
+    }
+
+    private void updateFriendDirection(double ang) {
+        TextView bestFriend = findViewById(R.id.best_friend);
+        ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams)
+                bestFriend.getLayoutParams();
+        layoutParams.circleAngle = (float) Math.toDegrees(ang);
+        bestFriend.setLayoutParams(layoutParams);
+    }
+
+    public double angleCalculation(Double latitude, Double longitude) {
+        return Math.atan2(bestFriend.getLongitude() - longitude, bestFriend.getLatitude() - latitude);
+    }
+
+    //    @Override
 //    protected void onCreate(Bundle savedInstanceState) {
 //        super.onCreate(savedInstanceState);
 //        setContentView(R.layout.activity_main);
