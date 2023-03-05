@@ -20,6 +20,11 @@ public class MainActivity extends AppCompatActivity {
     private LocationService locationService;
     private OrientationService orientationService;
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+
+    }
+
 //    @Override
 //    protected void onCreate(Bundle savedInstanceState) {
 //        super.onCreate(savedInstanceState);
