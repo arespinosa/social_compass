@@ -19,12 +19,16 @@ public class bestFriend {
         return longitude;
     }
 
-   public void testMove() throws InterruptedException {
+   public void testMove() {
         for (int i = 0; i < 10; ++i) {
             latitude++;
             longitude++;
 
-            Thread.sleep(10000);
+            try {
+                Thread.sleep(10000);
+            } catch (Exception e) {
+
+            }
         }
     }
 }
