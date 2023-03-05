@@ -7,7 +7,7 @@ public class bestFriend {
     bestFriend() {
         latitude = 0;
         longitude = 0;
-        testMove();
+        //testMove();
     }
 
 
