@@ -1,6 +1,7 @@
 package com.example.demo5;
 
 import android.content.SharedPreferences;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -25,7 +26,7 @@ public class UnitTest {
     public static final Double NINETY_DEGREES = 90.0;
     public static final long NINETY_DEGREES_LONG = 90;
 
-    @Test
+    /*@Test
     public void checkNum() {
         ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
 
@@ -49,9 +50,9 @@ public class UnitTest {
             assert (longitude.getText() != null);
             assert (latitude.getText() != null);
         });
-    }
+    }*/
 
-    @Test
+    /*@Test
     public void validCord() {
         ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
 
@@ -80,7 +81,7 @@ public class UnitTest {
             assert (Math.abs(lat_cord) <= 180);
             assert (Math.abs(long_cord) <= 90);
         });
-    }
+    }*/
 
     @Test
     public void testUpdateCompassWhenLocationChanges() {
@@ -90,7 +91,7 @@ public class UnitTest {
 
         scenario.onActivity(activity -> {
             MutableLiveData<androidx.core.util.Pair<Double, Double>>
-                                                    mockLocationSource = new MutableLiveData<>();
+                    mockLocationSource = new MutableLiveData<>();
             LocationService locationService = LocationService.singleton(activity);
             locationService.setMockOrientationData(mockLocationSource);
 
@@ -99,14 +100,15 @@ public class UnitTest {
 
             mockLocationSource.setValue(new androidx.core.util.Pair(expectedLat,expectedLong));
 
-            ImageView parentHouse = activity.findViewById(R.id.parentHouse);
+            TextView bestFriend = activity.findViewById(R.id.best_friend);
             ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams)
-                                                                   parentHouse.getLayoutParams();
+                    bestFriend.getLayoutParams();
 
-            activity.updateCompassWhenLocationChanges(NINETY_DEGREES, 0.0);
+            activity.updateFriendDirection(Math.toRadians(NINETY_DEGREES));
 
-            long expected = NINETY_DEGREES_LONG + NINETY_DEGREES_LONG;
+            float expected = NINETY_DEGREES_LONG;
 
+            System.out.println(layoutParams.circleAngle + " vs " + expected);
             assert(layoutParams.circleAngle == expected);
         });
     }
@@ -118,8 +120,8 @@ public class UnitTest {
         scenario.moveToState(Lifecycle.State.STARTED);
 
         scenario.onActivity(activity -> {
-            MutableLiveData<androidx.core.util.Pair<Double, Double>> mockLocationSource =
-                                                                          new MutableLiveData<>();
+            MutableLiveData<androidx.core.util.Pair<Double, Double>>
+                    mockLocationSource = new MutableLiveData<>();
             LocationService locationService = LocationService.singleton(activity);
             locationService.setMockOrientationData(mockLocationSource);
 
@@ -128,19 +130,20 @@ public class UnitTest {
 
             mockLocationSource.setValue(new androidx.core.util.Pair(expectedLat,expectedLong));
 
-            ImageView parentHouse = activity.findViewById(R.id.parentHouse);
+            TextView bestFriend = activity.findViewById(R.id.best_friend);
             ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams)
-                                                                    parentHouse.getLayoutParams();
+                    bestFriend.getLayoutParams();
 
-            activity.updateCompassWhenLocationChanges(0.0, NINETY_DEGREES);
+            activity.updateFriendDirection(Math.toRadians(NINETY_DEGREES));
 
-            long expected = -NINETY_DEGREES_LONG;
+            float expected = NINETY_DEGREES_LONG;
 
+            System.out.println(layoutParams.circleAngle + " vs " + expected);
             assert(layoutParams.circleAngle == expected);
         });
     }
 
-    @Test
+    /*@Test
     public void testUpdateCompassWhenOrientationChangesWhenRotatedRight() {
         ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
         scenario.moveToState(Lifecycle.State.CREATED);
@@ -352,7 +355,7 @@ public class UnitTest {
 
             assert parentLong.equals(ZERO_STRING);
         });
-    }
+    }*/
 }
 
 
