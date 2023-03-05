@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
         updateFriendDirection(ang);
     }
 
-    private void updateFriendDirection(double ang) {
+    public void updateFriendDirection(double ang) {
         TextView bestFriend = findViewById(R.id.best_friend);
         ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams)
                 bestFriend.getLayoutParams();

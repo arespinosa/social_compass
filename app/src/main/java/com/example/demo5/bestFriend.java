@@ -1,19 +1,19 @@
 package com.example.demo5;
 
 public class bestFriend {
-    long latitude;
-    long longitude;
+    double latitude;
+    double longitude;
 
     bestFriend() {
         latitude = 0;
         longitude = 0;
     }
 
-    public long getLatitude() {
+    public double getLatitude() {
         return latitude;
     }
 
-    public long getLongitude() {
+    public double getLongitude() {
         return longitude;
     }
 
