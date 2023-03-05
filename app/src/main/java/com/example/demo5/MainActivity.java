@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private void onLocationChanged(Pair<Double, Double> latLong) {
         TextView locationText = findViewById(R.id.locationText);
         locationText.setText(Utilities.formatLocation(latLong.first, latLong.second));
-        updateCompassWhenLocationChanges(latLong.first, latLong.second);
+        whenFriendLocationChanges(latLong.first, latLong.second);
     }
 
     public void whenFriendLocationChanges(Double latitude, Double longitude) {
