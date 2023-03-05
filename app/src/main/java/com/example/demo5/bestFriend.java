@@ -7,7 +7,9 @@ public class bestFriend {
     bestFriend() {
         latitude = 0;
         longitude = 0;
+        testMove();
     }
+
 
     public double getLatitude() {
         return latitude;
@@ -17,12 +19,12 @@ public class bestFriend {
         return longitude;
     }
 
-/*    public void testMove() throws InterruptedException {
+   public void testMove() throws InterruptedException {
         for (int i = 0; i < 10; ++i) {
             latitude++;
             longitude++;
 
             Thread.sleep(10000);
         }
-    }*/
+    }
 }
