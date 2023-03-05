@@ -51,7 +51,7 @@ public class MainActivityTest {
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
-                                        0),
+                                        2),
                                 2),
                         isDisplayed()));
         appCompatEditText.perform(replaceText("my parent's house"), closeSoftKeyboard());

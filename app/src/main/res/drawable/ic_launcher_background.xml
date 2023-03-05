@@ -167,4 +167,18 @@
         android:pathData="M79,19L79,89"
         android:strokeWidth="0.8"
         android:strokeColor="#33FFFFFF" />
+
+    <shape xmlns:android="http://schemas.android.com/apk/res/android"
+        android:innerRadius="0dp"
+        android:shape="ring"
+        android:thicknessRatio="2"
+        android:useLevel="false" >
+        <solid android:color="@android:color/transparent" />
+
+        <stroke
+            android:width="2dp"
+            android:color="@android:color/darker_gray" />
+    </shape>
+
 </vector>
+
