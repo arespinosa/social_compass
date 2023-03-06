@@ -79,7 +79,7 @@ public class BestFriend {
         } catch (InterruptedException ex) {
             throw new RuntimeException(ex);
         }
-        loc.postValue(new Pair<Double, Double>(-1.0, -1.0));
+        //loc.postValue(new Pair<Double, Double>(-1.0, -1.0));
     }
 }
 
