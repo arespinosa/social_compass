@@ -1,8 +1,5 @@
 package com.example.demo5;
 
-import android.content.SharedPreferences;
-import android.util.Log;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.junit.Test;
@@ -104,7 +101,7 @@ public class UnitTest {
             ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams)
                     bestFriend.getLayoutParams();
 
-            activity.updateFriendDirection(Math.toRadians(NINETY_DEGREES));
+            activity.updateFriendDirection();
 
             float expected = NINETY_DEGREES_LONG;
 
@@ -134,7 +131,7 @@ public class UnitTest {
             ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams)
                     bestFriend.getLayoutParams();
 
-            activity.updateFriendDirection(Math.toRadians(NINETY_DEGREES));
+            activity.updateFriendDirection();
 
             float expected = NINETY_DEGREES_LONG;
 

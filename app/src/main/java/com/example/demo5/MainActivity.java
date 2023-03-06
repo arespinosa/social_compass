@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
     private LocationService locationService;
     private OrientationService orientationService;
     private BestFriend bestFriend;
-    private Double rad;
+    private Double bestFriendRad;
     private Future<?> future;
     private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
     private Pair<Double, Double> userLocation;
@@ -63,21 +63,21 @@ public class MainActivity extends AppCompatActivity {
         //rad = angleCalculation(location);
         var bestFriendLocationData = bestFriend.getLocation();
         bestFriendLocationData.observe(this, this::angleCalculation);
-        updateFriendDirection(rad);
+        updateFriendDirection();
     }
 
-    public void updateFriendDirection(double ang) {
+    public void updateFriendDirection() {
         TextView bestFriend = findViewById(R.id.best_friend);
         ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams)
                 bestFriend.getLayoutParams();
-        layoutParams.circleAngle = (float) Math.toDegrees(ang);
+        layoutParams.circleAngle = (float) Math.toDegrees(bestFriendRad);
         bestFriend.setLayoutParams(layoutParams);
     }
 
-    public double angleCalculation(Pair<Double, Double> location) {
+    public void angleCalculation(Pair<Double, Double> friendLocation) {
         //returns in radians
-        rad = Math.atan2(bestFriend.getLongitude() - userLocation.second, bestFriend.getLatitude() - userLocation.first);
-        return rad;
+        //rad = Math.atan2(bestFriend.getLongitude() - userLocation.second, bestFriend.getLatitude() - userLocation.first);
+        bestFriendRad = Math.atan2(friendLocation.second - userLocation.second, friendLocation.first - userLocation.first);
     }
 
     //    @Override
