@@ -1,6 +1,7 @@
 package com.example.demo5;
 
 import android.content.SharedPreferences;
+import android.location.Location;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -22,9 +23,140 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
+        locationService = LocationService.singleton(this);
+
+        this.reobserveLocation();
+
+
+
+
+        //Setting the time, just testing it out
+        var timeService = TimeService.singleton();
+        var timeData = timeService.getTimeData();
+        timeData.observe(this, this::onTimeChanged);
     }
 
+    /**
+     * Declaring the longitude and lattitude
+     * TODO: Implement their distances based on the friend's location
+     */
+        double latitude;
+        double longitude;
+
+
+        public void reobserveLocation() {
+            var locationData = locationService.getLocation();
+            locationData.observe(this, this::onLocationChanged);
+        }
+
+
+        private void onLocationChanged(Pair<Double, Double> latLong) {
+            updateCompassWhenLocationChanges(latLong.first, latLong.second);
+            //this.updateCompassWhenLocationChanges(33.812473718140716,-117.91903852984754);
+        }
+
+        public void settingCircleAngle(int ang) {
+            TextView friendtext = findViewById(R.id.best_friend);
+            ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) friendtext.getLayoutParams();
+
+            layoutParams.circleRadius = ang;
+            friendtext.setLayoutParams(layoutParams);
+
+
+        }
+
+        public void updateCompassWhenLocationChanges(Double longitude, Double latitude) {
+            //Initializing the variables to find the miles
+            //Math.acos(Math.sin(lat1)*sin(lat2)+cos(lat1)*cos(lat2)*cos(lon2-lon1))*6371
+
+            //TODO: bro the calculations are a lil off for now...
+
+            double mile_total = distanceCalculation(longitude, latitude);
+
+
+
+            //Starting the placement of friend onto screen
+            if(mile_total < 1) {
+                //Place it onto disk 1
+                settingCircleAngle(45);
+                System.out.println("we out here: disk  1");
+            }
+            else if(mile_total >=1 && mile_total < 10) {
+                //Place it onto disk 2
+                settingCircleAngle(95);
+                System.out.println("we out here: disk 2");
+            }
+            else if(mile_total >= 10 && mile_total < 500) {
+                //Place it onto disk 3
+                settingCircleAngle(195);
+                System.out.println("we out here: disk 3");
+            }
+            else {
+                //Placing it onto disk 4
+                settingCircleAngle(355);
+                System.out.println("we out here: disk 4");
+            }
+
+        }
+
+        public double distanceCalculation(Double longitude, Double latitude) {
+            Pair<String, String> friendLocation = retrieveFriendLocation();
+            String parentLongText = friendLocation.first;
+            String parentLatText = friendLocation.second;
+
+            double friend_lat;
+            double friend_long;
+
+            double lat1;
+            double lon1;
+            double lat2;
+            double lon2;
+
+            try {
+                friend_lat = Double.parseDouble(parentLatText);
+                friend_long = Double.parseDouble(parentLongText);
+            } catch (Exception e) {
+                friend_lat = 0;
+                friend_long = 0;
+            }
+
+            //Calculating the distance
+            lat1 = Math.toRadians(friend_lat);
+            lon1 = Math.toRadians(friend_long);
+            lat2 = Math.toRadians(latitude);
+            lon2 = Math.toRadians(longitude);
+
+            double distance = Math.acos(Math.sin(lat1)*Math.sin(lat2)+Math.cos(lat1)*Math.cos(lat2)*Math.cos(lon2-lon1))*6371 * 0.621371;
+
+            //Will return the distance in degrees
+            System.out.println("Mile distance = " + distance);
+            return distance;
+
+        }
+
+
+        /**
+         * Retrieving the location of the friend
+         * @return : long and lat as a pair of strings
+         */
+        private Pair<String, String> retrieveFriendLocation() {
+            //TODO: Step 1: Retrieving their location based on their UID
+
+            String friendLongText = "33.804246573813415";
+            String friendLatText = "-117.9106578940017";
+
+
+            return new Pair<>(friendLongText, friendLatText);
+        }
+
+
+    /**
+     * DONT DELETE
+     * @param time
+     */
 //    @Override
 //    protected void onCreate(Bundle savedInstanceState) {
 //        super.onCreate(savedInstanceState);
@@ -188,7 +320,7 @@ public class MainActivity extends AppCompatActivity {
 //        editor.apply();
 //    }
 //
-//    private void onTimeChanged(Long time) {}
+    private void onTimeChanged(Long time) {}
 //
 //    public void loadProfile() {
 //        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
