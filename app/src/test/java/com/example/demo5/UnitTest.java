@@ -1,8 +1,5 @@
 package com.example.demo5;
 
-import android.content.SharedPreferences;
-import android.util.Log;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.junit.Test;
@@ -13,6 +10,8 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.MutableLiveData;
 import androidx.test.core.app.ActivityScenario;
+
+import static org.junit.Assert.assertEquals;
 
 @RunWith(RobolectricTestRunner.class)
 public class UnitTest {
@@ -25,6 +24,7 @@ public class UnitTest {
     public static final float HALF_PIE_RADIANS = (float)1.57;
     public static final Double NINETY_DEGREES = 90.0;
     public static final long NINETY_DEGREES_LONG = 90;
+    private static final float TWO_SEVENTY_LONG = 270;
 
     /*@Test
     public void checkNum() {
@@ -104,17 +104,16 @@ public class UnitTest {
             ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams)
                     bestFriend.getLayoutParams();
 
-            activity.updateFriendDirection(Math.toRadians(NINETY_DEGREES));
+            activity.updateFriendDirection();
 
-            float expected = NINETY_DEGREES_LONG;
+            float expected = 0 - NINETY_DEGREES_LONG;
 
-            System.out.println(layoutParams.circleAngle + " vs " + expected);
-            assert(layoutParams.circleAngle == expected);
+            assertEquals(expected, layoutParams.circleAngle, 0.001);
         });
     }
 
     @Test
-    public void testUpdateCompassWhenLocationChanges2() {
+    public void testUpdateCompassWhenFriendLocationChanges() {
         ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
         scenario.moveToState(Lifecycle.State.CREATED);
         scenario.moveToState(Lifecycle.State.STARTED);
@@ -129,17 +128,31 @@ public class UnitTest {
             double expectedLong = (double)0;
 
             mockLocationSource.setValue(new androidx.core.util.Pair(expectedLat,expectedLong));
+            activity.userLocation = new androidx.core.util.Pair(expectedLat,expectedLong);
 
             TextView bestFriend = activity.findViewById(R.id.best_friend);
             ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams)
                     bestFriend.getLayoutParams();
 
-            activity.updateFriendDirection(Math.toRadians(NINETY_DEGREES));
+            activity.whenFriendLocationChanges();
 
-            float expected = NINETY_DEGREES_LONG;
+            float expected = 0 - NINETY_DEGREES_LONG;
+            System.out.println(activity.bestFriend.getLatitude() + ", " + activity.bestFriend.getLongitude());
 
-            System.out.println(layoutParams.circleAngle + " vs " + expected);
-            assert(layoutParams.circleAngle == expected);
+            assertEquals(layoutParams.circleAngle, expected, 0.001);
+
+            /*try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
+            expected = NINETY_DEGREES_LONG;
+            layoutParams = (ConstraintLayout.LayoutParams)
+                    bestFriend.getLayoutParams();
+            System.out.println(activity.bestFriend.getLatitude() + ", " + activity.bestFriend.getLongitude());
+
+            assertEquals(layoutParams.circleAngle, expected, 0.001);*/
         });
     }
 

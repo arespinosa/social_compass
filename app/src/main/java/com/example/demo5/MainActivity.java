@@ -1,9 +1,11 @@
 package com.example.demo5;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -19,7 +21,11 @@ public class MainActivity extends AppCompatActivity {
     private static final String HOUSE_LABEL_STRING = "houseLabel";
     private LocationService locationService;
     private OrientationService orientationService;
-    private bestFriend bestFriend = new bestFriend();
+    public BestFriend bestFriend;
+    private double bestFriendRad;
+    private Future<?> future;
+    private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
+    public Pair<Double, Double> userLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +33,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_compass);
 
         locationService = LocationService.singleton(this);
+        bestFriend = new BestFriend();
+
+        if (future != null) {
+            this.future.cancel(true);
+        }
+        this.future = backgroundThreadExecutor.submit(() -> {
+            bestFriend.testMove2();
+        });
+
         this.reobserveLocation();
     }
 
@@ -38,25 +53,29 @@ public class MainActivity extends AppCompatActivity {
     private void onLocationChanged(Pair<Double, Double> latLong) {
         TextView locationText = findViewById(R.id.locationText);
         locationText.setText(Utilities.formatLocation(latLong.first, latLong.second));
-        whenFriendLocationChanges(latLong.first, latLong.second);
+        userLocation = latLong;
+        whenFriendLocationChanges();
     }
 
-    public void whenFriendLocationChanges(Double latitude, Double longitude) {
-        double ang = angleCalculation(latitude, longitude);
-
-        updateFriendDirection(ang);
+    public void whenFriendLocationChanges() {
+        //rad = angleCalculation(location);
+        var bestFriendLocationData = bestFriend.getLocation();
+        bestFriendLocationData.observe(this, this::angleCalculation);
+        updateFriendDirection();
     }
 
-    public void updateFriendDirection(double ang) {
+    public void updateFriendDirection() {
         TextView bestFriend = findViewById(R.id.best_friend);
         ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams)
                 bestFriend.getLayoutParams();
-        layoutParams.circleAngle = (float) Math.toDegrees(ang);
+        layoutParams.circleAngle = (float) Math.toDegrees(bestFriendRad);
         bestFriend.setLayoutParams(layoutParams);
     }
 
-    public double angleCalculation(Double latitude, Double longitude) {
-        return Math.atan2(bestFriend.getLongitude() - longitude, bestFriend.getLatitude() - latitude);
+    public void angleCalculation(Pair<Double, Double> friendLocation) {
+        //returns in radians
+        //rad = Math.atan2(bestFriend.getLongitude() - userLocation.second, bestFriend.getLatitude() - userLocation.first);
+        bestFriendRad = Math.atan2(friendLocation.second - userLocation.second, friendLocation.first - userLocation.first);
     }
 
     //    @Override
