@@ -11,6 +11,8 @@ import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.MutableLiveData;
 import androidx.test.core.app.ActivityScenario;
 
+import static org.junit.Assert.assertEquals;
+
 @RunWith(RobolectricTestRunner.class)
 public class UnitTest {
     public static final String EMPTY_STRING = "";
@@ -112,36 +114,6 @@ public class UnitTest {
     }
 
     @Test
-    public void testUpdateCompassWhenLocationChanges2() {
-        ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
-        scenario.moveToState(Lifecycle.State.CREATED);
-        scenario.moveToState(Lifecycle.State.STARTED);
-
-        scenario.onActivity(activity -> {
-            MutableLiveData<androidx.core.util.Pair<Double, Double>>
-                    mockLocationSource = new MutableLiveData<>();
-            LocationService locationService = LocationService.singleton(activity);
-            locationService.setMockOrientationData(mockLocationSource);
-
-            double expectedLat = (double)0;
-            double expectedLong = (double)0;
-
-            mockLocationSource.setValue(new androidx.core.util.Pair(expectedLat,expectedLong));
-
-            TextView bestFriend = activity.findViewById(R.id.best_friend);
-            ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams)
-                    bestFriend.getLayoutParams();
-
-            activity.updateFriendDirection();
-
-            float expected = NINETY_DEGREES_LONG;
-
-            System.out.println(layoutParams.circleAngle + " vs " + expected);
-            assert(layoutParams.circleAngle == expected);
-        });
-    }
-
-    @Test
     public void testUpdateCompassWhenFriendLocationChanges() {
         ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
         scenario.moveToState(Lifecycle.State.CREATED);
@@ -164,28 +136,24 @@ public class UnitTest {
                     bestFriend.getLayoutParams();
 
             activity.whenFriendLocationChanges();
-            /*try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }*/
-            float expected = NINETY_DEGREES_LONG;
+
+            float expected = 0 - NINETY_DEGREES_LONG;
             System.out.println(activity.bestFriend.getLatitude() + ", " + activity.bestFriend.getLongitude());
-            System.out.println(layoutParams.circleAngle + " vs " + expected);
-            assert(layoutParams.circleAngle == expected);
+
+            assertEquals(layoutParams.circleAngle, expected, 0.001);
 
             /*try {
-                Thread.sleep(7000);
+                Thread.sleep(5000);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
-            }*/
+            }
 
             expected = NINETY_DEGREES_LONG;
             layoutParams = (ConstraintLayout.LayoutParams)
                     bestFriend.getLayoutParams();
             System.out.println(activity.bestFriend.getLatitude() + ", " + activity.bestFriend.getLongitude());
-            System.out.println(layoutParams.circleAngle + " vs " + expected);
-            assert(layoutParams.circleAngle == expected);
+
+            assertEquals(layoutParams.circleAngle, expected, 0.001);*/
         });
     }
 

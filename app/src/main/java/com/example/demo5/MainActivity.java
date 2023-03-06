@@ -39,7 +39,6 @@ public class MainActivity extends AppCompatActivity {
             this.future.cancel(true);
         }
         this.future = backgroundThreadExecutor.submit(() -> {
-
             bestFriend.testMove2();
         });
 
