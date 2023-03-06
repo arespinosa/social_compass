@@ -9,6 +9,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.util.Pair;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final int DEGREES_IN_A_CIRCLE = 360;
@@ -21,6 +25,8 @@ public class MainActivity extends AppCompatActivity {
     private OrientationService orientationService;
     private bestFriend bestFriend;
     private Double rad;
+    private Future<?> future;
+    private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +36,12 @@ public class MainActivity extends AppCompatActivity {
         locationService = LocationService.singleton(this);
         bestFriend = new bestFriend();
         this.reobserveLocation();
+        /*if (future != null) {
+            this.future.cancel(true);
+        }
+        this.future = backgroundThreadExecutor.submit(() -> {
         bestFriend.testMove();
+        }); */
     }
 
     private void reobserveLocation() {
@@ -45,9 +56,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void whenFriendLocationChanges(Pair<Double,Double> location) {
-        double ang = angleCalculation(location);
-        var locationData = bestFriend.getLocation();
-        locationData.observe(this, this::angleCalculation);
+        rad = angleCalculation(location);
+        //var locationData = bestFriend.getLocation();
+        //locationData.observe(this, this::angleCalculation);
         updateFriendDirection(rad);
     }
 
@@ -61,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
 
     public double angleCalculation(Pair<Double, Double> location) {
         //returns in radians
-        rad = Math.atan2(bestFriend.getLongitude() - location.first, bestFriend.getLatitude() - location.second);
+        rad = Math.atan2(bestFriend.getLongitude() - location.second, bestFriend.getLatitude() - location.first);
         return rad;
     }
 

@@ -5,11 +5,15 @@ import androidx.core.util.Pair;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
 public class bestFriend {
-    MutableLiveData<Pair<Double, Double>> loc;
+    MutableLiveData<Pair<Double, Double>> loc = new MutableLiveData<>();
 
     bestFriend() {
-        loc.postValue(new Pair<Double, Double>(0.0, 0.0));
+        loc.setValue(new Pair<Double, Double>(0.0, 0.0));
         //testMove();
     }
 
@@ -26,14 +30,14 @@ public class bestFriend {
     }
 
    public void testMove() {
-        for (int i = 0; i < 10; ++i) {
-            loc.postValue(new Pair<Double, Double>(this.getLatitude() + 1, this.getLongitude() + 1));
+            for (int i = 0; i < 100; ++i) {
+                loc.postValue(new Pair<Double, Double>(this.getLatitude() + 1, this.getLongitude() + 1));
 
-            try {
-                Thread.sleep(10000);
-            } catch (InterruptedException ex) {
-                throw new RuntimeException(ex);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
-        }
     }
 }
