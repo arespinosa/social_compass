@@ -16,18 +16,18 @@ public class BestFriend {
 
     BestFriend() {
         loc.setValue(new Pair<Double, Double>(0.0, 0.0));
-        this.uid = new UUID(1,0);
+        this.uid = new UUID(1, 0);
         uid = randomUUID();
         //testMove();
     }
 
 
     public Double getLatitude() {
-        return loc.getValue().first;
+        return getLocation().getValue().first;
     }
 
     public Double getLongitude() {
-        return loc.getValue().second;
+        return getLocation().getValue().second;
     }
 
     public UUID getUid() {
@@ -71,4 +71,15 @@ public class BestFriend {
             }
         }
     }
+
+    public void testMove2() {
+        loc.postValue(new Pair<Double, Double>(0.0, -1.0));
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException ex) {
+            throw new RuntimeException(ex);
+        }
+        loc.postValue(new Pair<Double, Double>(-1.0, -1.0));
+    }
 }
+

@@ -21,11 +21,11 @@ public class MainActivity extends AppCompatActivity {
     private static final String HOUSE_LABEL_STRING = "houseLabel";
     private LocationService locationService;
     private OrientationService orientationService;
-    private BestFriend bestFriend;
-    private Double bestFriendRad;
+    public BestFriend bestFriend;
+    private double bestFriendRad;
     private Future<?> future;
     private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
-    private Pair<Double, Double> userLocation;
+    public Pair<Double, Double> userLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +39,8 @@ public class MainActivity extends AppCompatActivity {
             this.future.cancel(true);
         }
         this.future = backgroundThreadExecutor.submit(() -> {
-            bestFriend.testMove();
+
+            bestFriend.testMove2();
         });
 
         this.reobserveLocation();

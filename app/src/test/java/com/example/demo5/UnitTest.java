@@ -22,6 +22,7 @@ public class UnitTest {
     public static final float HALF_PIE_RADIANS = (float)1.57;
     public static final Double NINETY_DEGREES = 90.0;
     public static final long NINETY_DEGREES_LONG = 90;
+    private static final float TWO_SEVENTY_LONG = 270;
 
     /*@Test
     public void checkNum() {
@@ -135,6 +136,54 @@ public class UnitTest {
 
             float expected = NINETY_DEGREES_LONG;
 
+            System.out.println(layoutParams.circleAngle + " vs " + expected);
+            assert(layoutParams.circleAngle == expected);
+        });
+    }
+
+    @Test
+    public void testUpdateCompassWhenFriendLocationChanges() {
+        ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
+        scenario.moveToState(Lifecycle.State.CREATED);
+        scenario.moveToState(Lifecycle.State.STARTED);
+
+        scenario.onActivity(activity -> {
+            MutableLiveData<androidx.core.util.Pair<Double, Double>>
+                    mockLocationSource = new MutableLiveData<>();
+            LocationService locationService = LocationService.singleton(activity);
+            locationService.setMockOrientationData(mockLocationSource);
+
+            double expectedLat = (double)0;
+            double expectedLong = (double)0;
+
+            mockLocationSource.setValue(new androidx.core.util.Pair(expectedLat,expectedLong));
+            activity.userLocation = new androidx.core.util.Pair(expectedLat,expectedLong);
+
+            TextView bestFriend = activity.findViewById(R.id.best_friend);
+            ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams)
+                    bestFriend.getLayoutParams();
+
+            activity.whenFriendLocationChanges();
+            /*try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }*/
+            float expected = NINETY_DEGREES_LONG;
+            System.out.println(activity.bestFriend.getLatitude() + ", " + activity.bestFriend.getLongitude());
+            System.out.println(layoutParams.circleAngle + " vs " + expected);
+            assert(layoutParams.circleAngle == expected);
+
+            /*try {
+                Thread.sleep(7000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }*/
+
+            expected = NINETY_DEGREES_LONG;
+            layoutParams = (ConstraintLayout.LayoutParams)
+                    bestFriend.getLayoutParams();
+            System.out.println(activity.bestFriend.getLatitude() + ", " + activity.bestFriend.getLongitude());
             System.out.println(layoutParams.circleAngle + " vs " + expected);
             assert(layoutParams.circleAngle == expected);
         });
