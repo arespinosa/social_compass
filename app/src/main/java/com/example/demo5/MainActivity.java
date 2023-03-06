@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     private Double rad;
     private Future<?> future;
     private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
+    private Pair<Double, Double> userLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,13 +55,14 @@ public class MainActivity extends AppCompatActivity {
     private void onLocationChanged(Pair<Double, Double> latLong) {
         TextView locationText = findViewById(R.id.locationText);
         locationText.setText(Utilities.formatLocation(latLong.first, latLong.second));
-        whenFriendLocationChanges(latLong);
+        userLocation = latLong;
+        whenFriendLocationChanges();
     }
 
-    public void whenFriendLocationChanges(Pair<Double, Double> location) {
+    public void whenFriendLocationChanges() {
         //rad = angleCalculation(location);
-        var locationData = bestFriend.getLocation();
-        locationData.observe(this, this::angleCalculation);
+        var bestFriendLocationData = bestFriend.getLocation();
+        bestFriendLocationData.observe(this, this::angleCalculation);
         updateFriendDirection(rad);
     }
 
@@ -74,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
 
     public double angleCalculation(Pair<Double, Double> location) {
         //returns in radians
-        rad = Math.atan2(bestFriend.getLongitude() - location.second, bestFriend.getLatitude() - location.first);
+        rad = Math.atan2(bestFriend.getLongitude() - userLocation.second, bestFriend.getLatitude() - userLocation.first);
         return rad;
     }
 

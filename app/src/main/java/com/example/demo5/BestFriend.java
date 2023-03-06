@@ -29,7 +29,24 @@ public class BestFriend {
 
     public void testMove() {
         for (int i = 0; i < 100; ++i) {
-            loc.postValue(new Pair<Double, Double>(this.getLatitude() + 1, this.getLongitude() + 1));
+
+            switch (i % 4) {
+                case 0:
+                    loc.postValue(new Pair<Double, Double>(1.0, 1.0));
+                    break;
+                case 1:
+                    loc.postValue(new Pair<Double, Double>(1.0, -1.0));
+                    break;
+                case 2:
+                    loc.postValue(new Pair<Double, Double>(-1.0, -1.0));
+                    break;
+                case 3:
+                    loc.postValue(new Pair<Double, Double>(-1.0, 1.0));
+                    break;
+                default:
+                    Log.i("ERROR", "yeah, this isn't working");
+                    break;
+            }
 
             try {
                 Thread.sleep(1000);
