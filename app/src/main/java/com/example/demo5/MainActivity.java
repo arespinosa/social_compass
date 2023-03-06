@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String HOUSE_LABEL_STRING = "houseLabel";
     private LocationService locationService;
     private OrientationService orientationService;
-    private bestFriend bestFriend;
+    private BestFriend bestFriend;
     private Double rad;
     private Future<?> future;
     private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_compass);
 
         locationService = LocationService.singleton(this);
-        bestFriend = new bestFriend();
+        bestFriend = new BestFriend();
 
 
 

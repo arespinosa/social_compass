@@ -6,10 +6,10 @@ import androidx.core.util.Pair;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-public class bestFriend {
+public class BestFriend {
     MutableLiveData<Pair<Double, Double>> loc = new MutableLiveData<>();
 
-    bestFriend() {
+    BestFriend() {
         loc.setValue(new Pair<Double, Double>(0.0, 0.0));
         //testMove();
     }
