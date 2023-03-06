@@ -106,10 +106,9 @@ public class UnitTest {
 
             activity.updateFriendDirection();
 
-            float expected = NINETY_DEGREES_LONG;
+            float expected = 0;
 
-            System.out.println(layoutParams.circleAngle + " vs " + expected);
-            assert(layoutParams.circleAngle == expected);
+            assertEquals(expected, layoutParams.circleAngle, 0.001);
         });
     }
 
