@@ -19,7 +19,8 @@ public class MainActivity extends AppCompatActivity {
     private static final String HOUSE_LABEL_STRING = "houseLabel";
     private LocationService locationService;
     private OrientationService orientationService;
-    private bestFriend bestFriend = new bestFriend();
+    private bestFriend bestFriend;
+    private Double rad;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +28,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_compass);
 
         locationService = LocationService.singleton(this);
+        bestFriend = new bestFriend();
         this.reobserveLocation();
+        bestFriend.testMove();
     }
 
     private void reobserveLocation() {
@@ -38,13 +41,14 @@ public class MainActivity extends AppCompatActivity {
     private void onLocationChanged(Pair<Double, Double> latLong) {
         TextView locationText = findViewById(R.id.locationText);
         locationText.setText(Utilities.formatLocation(latLong.first, latLong.second));
-        whenFriendLocationChanges(latLong.first, latLong.second);
+        whenFriendLocationChanges(latLong);
     }
 
-    public void whenFriendLocationChanges(Double latitude, Double longitude) {
-        double ang = angleCalculation(latitude, longitude);
-
-        updateFriendDirection(ang);
+    public void whenFriendLocationChanges(Pair<Double,Double> location) {
+        double ang = angleCalculation(location);
+        var locationData = bestFriend.getLocation();
+        locationData.observe(this, this::angleCalculation);
+        updateFriendDirection(rad);
     }
 
     public void updateFriendDirection(double ang) {
@@ -55,8 +59,10 @@ public class MainActivity extends AppCompatActivity {
         bestFriend.setLayoutParams(layoutParams);
     }
 
-    public double angleCalculation(Double latitude, Double longitude) {
-        return Math.atan2(bestFriend.getLongitude() - longitude, bestFriend.getLatitude() - latitude);
+    public double angleCalculation(Pair<Double, Double> location) {
+        //returns in radians
+        rad = Math.atan2(bestFriend.getLongitude() - location.first, bestFriend.getLatitude() - location.second);
+        return rad;
     }
 
     //    @Override

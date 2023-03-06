@@ -1,33 +1,38 @@
 package com.example.demo5;
 
+import androidx.core.util.Pair;
+
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+
 public class bestFriend {
-    double latitude;
-    double longitude;
+    MutableLiveData<Pair<Double, Double>> loc;
 
     bestFriend() {
-        latitude = 0;
-        longitude = 0;
+        loc.postValue(new Pair<Double, Double>(0.0, 0.0));
         //testMove();
     }
 
 
-    public double getLatitude() {
-        return latitude;
+    public Double getLatitude() {
+        return loc.getValue().first;
     }
 
-    public double getLongitude() {
-        return longitude;
+    public Double getLongitude() {
+        return loc.getValue().second;
+    }
+    public LiveData<Pair<Double, Double>> getLocation() {
+        return loc;
     }
 
    public void testMove() {
         for (int i = 0; i < 10; ++i) {
-            latitude++;
-            longitude++;
+            loc.postValue(new Pair<Double, Double>(this.getLatitude() + 1, this.getLongitude() + 1));
 
             try {
                 Thread.sleep(10000);
-            } catch (Exception e) {
-
+            } catch (InterruptedException ex) {
+                throw new RuntimeException(ex);
             }
         }
     }
