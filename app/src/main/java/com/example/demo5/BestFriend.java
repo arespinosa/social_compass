@@ -2,15 +2,22 @@ package com.example.demo5;
 
 import android.util.Log;
 
+import java.util.UUID;
+
 import androidx.core.util.Pair;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import static java.util.UUID.randomUUID;
+
 public class BestFriend {
     MutableLiveData<Pair<Double, Double>> loc = new MutableLiveData<>();
+    UUID uid;
 
     BestFriend() {
         loc.setValue(new Pair<Double, Double>(0.0, 0.0));
+        this.uid = new UUID(1,0);
+        uid = randomUUID();
         //testMove();
     }
 
@@ -21,6 +28,14 @@ public class BestFriend {
 
     public Double getLongitude() {
         return loc.getValue().second;
+    }
+
+    public UUID getUid() {
+        return uid;
+    }
+
+    public String getUidString() {
+        return getUid().toString();
     }
 
     public LiveData<Pair<Double, Double>> getLocation() {

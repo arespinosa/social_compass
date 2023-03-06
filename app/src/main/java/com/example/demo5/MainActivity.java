@@ -35,8 +35,6 @@ public class MainActivity extends AppCompatActivity {
         locationService = LocationService.singleton(this);
         bestFriend = new BestFriend();
 
-
-
         if (future != null) {
             this.future.cancel(true);
         }
