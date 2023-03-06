@@ -1,13 +1,10 @@
 package com.example.demo5;
 
-import androidx.core.util.Pair;
+import android.util.Log;
 
+import androidx.core.util.Pair;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 public class bestFriend {
     MutableLiveData<Pair<Double, Double>> loc = new MutableLiveData<>();
@@ -25,19 +22,21 @@ public class bestFriend {
     public Double getLongitude() {
         return loc.getValue().second;
     }
+
     public LiveData<Pair<Double, Double>> getLocation() {
         return loc;
     }
 
-   public void testMove() {
-            for (int i = 0; i < 100; ++i) {
-                loc.postValue(new Pair<Double, Double>(this.getLatitude() + 1, this.getLongitude() + 1));
+    public void testMove() {
+        for (int i = 0; i < 100; ++i) {
+            loc.postValue(new Pair<Double, Double>(this.getLatitude() + 1, this.getLongitude() + 1));
 
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException ex) {
-                    throw new RuntimeException(ex);
-                }
+            try {
+                Thread.sleep(1000);
+                Log.i("SLEEP", String.valueOf(i));
+            } catch (InterruptedException ex) {
+                throw new RuntimeException(ex);
             }
+        }
     }
 }

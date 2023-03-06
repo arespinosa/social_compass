@@ -1,17 +1,15 @@
 package com.example.demo5;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.widget.ImageView;
 import android.widget.TextView;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.util.Pair;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.util.Pair;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -35,13 +33,17 @@ public class MainActivity extends AppCompatActivity {
 
         locationService = LocationService.singleton(this);
         bestFriend = new bestFriend();
-        this.reobserveLocation();
-        /*if (future != null) {
+
+
+
+        if (future != null) {
             this.future.cancel(true);
         }
         this.future = backgroundThreadExecutor.submit(() -> {
-        bestFriend.testMove();
-        }); */
+            bestFriend.testMove();
+        });
+
+        this.reobserveLocation();
     }
 
     private void reobserveLocation() {
@@ -55,10 +57,10 @@ public class MainActivity extends AppCompatActivity {
         whenFriendLocationChanges(latLong);
     }
 
-    public void whenFriendLocationChanges(Pair<Double,Double> location) {
-        rad = angleCalculation(location);
-        //var locationData = bestFriend.getLocation();
-        //locationData.observe(this, this::angleCalculation);
+    public void whenFriendLocationChanges(Pair<Double, Double> location) {
+        //rad = angleCalculation(location);
+        var locationData = bestFriend.getLocation();
+        locationData.observe(this, this::angleCalculation);
         updateFriendDirection(rad);
     }
 
