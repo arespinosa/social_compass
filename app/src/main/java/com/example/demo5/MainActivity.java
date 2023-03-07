@@ -54,29 +54,24 @@ public class MainActivity extends AppCompatActivity {
         TextView locationText = findViewById(R.id.locationText);
         locationText.setText(Utilities.formatLocation(latLong.first, latLong.second));
         userLocation = latLong;
-        whenFriendLocationChanges();
+        whenFriendLocationChanges(bestFriend);
     }
 
-    public void whenFriendLocationChanges() {
+    public void whenFriendLocationChanges(BestFriend friend) {
         //rad = angleCalculation(location);
         var bestFriendLocationData = bestFriend.getLocation();
-        bestFriendLocationData.observe(this, this::angleCalculation);
-        updateFriendDirection();
-    }
+        bestFriendLocationData.observe(this, friendLocation -> {
+            friend.setBestFriendRad(Math.atan2(friendLocation.second - userLocation.second, friendLocation.first - userLocation.first));
+        });
 
-    public void updateFriendDirection() {
         TextView bestFriend = findViewById(R.id.best_friend);
         ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams)
                 bestFriend.getLayoutParams();
-        layoutParams.circleAngle = (float) Math.toDegrees(bestFriendRad);
+        layoutParams.circleAngle = (float) Math.toDegrees(friend.getBestFriendRad());
         bestFriend.setLayoutParams(layoutParams);
     }
 
-    public void angleCalculation(Pair<Double, Double> friendLocation, BestFriend friend) {
-        //returns in radians
-        //rad = Math.atan2(bestFriend.getLongitude() - userLocation.second, bestFriend.getLatitude() - userLocation.first);
-        friend.setBestFriendRad(Math.atan2(friendLocation.second - userLocation.second, friendLocation.first - userLocation.first));
-    }
+
 
     //    @Override
 //    protected void onCreate(Bundle savedInstanceState) {

@@ -26,6 +26,10 @@ public class BestFriend {
         this.bestFriendRad = val;
     }
 
+    public double getBestFriendRad() {
+        return this.bestFriendRad;
+    }
+
 
     public Double getLatitude() {
         return getLocation().getValue().first;
