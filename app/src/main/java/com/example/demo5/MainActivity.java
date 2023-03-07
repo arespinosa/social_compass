@@ -65,18 +65,24 @@ public class MainActivity extends AppCompatActivity {
         var bestFriendLocationData2 = bestFriends.get(1).getLocation();
 
         bestFriendLocationData1.observe(this, friendLocation -> {
-            friends.get(0).setBestFriendRad(Math.atan2(bestFriendLocationData1.second - userLocation.second, bestFriendLocationData1.first - userLocation.first));
+            bestFriends.get(0).setBestFriendRad(Math.atan2(friendLocation.second - userLocation.second, friendLocation.first - userLocation.first));
         });
 
         bestFriendLocationData2.observe(this, friendLocation -> {
-            friends.get(1).setBestFriendRad(Math.atan2(bestFriendLocationData2.second - userLocation.second, bestFriendLocationData2.first - userLocation.first));
+            bestFriends.get(1).setBestFriendRad(Math.atan2(friendLocation.second - userLocation.second, friendLocation.first - userLocation.first));
         });
 
-        TextView bestFriend = findViewById(R.id.best_friend);
-        ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams)
-                bestFriend.getLayoutParams();
-        layoutParams.circleAngle = (float) Math.toDegrees(friend.getBestFriendRad());
-        bestFriend.setLayoutParams(layoutParams);
+        TextView bestFriend1 = findViewById(R.id.best_friend1);
+        ConstraintLayout.LayoutParams layoutParams1 = (ConstraintLayout.LayoutParams)
+                bestFriend1.getLayoutParams();
+        layoutParams1.circleAngle = (float) Math.toDegrees(bestFriends.get(0).getBestFriendRad());
+        bestFriend1.setLayoutParams(layoutParams1);
+
+        TextView bestFriend2 = findViewById(R.id.best_friend2);
+        ConstraintLayout.LayoutParams layoutParams2 = (ConstraintLayout.LayoutParams)
+                bestFriend2.getLayoutParams();
+        layoutParams2.circleAngle = (float) Math.toDegrees(bestFriends.get(1).getBestFriendRad());
+        bestFriend2.setLayoutParams(layoutParams2);
     }
 
 
