@@ -3,6 +3,7 @@ package com.example.demo5;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -21,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String HOUSE_LABEL_STRING = "houseLabel";
     private LocationService locationService;
     private OrientationService orientationService;
-    public BestFriend bestFriend;
+    public ArrayList<BestFriend> bestFriends;
 
     private Future<?> future;
     private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
@@ -33,13 +34,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_compass);
 
         locationService = LocationService.singleton(this);
-        bestFriend = new BestFriend();
+        bestFriends = new ArrayList<BestFriend>(2);
 
         if (future != null) {
             this.future.cancel(true);
         }
         this.future = backgroundThreadExecutor.submit(() -> {
-            bestFriend.testMove2();
+            bestFriends.get(0).testMove();
+            bestFriends.get(1).testMove();
         });
 
         this.reobserveLocation();
@@ -54,13 +56,15 @@ public class MainActivity extends AppCompatActivity {
         TextView locationText = findViewById(R.id.locationText);
         locationText.setText(Utilities.formatLocation(latLong.first, latLong.second));
         userLocation = latLong;
-        whenFriendLocationChanges(bestFriend);
+        whenFriendLocationChanges(bestFriends);
     }
 
-    public void whenFriendLocationChanges(BestFriend friend) {
+    public void whenFriendLocationChanges(ArrayList<BestFriend> friends) {
         //rad = angleCalculation(location);
-        var bestFriendLocationData = bestFriend.getLocation();
-        bestFriendLocationData.observe(this, friendLocation -> {
+        var bestFriendLocationData1 = bestFriends.get(0).getLocation();
+        var bestFriendLocationData2 = bestFriends.get(1).getLocation();
+
+        bestFriendLocationData1.observe(this, friendLocation -> {
             friend.setBestFriendRad(Math.atan2(friendLocation.second - userLocation.second, friendLocation.first - userLocation.first));
         });
 
