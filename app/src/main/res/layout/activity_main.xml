@@ -33,7 +33,7 @@
             android:id="@+id/best_friend"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Best Friend"
+            android:text="BOB"
             app:layout_constraintBottom_toTopOf="@id/compass"
             app:layout_constraintCircle="@id/compass"
             app:layout_constraintCircleAngle="0"
