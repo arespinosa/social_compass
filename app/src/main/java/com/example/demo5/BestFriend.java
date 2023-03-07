@@ -12,6 +12,7 @@ import static java.util.UUID.randomUUID;
 
 public class BestFriend {
     MutableLiveData<Pair<Double, Double>> loc = new MutableLiveData<>();
+    private double bestFriendRad;
     UUID uid;
 
     BestFriend() {
@@ -19,6 +20,10 @@ public class BestFriend {
         this.uid = new UUID(1, 0);
         uid = randomUUID();
         //testMove();
+    }
+
+    public void setBestFriendRad(double val) {
+        this.bestFriendRad = val;
     }
 
 

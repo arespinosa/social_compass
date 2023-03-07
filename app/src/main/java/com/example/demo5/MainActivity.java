@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
     private LocationService locationService;
     private OrientationService orientationService;
     public BestFriend bestFriend;
-    private double bestFriendRad;
+
     private Future<?> future;
     private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
     public Pair<Double, Double> userLocation;
@@ -72,10 +72,10 @@ public class MainActivity extends AppCompatActivity {
         bestFriend.setLayoutParams(layoutParams);
     }
 
-    public void angleCalculation(Pair<Double, Double> friendLocation) {
+    public void angleCalculation(Pair<Double, Double> friendLocation, BestFriend friend) {
         //returns in radians
         //rad = Math.atan2(bestFriend.getLongitude() - userLocation.second, bestFriend.getLatitude() - userLocation.first);
-        bestFriendRad = Math.atan2(friendLocation.second - userLocation.second, friendLocation.first - userLocation.first);
+        friend.setBestFriendRad(Math.atan2(friendLocation.second - userLocation.second, friendLocation.first - userLocation.first));
     }
 
     //    @Override
