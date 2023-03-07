@@ -1,6 +1,7 @@
 package com.example.demo5;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -67,12 +68,13 @@ public class MainActivity extends AppCompatActivity {
         var bestFriendLocationData2 = bestFriends.get(1).getLocation();
 
         bestFriendLocationData1.observe(this, friendLocation -> {
-            bestFriends.get(0).setBestFriendRad(Math.atan2(friendLocation.second - userLocation.second, friendLocation.first - userLocation.first));
+            bestFriends.get(0).setBestFriendRad(angleCalculation(friendLocation));
         });
 
         bestFriendLocationData2.observe(this, friendLocation -> {
-            bestFriends.get(1).setBestFriendRad(Math.atan2(friendLocation.second - userLocation.second, friendLocation.first - userLocation.first));
+            bestFriends.get(1).setBestFriendRad(angleCalculation(friendLocation));                Log.d("debug", "ok");
         });
+
 
         TextView bestFriend1 = findViewById(R.id.best_friend1);
         ConstraintLayout.LayoutParams layoutParams1 = (ConstraintLayout.LayoutParams)
@@ -85,6 +87,10 @@ public class MainActivity extends AppCompatActivity {
                 bestFriend2.getLayoutParams();
         layoutParams2.circleAngle = (float) Math.toDegrees(bestFriends.get(1).getBestFriendRad());
         bestFriend2.setLayoutParams(layoutParams2);
+    }
+
+    private double angleCalculation(Pair<Double, Double> friendLocation) {
+        return Math.atan2(friendLocation.second - userLocation.second, friendLocation.first - userLocation.first);
     }
 
 
