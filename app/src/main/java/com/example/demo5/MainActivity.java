@@ -65,7 +65,11 @@ public class MainActivity extends AppCompatActivity {
         var bestFriendLocationData2 = bestFriends.get(1).getLocation();
 
         bestFriendLocationData1.observe(this, friendLocation -> {
-            friend.setBestFriendRad(Math.atan2(friendLocation.second - userLocation.second, friendLocation.first - userLocation.first));
+            friends.get(0).setBestFriendRad(Math.atan2(bestFriendLocationData1.second - userLocation.second, bestFriendLocationData1.first - userLocation.first));
+        });
+
+        bestFriendLocationData2.observe(this, friendLocation -> {
+            friends.get(1).setBestFriendRad(Math.atan2(bestFriendLocationData2.second - userLocation.second, bestFriendLocationData2.first - userLocation.first));
         });
 
         TextView bestFriend = findViewById(R.id.best_friend);
