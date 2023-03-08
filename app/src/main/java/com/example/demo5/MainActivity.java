@@ -12,7 +12,6 @@ import java.util.concurrent.Future;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.util.Pair;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 
 public class MainActivity extends AppCompatActivity {
@@ -54,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         viewModel = new ViewModelProvider(this).get(CompassViewModel.class);
-        var friends = viewModel.getNotes();
+        var friends = viewModel.getFriends();
         friends.observe(this, adapter::setFriends);
 
         this.reobserveLocation();
