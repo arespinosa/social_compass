@@ -10,12 +10,14 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+
 @Entity(tableName = "friends")
 public class Friend {
     MutableLiveData<Pair<Double, Double>> loc = new MutableLiveData<>();
     private double friendRad;
     @PrimaryKey(autoGenerate = true)
     UUID uid;
+
 
     Friend() {
         loc.setValue(new Pair<Double, Double>(0.0, 0.0));
@@ -90,6 +92,14 @@ public class Friend {
             throw new RuntimeException(ex);
         }
         //loc.postValue(new Pair<Double, Double>(-1.0, -1.0));
+    }
+
+    public static Friend fromJSON(String json) {
+        return new Gson().fromJson(json, Friend.class);
+    }
+
+    public String toJSON() {
+        return new Gson().toJson(this);
     }
 }
 
