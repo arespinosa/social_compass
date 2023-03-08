@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String HOUSE_LABEL_STRING = "houseLabel";
     private LocationService locationService;
     private OrientationService orientationService;
-    public MutableLiveData<ArrayList<Friend>> bestFriends;
+    public ArrayList<Friend> bestFriends;
 
     private Future<?> future;
     private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
@@ -39,17 +39,18 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_compass);
 
         locationService = LocationService.singleton(this);
-        bestFriends = new MutableLiveData<>();
 
-        bestFriends.getValue().add(new Friend());
-        bestFriends.getValue().add(new Friend());
+        bestFriends.add(new Friend());
+        bestFriends.add(new Friend());
+
+        adapter = new FriendAdapter(this, 0, bestFriends);
 
         if (future != null) {
             this.future.cancel(true);
         }
         this.future = backgroundThreadExecutor.submit(() -> {
-            bestFriends.getValue().get(0).testMove();
-            bestFriends.getValue().get(1).testMove();
+            bestFriends.get(0).testMove();
+            bestFriends.get(1).testMove();
         });
 
         viewModel = new ViewModelProvider(this).get(CompassViewModel.class);
@@ -68,33 +69,33 @@ public class MainActivity extends AppCompatActivity {
         TextView locationText = findViewById(R.id.locationText);
         locationText.setText(Utilities.formatLocation(latLong.first, latLong.second));
         userLocation = latLong;
-        whenFriendLocationChanges((ArrayList<Friend>) bestFriends.getValue());
+        whenFriendLocationChanges(bestFriends);
     }
 
     public void whenFriendLocationChanges(ArrayList<Friend> friends) {
         //rad = angleCalculation(location);
-        var bestFriendLocationData1 = bestFriends.getValue().get(0).getLocation();
-        var bestFriendLocationData2 = bestFriends.getValue().get(1).getLocation();
+        var bestFriendLocationData1 = bestFriends.get(0).getLocation();
+        var bestFriendLocationData2 = bestFriends.get(1).getLocation();
 
         bestFriendLocationData1.observe(this, friendLocation -> {
-            bestFriends.getValue().get(0).setFriendRad(angleCalculation(friendLocation));
+            bestFriends.get(0).setFriendRad(angleCalculation(friendLocation));
         });
 
         bestFriendLocationData2.observe(this, friendLocation -> {
-            bestFriends.getValue().get(1).setFriendRad(angleCalculation(friendLocation));                Log.d("debug", "ok");
+            bestFriends.get(1).setFriendRad(angleCalculation(friendLocation));                Log.d("debug", "ok");
         });
 
 
         TextView bestFriend1 = findViewById(R.id.best_friend1);
         ConstraintLayout.LayoutParams layoutParams1 = (ConstraintLayout.LayoutParams)
                 bestFriend1.getLayoutParams();
-        layoutParams1.circleAngle = (float) Math.toDegrees(bestFriends.getValue().get(0).getFriendRad());
+        layoutParams1.circleAngle = (float) Math.toDegrees(bestFriends.get(0).getFriendRad());
         bestFriend1.setLayoutParams(layoutParams1);
 
         TextView bestFriend2 = findViewById(R.id.best_friend2);
         ConstraintLayout.LayoutParams layoutParams2 = (ConstraintLayout.LayoutParams)
                 bestFriend2.getLayoutParams();
-        layoutParams2.circleAngle = (float) Math.toDegrees(bestFriends.getValue().get(1).getFriendRad());
+        layoutParams2.circleAngle = (float) Math.toDegrees(bestFriends.get(1).getFriendRad());
         bestFriend2.setLayoutParams(layoutParams2);
     }
 

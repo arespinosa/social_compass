@@ -8,6 +8,10 @@ import androidx.lifecycle.LiveData;
 public class FriendRepository {
     private FriendDao dao;
 
+    public FriendRepository (FriendDao d) {
+        this.dao = d;
+    }
+
     // Local Methods
     // =============
 

@@ -16,9 +16,15 @@ public class CompassViewModel extends AndroidViewModel {
     public CompassViewModel(@NonNull Application application) {
         super(application);
 
+        var context = application.getApplicationContext();
+        var db = FriendDatabase.provide(context);
+
+        var dao = db.getDao();
+
+        this.repo = new FriendRepository(dao);
     }
 
-    public LiveData<List<Friend>> getNotes() {
+    public LiveData<List<Friend>> getFriends() {
         if (friends == null) {
             friends = repo.getAllLocal();
         }

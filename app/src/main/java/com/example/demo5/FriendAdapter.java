@@ -11,8 +11,10 @@ import androidx.annotation.NonNull;
 public class FriendAdapter extends ArrayAdapter {
     private List<Friend> friends = Collections.emptyList();
 
-    public FriendAdapter(@NonNull Context context, int resource) {
+    public FriendAdapter(@NonNull Context context, int resource, List friends) {
         super(context, resource);
+
+        
     }
 
     public void setFriends(List<Friend> friends) {
