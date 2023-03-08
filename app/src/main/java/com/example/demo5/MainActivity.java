@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String HOUSE_LABEL_STRING = "houseLabel";
     private LocationService locationService;
     private OrientationService orientationService;
-    public ArrayList<Friend> bestFriends;
+    public List<Friend> bestFriends;
 
     private Future<?> future;
     private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
@@ -39,10 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
         locationService = LocationService.singleton(this);
 
-        bestFriends.add(new Friend());
-        bestFriends.add(new Friend());
-
-        adapter = new FriendAdapter(this, 0, bestFriends);
+        adapter = new FriendAdapter(this, 0);
 
         if (future != null) {
             this.future.cancel(true);
@@ -55,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
         viewModel = new ViewModelProvider(this).get(CompassViewModel.class);
         var friends = viewModel.getFriends();
         friends.observe(this, adapter::setFriends);
+        bestFriends = friends.getValue();
 
         this.reobserveLocation();
     }
@@ -71,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         whenFriendLocationChanges(bestFriends);
     }
 
-    public void whenFriendLocationChanges(ArrayList<Friend> friends) {
+    public void whenFriendLocationChanges(List<Friend> friends) {
         //rad = angleCalculation(location);
         var bestFriendLocationData1 = bestFriends.get(0).getLocation();
         var bestFriendLocationData2 = bestFriends.get(1).getLocation();
