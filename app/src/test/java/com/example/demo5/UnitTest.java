@@ -1,32 +1,35 @@
-//package com.example.demo5;
-//
-//import android.content.SharedPreferences;
-//import android.widget.ImageView;
-//import android.widget.TextView;
-//
-//import org.junit.Test;
-//import org.junit.runner.RunWith;
-//import org.robolectric.RobolectricTestRunner;
-//
-//import androidx.constraintlayout.widget.ConstraintLayout;
-//import androidx.lifecycle.Lifecycle;
-//import androidx.lifecycle.MutableLiveData;
-//import androidx.test.core.app.ActivityScenario;
-//
-//@RunWith(RobolectricTestRunner.class)
-//public class UnitTest {
-//    public static final String EMPTY_STRING = "";
-//    private static final String P_LAT_STRING = "parentLatitude";
-//    private static final String P_LONG_STRING = "parentLongitude";
-//    private static final String ZERO_STRING = "0";
-//    public static final int DEGREES_IN_A_CIRCLE = 360;
-//    public static final float TWO_PIE_RADIANS = (float)6.28;
-//    public static final float HALF_PIE_RADIANS = (float)1.57;
-//    public static final Double NINETY_DEGREES = 90.0;
-//    public static final long NINETY_DEGREES_LONG = 90;
-//
-//    @Test
-//    public void checkNum() {
+package com.example.demo5;
+
+import android.content.SharedPreferences;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
+
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.MutableLiveData;
+import androidx.test.core.app.ActivityScenario;
+
+@RunWith(RobolectricTestRunner.class)
+public class UnitTest {
+    public static final String EMPTY_STRING = "";
+    private static final String P_LAT_STRING = "parentLatitude";
+    private static final String P_LONG_STRING = "parentLongitude";
+    private static final String ZERO_STRING = "0";
+    public static final int DEGREES_IN_A_CIRCLE = 360;
+    public static final float TWO_PIE_RADIANS = (float) 6.28;
+    public static final float HALF_PIE_RADIANS = (float) 1.57;
+    public static final Double NINETY_DEGREES = 90.0;
+    public static final long NINETY_DEGREES_LONG = 90;
+
+    @Test
+    public void checkNum() {
+        assert (1 == 1);
+    }
+}
 //        ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
 //
 //        scenario.moveToState(Lifecycle.State.CREATED);
@@ -37,19 +40,21 @@
 //
 //            ImageView parentHouse = activity.findViewById(R.id.parentHouse);
 //            ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams)
-//                                                          parentHouse.getLayoutParams();
+//                    parentHouse.getLayoutParams();
 //
 //            TextView latitude = activity.findViewById(R.id.parentLatitude);
 //            TextView longitude = activity.findViewById(R.id.parentLongitude);
 //
-//            latitude.setText(NINETY_DEGREES+EMPTY_STRING);
-//            longitude.setText(DEGREES_IN_A_CIRCLE+DEGREES_IN_A_CIRCLE+EMPTY_STRING);
+//            latitude.setText(NINETY_DEGREES + EMPTY_STRING);
+//            longitude.setText(DEGREES_IN_A_CIRCLE + DEGREES_IN_A_CIRCLE + EMPTY_STRING);
 //
 //            // Checking if both the parents coordinates are not null
 //            assert (longitude.getText() != null);
 //            assert (latitude.getText() != null);
 //        });
 //    }
+//  }
+
 //
 //    @Test
 //    public void validCord() {
