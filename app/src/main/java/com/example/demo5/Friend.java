@@ -6,6 +6,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.UUID;
 
+import androidx.annotation.NonNull;
 import androidx.core.util.Pair;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -15,11 +16,18 @@ import androidx.room.PrimaryKey;
 public class Friend {
     @SerializedName("name")
     public String name;
+
     @SerializedName("loc")
     Pair<Double, Double> loc;
 
+    @SerializedName("lat")
+    double latitude;
+    @SerializedName("long")
+    double longitude;
+
     private double friendRad;
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
+    @NonNull
     @SerializedName("uid")
     UUID uid;
 
@@ -46,6 +54,8 @@ public class Friend {
     }
 
     public Pair<Double, Double> getLocation() {
+        latitude = loc.first;
+        longitude = loc.second;
         return loc;
     }
 
@@ -88,6 +98,5 @@ public class Friend {
         }
         //loc.postValue(new Pair<Double, Double>(-1.0, -1.0));
     }
-
 }
 

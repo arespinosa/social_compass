@@ -28,4 +28,6 @@ public abstract class FriendDao {
 
     @Upsert
     public abstract void upsertAll(List<Friend> list);
+
+
 }
