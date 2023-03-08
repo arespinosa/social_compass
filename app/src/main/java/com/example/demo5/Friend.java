@@ -9,6 +9,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+import com.google.gson.annotations.SerializedName;
 
 
 @Entity(tableName = "friends")
@@ -16,8 +17,8 @@ public class Friend {
     MutableLiveData<Pair<Double, Double>> loc = new MutableLiveData<>();
     private double friendRad;
     @PrimaryKey(autoGenerate = true)
+    @SerializedName("uid")
     UUID uid;
-
 
     Friend() {
         loc.setValue(new Pair<Double, Double>(0.0, 0.0));
@@ -94,12 +95,5 @@ public class Friend {
         //loc.postValue(new Pair<Double, Double>(-1.0, -1.0));
     }
 
-    public static Friend fromJSON(String json) {
-        return new Gson().fromJson(json, Friend.class);
-    }
-
-    public String toJSON() {
-        return new Gson().toJson(this);
-    }
 }
 
