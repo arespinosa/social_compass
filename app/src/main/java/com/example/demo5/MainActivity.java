@@ -1,7 +1,6 @@
 package com.example.demo5;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.TextView;
 
 import java.util.List;
@@ -67,40 +66,35 @@ public class MainActivity extends AppCompatActivity {
         TextView locationText = findViewById(R.id.locationText);
         locationText.setText(Utilities.formatLocation(latLong.first, latLong.second));
         userLocation = latLong;
-        whenFriendLocationChanges(bestFriends);
+        var friends = viewModel.getFriends();
+        friends.observe(this, this::whenFriendLocationChanges);
     }
 
-    public void whenFriendLocationChanges(List<Friend> friends) {
-        //rad = angleCalculation(location);
-        var bestFriendLocationData1 = bestFriends.get(0).getLocation();
-        var bestFriendLocationData2 = bestFriends.get(1).getLocation();
+    private void whenFriendLocationChanges(List<Friend> friends) {
+        var friend0 = friends.get(0);
+        var friend1 = friends.get(1);
 
-        bestFriendLocationData1.observe(this, friendLocation -> {
-            bestFriends.get(0).setFriendRad(angleCalculation(friendLocation));
-        });
+        friend0.setFriendRad(angleCalculation(friend0.getLocation()));
 
-        bestFriendLocationData2.observe(this, friendLocation -> {
-            bestFriends.get(1).setFriendRad(angleCalculation(friendLocation));                Log.d("debug", "ok");
-        });
+        friend1.setFriendRad(angleCalculation(friend1.getLocation()));
 
 
-        TextView bestFriend1 = findViewById(R.id.best_friend1);
+        TextView friend0View = findViewById(R.id.best_friend1);
         ConstraintLayout.LayoutParams layoutParams1 = (ConstraintLayout.LayoutParams)
-                bestFriend1.getLayoutParams();
-        layoutParams1.circleAngle = (float) Math.toDegrees(bestFriends.get(0).getFriendRad());
-        bestFriend1.setLayoutParams(layoutParams1);
+                friend0View.getLayoutParams();
+        layoutParams1.circleAngle = (float) Math.toDegrees(friend0.getFriendRad());
+        friend0View.setLayoutParams(layoutParams1);
 
-        TextView bestFriend2 = findViewById(R.id.best_friend2);
+        TextView friend1View = findViewById(R.id.best_friend2);
         ConstraintLayout.LayoutParams layoutParams2 = (ConstraintLayout.LayoutParams)
-                bestFriend2.getLayoutParams();
-        layoutParams2.circleAngle = (float) Math.toDegrees(bestFriends.get(1).getFriendRad());
-        bestFriend2.setLayoutParams(layoutParams2);
+                friend1View.getLayoutParams();
+        layoutParams2.circleAngle = (float) Math.toDegrees(friend1.getFriendRad());
+        friend1View.setLayoutParams(layoutParams2);
     }
 
     private double angleCalculation(Pair<Double, Double> friendLocation) {
         return Math.atan2(friendLocation.second - userLocation.second, friendLocation.first - userLocation.first);
     }
-
 
 
     //    @Override
