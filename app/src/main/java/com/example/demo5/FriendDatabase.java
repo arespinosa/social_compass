@@ -42,7 +42,7 @@ public abstract class FriendDatabase extends RoomDatabase {
                     public void onCreate(@NonNull SupportSQLiteDatabase db) {
                         super.onCreate(db);
                         Executors.newSingleThreadScheduledExecutor().execute(() -> {
-                                   provide(context).getDao().getAll();
+                                   provide(context).getDao().upsertAll(list);
                         });
                     }
                 })

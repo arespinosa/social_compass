@@ -25,4 +25,7 @@ public abstract class FriendDao {
 
     @Delete
     public abstract int delete(Friend note);
+
+    @Upsert
+    public abstract void upsertAll(List<Friend> list);
 }
