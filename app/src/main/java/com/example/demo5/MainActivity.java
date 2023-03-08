@@ -101,7 +101,11 @@ public class MainActivity extends AppCompatActivity {
         else if(mile_total >=1 && mile_total < 10) {
             //Place it onto disk 2
             circle_ang = mile_total/10.0;
-            circle_ang *= 100.0;
+            //Space in between 50 - 100
+            circle_ang *= 50;
+
+            circle_ang = circle_ang + 65;
+
             int ang  = (int) Math.round(circle_ang);
 
             settingCircleAngle(ang);
@@ -111,17 +115,22 @@ public class MainActivity extends AppCompatActivity {
             //Place it onto disk 3
             //490
             circle_ang = mile_total/490.0;
-            circle_ang *= 200.0;
+            circle_ang *= 100;
+            circle_ang = circle_ang + 135;
             int ang  = (int) Math.round(circle_ang);
 
             settingCircleAngle(ang);
-            System.out.print("The angle is " + ang);
+            System.out.println("The angle is " + ang);
             System.out.println("we out here: disk 3");
         }
         else {
             //Placing it onto disk 4
-            circle_ang = mile_total/2000.0;
-            circle_ang *= 400.0;
+
+            circle_ang = mile_total/12427.0;
+            circle_ang *= 200;
+
+            circle_ang = circle_ang + 275;
+
             int ang  = (int) Math.round(circle_ang);
 
             settingCircleAngle(ang);
