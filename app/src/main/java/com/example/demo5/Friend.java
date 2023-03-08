@@ -2,6 +2,8 @@ package com.example.demo5;
 
 import android.util.Log;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.UUID;
 
 import androidx.core.util.Pair;
@@ -9,11 +11,13 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
-import com.google.gson.annotations.SerializedName;
 
 
 @Entity(tableName = "friends")
 public class Friend {
+    @SerializedName("name")
+    public String name;
+    @SerializedName("loc")
     MutableLiveData<Pair<Double, Double>> loc = new MutableLiveData<>();
     private double friendRad;
     @PrimaryKey(autoGenerate = true)

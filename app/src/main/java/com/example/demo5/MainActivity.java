@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         viewModel = new ViewModelProvider(this).get(CompassViewModel.class);
+        adapter.setOnTextEditedHandler(viewModel::updateText);
         var friends = viewModel.getFriends();
         friends.observe(this, adapter::setFriends);
         bestFriends = friends.getValue();

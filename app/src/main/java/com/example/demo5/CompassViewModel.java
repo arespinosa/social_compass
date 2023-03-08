@@ -12,6 +12,7 @@ public class CompassViewModel extends AndroidViewModel {
 
     private LiveData<List<Friend>> friends;
     private FriendRepository repo;
+    private FriendDao dao;
 
     public CompassViewModel(@NonNull Application application) {
         super(application);
@@ -19,7 +20,7 @@ public class CompassViewModel extends AndroidViewModel {
         var context = application.getApplicationContext();
         var db = FriendDatabase.provide(context);
 
-        var dao = db.getDao();
+        dao = db.getDao();
 
         this.repo = new FriendRepository(dao);
     }
@@ -29,5 +30,10 @@ public class CompassViewModel extends AndroidViewModel {
             friends = repo.getAllLocal();
         }
         return friends;
+    }
+
+    public void updateText(Friend friend, String s) {
+        friend.name = s;
+        dao.upsert(friend);
     }
 }
