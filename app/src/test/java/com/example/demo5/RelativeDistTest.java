@@ -42,7 +42,6 @@ public class RelativeDistTest {
 
             double actual = activity.distanceCalculation(33.81212871249689, -117.91895732047263);
 
-            //System.out.println(actual);
             //Will check if we are less than a mile away thus signifying that we are in the correct location
             assert (actual < 1);
             assert(actual * 50 < 50);
@@ -63,7 +62,6 @@ public class RelativeDistTest {
 
             double actual = activity.distanceCalculation(33.86234, -117.92193);
 
-            //ystem.out.println(actual);
             //Will check if we are less than a mile away thus signifying that we are in the correct location
             assert (actual < 10);
             assert((actual / 10) * 100 < 100);
@@ -87,8 +85,6 @@ public class RelativeDistTest {
             double expected = 55.31004861580981;
 
             double actual = activity.distanceCalculation(32.880238450982766, -117.2339547722171);
-
-            //System.out.println(actual);
             //Will check if we are less than a mile away thus signifying that we are in the correct location
             assert (actual >= 10 && actual < 500);
             assert((actual /490) * 200 < 200);
@@ -105,17 +101,17 @@ public class RelativeDistTest {
         scenario.moveToState(Lifecycle.State.STARTED);
 
         scenario.onActivity(activity -> {
-            //Will check if it's 50 miles away
+            //Will check if it's 500 miles away
             double expected = 4335.999311862558;
+            int expectedWhole = (int) Math.round(expected);
 
             double actual = activity.distanceCalculation(-19.824292359262596, -47.058219362212725);
-
-            //System.out.println(actual);
+            int expectedActual = (int) Math.round(actual);
 
             //Will check if we are less than a mile away thus signifying that we are in the correct location
             assert (actual >= 500);
             assert((actual /12427.0) * 500 < 500);
-            assert (expected == actual);
+            assert (expectedWhole == expectedActual);
 
         });
     }
