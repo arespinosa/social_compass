@@ -27,7 +27,7 @@ public class UnitTest {
 
     @Test
     public void checkNum() {
-        assert (1 == 1);
+        assert (2 == 2);
     }
 }
 //        ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
