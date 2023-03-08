@@ -78,8 +78,8 @@ public class MainActivity extends AppCompatActivity {
      */
     private void onLocationChanged(Pair<Double, Double> latLong) {
         updateCompassWhenLocationChanges(latLong.first, latLong.second);
-        TextView locationText = findViewById(R.id.locationText);
-        locationText.setText(Utilities.formatLocation(latLong.first, latLong.second));
+        //TextView locationText = findViewById(R.id.locationText);
+        //locationText.setText(Utilities.formatLocation(latLong.first, latLong.second));
         userLocation = latLong;
         whenFriendLocationChanges();
         //this.updateCompassWhenLocationChanges(33.812473718140716,-117.91903852984754);

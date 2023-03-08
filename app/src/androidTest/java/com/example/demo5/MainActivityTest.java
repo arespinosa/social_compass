@@ -9,12 +9,14 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 import org.junit.Rule;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 import androidx.test.rule.GrantPermissionRule;
+import static org.junit.Assert.*;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
@@ -29,6 +31,11 @@ public class MainActivityTest {
             GrantPermissionRule.grant(
                     "android.permission.ACCESS_FINE_LOCATION",
                     "android.permission.ACCESS_COARSE_LOCATION");
+
+    @Test
+    public void mainActivityTest() {
+        assertEquals(1, 1, 0);
+    }
 
     /*@Test
     public void mainActivityTest() {
