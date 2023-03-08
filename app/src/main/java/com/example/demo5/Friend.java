@@ -7,27 +7,28 @@ import java.util.UUID;
 import androidx.core.util.Pair;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
-import static java.util.UUID.randomUUID;
-
-public class BestFriend {
+@Entity(tableName = "friends")
+public class Friend {
     MutableLiveData<Pair<Double, Double>> loc = new MutableLiveData<>();
-    private double bestFriendRad;
+    private double friendRad;
+    @PrimaryKey(autoGenerate = true)
     UUID uid;
 
-    BestFriend() {
+    Friend() {
         loc.setValue(new Pair<Double, Double>(0.0, 0.0));
-        this.uid = new UUID(1, 0);
-        uid = randomUUID();
+        uid = UUID.randomUUID();
         //testMove();
     }
 
-    public void setBestFriendRad(double val) {
-        this.bestFriendRad = val;
+    public void setFriendRad(double val) {
+        this.friendRad = val;
     }
 
-    public double getBestFriendRad() {
-        return this.bestFriendRad;
+    public double getFriendRad() {
+        return this.friendRad;
     }
 
 

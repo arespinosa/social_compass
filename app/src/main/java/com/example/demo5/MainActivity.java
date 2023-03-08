@@ -12,6 +12,8 @@ import java.util.concurrent.Future;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.util.Pair;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModelProvider;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -23,11 +25,13 @@ public class MainActivity extends AppCompatActivity {
     private static final String HOUSE_LABEL_STRING = "houseLabel";
     private LocationService locationService;
     private OrientationService orientationService;
-    public ArrayList<BestFriend> bestFriends;
+    public MutableLiveData<ArrayList<Friend>> bestFriends;
 
     private Future<?> future;
     private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
     public Pair<Double, Double> userLocation;
+    private CompassViewModel viewModel;
+    private FriendAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,17 +39,22 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_compass);
 
         locationService = LocationService.singleton(this);
-        bestFriends = new ArrayList<BestFriend>(2);
-        bestFriends.add(new BestFriend());
-        bestFriends.add(new BestFriend());
+        bestFriends = new MutableLiveData<>();
+
+        bestFriends.getValue().add(new Friend());
+        bestFriends.getValue().add(new Friend());
 
         if (future != null) {
             this.future.cancel(true);
         }
         this.future = backgroundThreadExecutor.submit(() -> {
-            bestFriends.get(0).testMove();
-            bestFriends.get(1).testMove();
+            bestFriends.getValue().get(0).testMove();
+            bestFriends.getValue().get(1).testMove();
         });
+
+        viewModel = new ViewModelProvider(this).get(CompassViewModel.class);
+        var friends = viewModel.getNotes();
+        friends.observe(this, adapter::setFriends);
 
         this.reobserveLocation();
     }
@@ -59,33 +68,33 @@ public class MainActivity extends AppCompatActivity {
         TextView locationText = findViewById(R.id.locationText);
         locationText.setText(Utilities.formatLocation(latLong.first, latLong.second));
         userLocation = latLong;
-        whenFriendLocationChanges(bestFriends);
+        whenFriendLocationChanges((ArrayList<Friend>) bestFriends.getValue());
     }
 
-    public void whenFriendLocationChanges(ArrayList<BestFriend> friends) {
+    public void whenFriendLocationChanges(ArrayList<Friend> friends) {
         //rad = angleCalculation(location);
-        var bestFriendLocationData1 = bestFriends.get(0).getLocation();
-        var bestFriendLocationData2 = bestFriends.get(1).getLocation();
+        var bestFriendLocationData1 = bestFriends.getValue().get(0).getLocation();
+        var bestFriendLocationData2 = bestFriends.getValue().get(1).getLocation();
 
         bestFriendLocationData1.observe(this, friendLocation -> {
-            bestFriends.get(0).setBestFriendRad(angleCalculation(friendLocation));
+            bestFriends.getValue().get(0).setFriendRad(angleCalculation(friendLocation));
         });
 
         bestFriendLocationData2.observe(this, friendLocation -> {
-            bestFriends.get(1).setBestFriendRad(angleCalculation(friendLocation));                Log.d("debug", "ok");
+            bestFriends.getValue().get(1).setFriendRad(angleCalculation(friendLocation));                Log.d("debug", "ok");
         });
 
 
         TextView bestFriend1 = findViewById(R.id.best_friend1);
         ConstraintLayout.LayoutParams layoutParams1 = (ConstraintLayout.LayoutParams)
                 bestFriend1.getLayoutParams();
-        layoutParams1.circleAngle = (float) Math.toDegrees(bestFriends.get(0).getBestFriendRad());
+        layoutParams1.circleAngle = (float) Math.toDegrees(bestFriends.getValue().get(0).getFriendRad());
         bestFriend1.setLayoutParams(layoutParams1);
 
         TextView bestFriend2 = findViewById(R.id.best_friend2);
         ConstraintLayout.LayoutParams layoutParams2 = (ConstraintLayout.LayoutParams)
                 bestFriend2.getLayoutParams();
-        layoutParams2.circleAngle = (float) Math.toDegrees(bestFriends.get(1).getBestFriendRad());
+        layoutParams2.circleAngle = (float) Math.toDegrees(bestFriends.getValue().get(1).getFriendRad());
         bestFriend2.setLayoutParams(layoutParams2);
     }
 
