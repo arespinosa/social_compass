@@ -32,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
     private CompassViewModel viewModel;
     private FriendAdapter adapter;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,11 +45,15 @@ public class MainActivity extends AppCompatActivity {
 
         viewModel = new ViewModelProvider(this).get(CompassViewModel.class);
         adapter.setOnTextEditedHandler(viewModel::updateText);
+
+        viewModel.getDao().upsert(new Friend());
+        viewModel.getDao().upsert(new Friend());
+
         var friends = viewModel.getFriends();
         friends.observe(this, adapter::setFriends);
         this.friends = friends.getValue();
 
-        if (this.friends != null)
+        //if (this.friends != null)
             this.reobserveLocation();
 
         if (future != null) {

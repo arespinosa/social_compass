@@ -36,4 +36,8 @@ public class CompassViewModel extends AndroidViewModel {
         friend.name = s;
         dao.upsert(friend);
     }
+
+    public FriendDao getDao() {
+        return this.dao;
+    }
 }

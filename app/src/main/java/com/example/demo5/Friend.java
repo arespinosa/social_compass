@@ -14,6 +14,8 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import kotlin.jvm.internal.PackageReference;
+
 
 @Entity(tableName = "friends")
 public class Friend {
@@ -32,7 +34,7 @@ public class Friend {
     UUID uid;
 
     Friend() {
-        loc.setValue(new Pair<Double, Double>(0.0, 0.0));
+        locData = new Pair<Double,Double>(0.0,0.0);
         uid = UUID.randomUUID();
         //testMove();
     }
