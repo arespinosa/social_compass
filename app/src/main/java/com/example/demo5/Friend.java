@@ -54,6 +54,7 @@ public class Friend {
     }
 
     public LiveData<Pair<Double, Double>> getLocation() {
+        locData = loc.getValue();
         return loc;
     }
 

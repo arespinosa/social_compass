@@ -10,7 +10,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.util.Pair;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -72,10 +71,14 @@ public class MainActivity extends AppCompatActivity {
         TextView locationText = findViewById(R.id.locationText);
         locationText.setText(Utilities.formatLocation(latLong.first, latLong.second));
         userLocation = latLong;
-        whenFriendLocationChanges(friends);
+        whenFriendLocationChanges();
     }
 
-    public void whenFriendLocationChanges(List<Friend> friends) {
+    public void whenFriendLocationChanges() {
+        System.out.println(friends);
+    }
+
+    /*public void whenFriendLocationChanges() {
         //rad = angleCalculation(location);
         var bestFriendLocationData1 = friends.get(0).getLocation();
         var bestFriendLocationData2 = friends.get(1).getLocation();
@@ -101,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
                 bestFriend2.getLayoutParams();
         layoutParams2.circleAngle = (float) Math.toDegrees(friends.get(1).getFriendRad());
         bestFriend2.setLayoutParams(layoutParams2);
-    }
+    }*/
 
     private double angleCalculation(Pair<Double, Double> friendLocation) {
         return Math.atan2(friendLocation.second - userLocation.second, friendLocation.first - userLocation.first);
