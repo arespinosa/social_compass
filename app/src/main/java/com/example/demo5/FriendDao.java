@@ -11,6 +11,7 @@ import androidx.room.Upsert;
 
 @Dao
 public abstract class FriendDao {
+    //
     @Upsert
     public abstract long upsert(Friend friend);
 
