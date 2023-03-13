@@ -8,7 +8,10 @@ import java.util.UUID;
 
 import androidx.annotation.NonNull;
 import androidx.core.util.Pair;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 
@@ -18,13 +21,10 @@ public class Friend {
     public String name;
 
     @SerializedName("loc")
-    Pair<Double, Double> loc;
+    Pair<Double, Double> locData;
 
-    @SerializedName("lat")
-    double latitude;
-    @SerializedName("long")
-    double longitude;
-
+    @Ignore
+    MutableLiveData<Pair<Double, Double>> loc = new MutableLiveData<>();
     private double friendRad;
     @PrimaryKey
     @NonNull
@@ -32,7 +32,7 @@ public class Friend {
     UUID uid;
 
     Friend() {
-        loc = new Pair<Double, Double>(0.0, 0.0);
+        loc.setValue(new Pair<Double, Double>(0.0, 0.0));
         uid = UUID.randomUUID();
         //testMove();
     }
@@ -53,9 +53,7 @@ public class Friend {
         return getUid().toString();
     }
 
-    public Pair<Double, Double> getLocation() {
-        latitude = loc.first;
-        longitude = loc.second;
+    public LiveData<Pair<Double, Double>> getLocation() {
         return loc;
     }
 
@@ -64,16 +62,16 @@ public class Friend {
 
             switch (i % 4) {
                 case 0:
-                    loc = new Pair<Double, Double>(1.0, 1.0);
+                    loc.postValue(new Pair<Double, Double>(1.0, 1.0));
                     break;
                 case 1:
-                    loc = new Pair<Double, Double>(1.0, -1.0);
+                    loc.postValue(new Pair<Double, Double>(1.0, -1.0));
                     break;
                 case 2:
-                    loc = new Pair<Double, Double>(-1.0, -1.0);
+                    loc.postValue(new Pair<Double, Double>(-1.0, -1.0));
                     break;
                 case 3:
-                    loc = new Pair<Double, Double>(-1.0, 1.0);
+                    loc.postValue(new Pair<Double, Double>(-1.0, 1.0));
                     break;
                 default:
                     Log.i("ERROR", "yeah, this isn't working");
@@ -90,7 +88,7 @@ public class Friend {
     }
 
     public void testMove2() {
-        loc = new Pair<Double, Double>(0.0, -1.0);
+        loc.postValue(new Pair<Double, Double>(0.0, -1.0));
         try {
             Thread.sleep(5000);
         } catch (InterruptedException ex) {
