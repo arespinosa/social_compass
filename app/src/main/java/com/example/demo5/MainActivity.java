@@ -10,6 +10,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.util.Pair;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -46,7 +47,8 @@ public class MainActivity extends AppCompatActivity {
         friends.observe(this, adapter::setFriends);
         this.friends = friends.getValue();
 
-        this.reobserveLocation();
+        if (this.friends != null)
+            this.reobserveLocation();
 
         if (future != null) {
             this.future.cancel(true);
@@ -75,10 +77,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void whenFriendLocationChanges() {
-        System.out.println(friends);
-    }
-
-    /*public void whenFriendLocationChanges() {
         //rad = angleCalculation(location);
         var bestFriendLocationData1 = friends.get(0).getLocation();
         var bestFriendLocationData2 = friends.get(1).getLocation();
@@ -104,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
                 bestFriend2.getLayoutParams();
         layoutParams2.circleAngle = (float) Math.toDegrees(friends.get(1).getFriendRad());
         bestFriend2.setLayoutParams(layoutParams2);
-    }*/
+    }
 
     private double angleCalculation(Pair<Double, Double> friendLocation) {
         return Math.atan2(friendLocation.second - userLocation.second, friendLocation.first - userLocation.first);
