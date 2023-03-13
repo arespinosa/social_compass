@@ -32,6 +32,7 @@ public class MainActivityTest {
                     "android.permission.ACCESS_FINE_LOCATION",
                     "android.permission.ACCESS_COARSE_LOCATION");
 
+
     @Test
     public void mainActivityTest() {
         assertEquals(1, 1, 0);
