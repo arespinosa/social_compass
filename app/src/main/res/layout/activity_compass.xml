@@ -39,10 +39,10 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/best_friend1"
+            android:id="@+id/friend1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Best Friend 1"
+            android:text="Friend 1"
             app:layout_constraintBottom_toTopOf="@id/compass"
             app:layout_constraintCircle="@id/compass"
             app:layout_constraintCircleAngle="0"
@@ -54,10 +54,10 @@
             app:layout_constraintVertical_bias="0.0" />
 
         <TextView
-            android:id="@+id/best_friend2"
+            android:id="@+id/friend2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Best Friend 2"
+            android:text="Friend 2"
             app:layout_constraintBottom_toTopOf="@id/compass"
             app:layout_constraintCircle="@id/compass"
             app:layout_constraintCircleAngle="0"

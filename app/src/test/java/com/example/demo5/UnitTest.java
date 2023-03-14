@@ -100,7 +100,7 @@ public class UnitTest {
 
             mockLocationSource.setValue(new androidx.core.util.Pair(expectedLat,expectedLong));
 
-            TextView bestFriend = activity.findViewById(R.id.best_friend1);
+            TextView bestFriend = activity.findViewById(R.id.friend1);
             ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams)
                     bestFriend.getLayoutParams();
 
@@ -130,7 +130,7 @@ public class UnitTest {
             mockLocationSource.setValue(new androidx.core.util.Pair(expectedLat,expectedLong));
             activity.userLocation = new androidx.core.util.Pair(expectedLat,expectedLong);
 
-            TextView bestFriend = activity.findViewById(R.id.best_friend1);
+            TextView bestFriend = activity.findViewById(R.id.friend1);
             ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams)
                     bestFriend.getLayoutParams();
 

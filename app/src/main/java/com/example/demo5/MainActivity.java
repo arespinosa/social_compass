@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -13,8 +12,6 @@ import java.util.concurrent.Future;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.util.Pair;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 
 public class MainActivity extends AppCompatActivity {
@@ -36,7 +33,6 @@ public class MainActivity extends AppCompatActivity {
     private FriendAdapter adapter;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
         locationService = LocationService.singleton(this);
 
-        adapter = new FriendAdapter(this, 0);
+        adapter = new FriendAdapter(this, 0, friends);
 
         viewModel = new ViewModelProvider(this).get(CompassViewModel.class);
         adapter.setOnTextEditedHandler(viewModel::updateText);
@@ -52,16 +48,15 @@ public class MainActivity extends AppCompatActivity {
         viewModel.getDao().upsert(new Friend());
         viewModel.getDao().upsert(new Friend());
 
-        //var friends = viewModel.getFriends();
-        //friends.observe(this, adapter::setFriends);
-        ArrayList j = new ArrayList();
+        /*ArrayList j = new ArrayList();
         j.add(new Friend());
         j.add(new Friend());
 
-        this.friends = j;
+        this.friends = j;*/
 
         //if (this.friends != null)
-            this.reobserveLocation();
+        this.reobserveLocation();
+
 
         if (future != null) {
             this.future.cancel(true);
@@ -77,15 +72,23 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void reobserveFriendsLocation() {
+        var friends = viewModel.getFriends();
+        friends.observe(this, adapter::setFriends);
+        this.friends = adapter.getFriends();
+    }
+
     private void reobserveLocation() {
         var locationData = locationService.getLocation();
-        LiveData<List<Friend>> t = new MutableLiveData<List<Friend>>();
         locationData.observe(this, this::onLocationChanged);
     }
 
     private void onLocationChanged(Pair<Double, Double> latLong) {
+        TextView locationText = findViewById(R.id.locationText);
+        locationText.setText(Utilities.formatLocation(latLong.first, latLong.second));
         userLocation = latLong;
-        whenFriendLocationChanges();
+        this.reobserveFriendsLocation();
+        //whenFriendLocationChanges();
     }
 
     public void whenFriendLocationChanges() {
@@ -99,15 +102,14 @@ public class MainActivity extends AppCompatActivity {
             });
 
             if (i == 0) {
-                TextView bestFriend1 = findViewById(R.id.best_friend1);
+                TextView bestFriend1 = findViewById(R.id.friend1);
                 ConstraintLayout.LayoutParams layoutParams1 = (ConstraintLayout.LayoutParams)
                         bestFriend1.getLayoutParams();
                 layoutParams1.circleAngle = (float) Math.toDegrees(friends.get(i).getFriendRad());
                 bestFriend1.setLayoutParams(layoutParams1);
 
-            }
-            else {
-                TextView bestFriend1 = findViewById(R.id.best_friend2);
+            } else {
+                TextView bestFriend1 = findViewById(R.id.friend2);
                 ConstraintLayout.LayoutParams layoutParams1 = (ConstraintLayout.LayoutParams)
                         bestFriend1.getLayoutParams();
                 layoutParams1.circleAngle = (float) Math.toDegrees(friends.get(i).getFriendRad());
