@@ -19,10 +19,10 @@ public abstract class FriendDao {
     public abstract boolean exists(UUID uid);
 
     @Query("SELECT * FROM friends WHERE uid = :uid")
-    public abstract LiveData<Friend> get(UUID uid);
+    public abstract Friend get(UUID uid);
 
-    @Query("SELECT * FROM friends ORDER BY uid")
-    public abstract LiveData<List<Friend>> getAll();
+    @Query("SELECT * FROM `friends` ORDER BY `uid`")
+    public abstract List<Friend> getAll();
 
     @Delete
     public abstract int delete(Friend note);

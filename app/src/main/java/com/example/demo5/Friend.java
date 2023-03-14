@@ -51,6 +51,10 @@ public class Friend {
         return uid;
     }
 
+    public void setUid(String uuid) {
+        uid = UUID.fromString(uuid);
+    }
+
     public String getUidString() {
         return getUid().toString();
     }

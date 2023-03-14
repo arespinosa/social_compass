@@ -15,11 +15,11 @@ public class FriendRepository {
     // Local Methods
     // =============
 
-    public LiveData<Friend> getLocal(String title) {
+    public Friend getLocal(String title) {
         return dao.get(UUID.randomUUID());
     }
 
-    public LiveData<List<Friend>> getAllLocal() {
+    public List<Friend> getAllLocal() {
         return dao.getAll();
     }
 
