@@ -1,6 +1,7 @@
 package com.example.demo5;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.widget.TextView;
 
@@ -31,9 +32,6 @@ public class MainActivity extends AppCompatActivity {
     private CompassViewModel viewModel;
     private FriendAdapter adapter;
 
-    Friend friend1 = new Friend();
-    Friend friend2 = new Friend();
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,35 +42,66 @@ public class MainActivity extends AppCompatActivity {
 
         viewModel = new ViewModelProvider(this).get(CompassViewModel.class);
 
+        // create two friends
+        Friend friend1 = new Friend();
+        Friend friend2 = new Friend();
         friend1.setUid("f8c3de3d-1fea-4d7c-a8b0-29f63c4c3454");
         friend2.setUid("c81d4e2e-bcf2-11e6-869b-7df92533d2db");
 
+        // add friends to the database
         viewModel.getDao().upsert(friend1);
         viewModel.getDao().upsert(friend2);
 
-        adapter = new FriendAdapter(this, 0, viewModel.getDao().getAll());
-        adapter.setOnTextEditedHandler(viewModel::updateText);
-        int count = 1;
-        for (Friend L : adapter.getFriends()) {
-            String uid = L.getUidString();
-            System.out.println("" + count + " " + uid);
-            count++;
+        // get all friends from the database and display them in the adapter
+        friends = viewModel.getDao().getAll();
+        adapter = new FriendAdapter(this, 0, friends);
+        viewModel.getFriends().observe(this, adapter::setFriends);
+
+        // set the location of the two friends
+        adapter.getFriends().get(0).setLocation();
+        adapter.getFriends().get(1).setLocation();
+
+        // display the locations of the friends in the log to show that they have been updated
+        Log.d("RECHECK", "Make sure friends locations changed");
+        for (Friend f : adapter.getFriends()) {
+            String uid = f.getUidString();
+            Log.d(f.loc.toString(), uid);
         }
 
+        // display the locations of the friends in the database to show that they have been updated
+        new Handler().postDelayed(() -> {
+            // display the locations of the friends in the database to show that they have been updated
+            Log.d("RECHECK", "Make sure friends are in database");
+            for (Friend f : viewModel.getDao().getAll()) {
+                String uid = f.getUidString();
+                Log.d(f.loc.toString(), uid);
+            }
+        }, 1000);
+
         this.reobserveLocation();
-        this.friends = adapter.getFriends();
+        adapter.setOnTextEditedHandler(viewModel::updateText);
+/*
         if (future != null) {
             this.future.cancel(true);
         }
         this.future = backgroundThreadExecutor.submit(() -> {
             if (this.friends != null && this.friends.get(0) != null && this.friends.get(1) != null) {
-                this.friends.get(0).testMove();
-                this.friends.get(1).testMove();
+                //adapter.getFriends().get(0).testMove();
+                //adapter.getFriends().get(1).testMove();
+                adapter.getFriends().get(1).testMove();
+                Log.d("FRIEND1", friend1.loc.toString());
             } else {
                 Log.d("ERROR", "not moving");
             }
         });
-
+        this.future = backgroundThreadExecutor.submit(() -> {
+            if (this.friends != null && this.friends.get(1) != null) {
+                adapter.getFriends().get(0).testMove();
+                Log.d("FRIEND2", friend2.loc.toString());
+            } else {
+                Log.d("ERROR", "not moving");
+            }
+        });*/
     }
 
     private void reobserveLocation() {
@@ -81,51 +110,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void reobserveFriendsLocation() {
-        var friends = viewModel.getFriends();
-
-        runOnUiThread(() -> {
-                friends.observe(this, adapter::setFriends);
-                adapter.notifyDataSetChanged();
-
-        });
-        this.friends = adapter.getFriends();
+        viewModel.getFriends().observe(this, adapter::setFriends);
+        //this.friends = adapter.getFriends();
     }
 
     private void onLocationChanged(Pair<Double, Double> latLong) {
         TextView locationText = findViewById(R.id.locationText);
         locationText.setText(Utilities.formatLocation(latLong.first, latLong.second));
         userLocation = latLong;
-        this.reobserveFriendsLocation();
-        //whenFriendLocationChanges();
+        //reobserveFriendsLocation();
     }
-
-    /*public void whenFriendLocationChanges() {
-        //rad = angleCalculation(location);
-        var bestFriendLocationData1 = friends.get(0).getLocation();
-
-        for (int i = 0; i <= 1; ++i) {
-            int ind = i;
-            bestFriendLocationData1.observe(this, friendLocation -> {
-                friends.get(ind).setFriendRad(angleCalculation(friendLocation));
-            });
-
-            if (i == 0) {
-                TextView bestFriend1 = findViewById(R.id.friend1);
-                ConstraintLayout.LayoutParams layoutParams1 = (ConstraintLayout.LayoutParams)
-                        bestFriend1.getLayoutParams();
-                layoutParams1.circleAngle = (float) Math.toDegrees(friends.get(i).getFriendRad());
-                bestFriend1.setLayoutParams(layoutParams1);
-
-            } else {
-                TextView bestFriend1 = findViewById(R.id.friend2);
-                ConstraintLayout.LayoutParams layoutParams1 = (ConstraintLayout.LayoutParams)
-                        bestFriend1.getLayoutParams();
-                layoutParams1.circleAngle = (float) Math.toDegrees(friends.get(i).getFriendRad());
-                bestFriend1.setLayoutParams(layoutParams1);
-
-            }
-        }
-    }*/
 
     private double angleCalculation(Pair<Double, Double> friendLocation) {
         return Math.atan2(friendLocation.second - userLocation.second, friendLocation.first - userLocation.first);

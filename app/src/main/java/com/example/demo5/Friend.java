@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Random;
 import java.util.UUID;
 
 import androidx.annotation.NonNull;
@@ -29,7 +30,6 @@ public class Friend {
     Friend() {
         loc = new Pair<Double,Double>(0.0,0.0);
         uid = UUID.randomUUID();
-        //testMove();
     }
 
     public void setFriendRad(double val) {
@@ -56,6 +56,12 @@ public class Friend {
         return loc;
     }
 
+    public void setLocation() {
+        Double newLat = (new Random()).nextDouble() * 200 - 100;
+        Double newLong = (new Random()).nextDouble() * 200 - 100;
+        loc = new Pair<>(newLat, newLong);
+    }
+
     public void testMove() {
         for (int i = 0; i < 100; ++i) {
 
@@ -79,7 +85,7 @@ public class Friend {
 
             try {
                 Thread.sleep(1000);
-                Log.i("SLEEP", String.valueOf(i));
+                Log.i(getUidString(), loc.toString());
             } catch (InterruptedException ex) {
                 throw new RuntimeException(ex);
             }

@@ -6,6 +6,7 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 public class CompassViewModel extends AndroidViewModel {
@@ -28,15 +29,20 @@ public class CompassViewModel extends AndroidViewModel {
         this.lst = new MutableLiveData<>();
     }
 
-    public MutableLiveData<List<Friend>> getFriends() {
+    /*public LiveData<List<Friend>> getFriends() {
         if (friends == null)
             friends = repo.getAllLocal();
 
         lst.postValue(friends);
         return lst;
+    }*/
+
+    public LiveData<List<Friend>> getFriends() {
+        if (lst == null) {
+            lst = (MutableLiveData<List<Friend>>) dao.getAllLive();
+        }
+        return lst;
     }
-
-
 
     public void updateText(Friend friend, String s) {
         friend.name = s;
