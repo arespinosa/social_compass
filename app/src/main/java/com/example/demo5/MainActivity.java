@@ -82,8 +82,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void reobserveFriendsLocation() {
         var friends = viewModel.getFriends();
+
         runOnUiThread(() -> {
-            friends.observe(this, adapter::setFriends);
+                friends.observe(this, adapter::setFriends);
+                adapter.notifyDataSetChanged();
+
         });
         this.friends = adapter.getFriends();
     }

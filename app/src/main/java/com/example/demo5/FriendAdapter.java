@@ -24,6 +24,7 @@ public class FriendAdapter extends ArrayAdapter {
         super(context, resource);
         this.context = context;
         this.friends = friends;
+        addAll(friends);
     }
 
     public void setOnTextEditedHandler(BiConsumer<Friend, String> onTextEdited) {
@@ -33,7 +34,7 @@ public class FriendAdapter extends ArrayAdapter {
 
     public void setFriends(List<Friend> friends) {
         this.friends.clear();
-        this.friends.addAll(friends);
+        addAll(friends);
         notifyDataSetChanged();
     }
 
