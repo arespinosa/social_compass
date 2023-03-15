@@ -1,6 +1,7 @@
 package com.example.demo5;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,6 +42,7 @@ public class FriendAdapter extends ArrayAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        Log.d("ADAPTER", "notify data set changed");
         // Inflate the view if it doesn't exist
         if (convertView == null) {
             convertView = LayoutInflater.from(context).inflate(R.layout.friend_item, parent, false);

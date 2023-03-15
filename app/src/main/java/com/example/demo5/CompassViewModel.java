@@ -25,11 +25,13 @@ public class CompassViewModel extends AndroidViewModel {
         dao = db.getDao();
 
         this.repo = new FriendRepository(dao);
+        this.lst = new MutableLiveData<>();
     }
 
     public MutableLiveData<List<Friend>> getFriends() {
         if (friends == null)
             friends = repo.getAllLocal();
+
         lst.postValue(friends);
         return lst;
     }

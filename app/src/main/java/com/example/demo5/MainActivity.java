@@ -88,17 +88,17 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void reobserveFriendsLocation() {
-        var friends = viewModel.getFriends();
-        friends.observe(this, adapter::setFriends);
-        this.friends = adapter.getFriends();
-    }
-
     private void reobserveLocation() {
         var locationData = locationService.getLocation();
         locationData.observe(this, this::onLocationChanged);
     }
 
+    private void reobserveFriendsLocation() {
+        var friends = viewModel.getFriends();
+        friends.observe(this, adapter::setFriends);
+        this.friends = adapter.getFriends();
+    }
+    
     private void onLocationChanged(Pair<Double, Double> latLong) {
         TextView locationText = findViewById(R.id.locationText);
         locationText.setText(Utilities.formatLocation(latLong.first, latLong.second));
