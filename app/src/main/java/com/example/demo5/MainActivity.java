@@ -214,5 +214,27 @@ public class MainActivity extends AppCompatActivity {
         //friend.setText("Jay");
 
 
+=======
+        Log.i("BEGAN", "Program start");
+
+        locationService = LocationService.singleton(this);
+        CompassViewModel viewModel = new ViewModelProvider(this).get(CompassViewModel.class);
+
+        friends = viewModel.getFriends();
+        viewModel.putFriend("f8c3de3d-1fea-4d7c-a8b0-29f63c4c3454");
+
+        future = backgroundThreadExecutor.submit(() -> {
+            friends.observe(this, this::onFriendLocationChanged);
+        });
+
+        //viewModel.getFriend("f8c3de3d-1fea-4d7c-a8b0-29f63c4c3454").setLocation();
+
+    }
+
+    private void onFriendLocationChanged(List<Friend> friends) {
+        for (Friend f : friends) {
+            Log.i(f.getLocation().toString(), f.getUidString());
+        }
+>>>>>>> 0000d11 (removed commented onCreate)
     }
 }
