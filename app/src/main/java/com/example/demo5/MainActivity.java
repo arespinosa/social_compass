@@ -49,25 +49,17 @@ public class MainActivity extends AppCompatActivity {
         viewModel = new ViewModelProvider(this).get(CompassViewModel.class);
         adapter.setOnTextEditedHandler(viewModel::updateText);
 
-
-        friend1.setUid("f8c3de3d-1fea-4d7c-a8b0-29f63c4c3454");
-        friend2.setUid("c81d4e2e-bcf2-11e6-869b-7df92533d2db");
-
-        viewModel.getDao().upsert(friend1);
-        viewModel.getDao().upsert(friend2);
-
-        System.out.println( viewModel.getDao().getAll());
-
         for (Friend L : viewModel.getDao().getAll()) {
             String uid = L.getUidString();
             System.out.println(uid);
             viewModel.getDao().delete(L);
         }
 
-        for (Friend L : viewModel.getDao().getAll()) {
-            String uid = L.getUidString();
-            System.out.println("drake" + uid);
-        }
+        friend1.setUid("f8c3de3d-1fea-4d7c-a8b0-29f63c4c3454");
+        friend2.setUid("c81d4e2e-bcf2-11e6-869b-7df92533d2db");
+
+        viewModel.getDao().upsert(friend1);
+        viewModel.getDao().upsert(friend2);
 
         System.out.println("They are in " + viewModel.getDao().get(UUID.fromString("f8c3de3d-1fea-4d7c-a8b0-29f63c4c3454")));
         System.out.println(viewModel.getDao().get(UUID.fromString("c81d4e2e-bcf2-11e6-869b-7df92533d2db")));
