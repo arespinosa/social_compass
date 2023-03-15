@@ -1,7 +1,10 @@
 package com.example.demo5;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.location.GpsStatus;
+import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
@@ -14,9 +17,13 @@ import android.widget.Toast;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
 import androidx.core.util.Pair;
 import androidx.lifecycle.LiveData;
 
@@ -36,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
     private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
     public Pair<Double, Double> userLocation;
     private Distance distance;
+    private ScheduledFuture<?> poller;
+    private ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +95,9 @@ public class MainActivity extends AppCompatActivity {
      *
      * @param latLong : The longitude and latitude of the User
      */
+
     private void onLocationChanged(Pair<Double, Double> latLong) {
+        this.updateGPSLabel();
         distance.updateCompassWhenLocationChanges(latLong.first, latLong.second);
         //TextView locationText = findViewById(R.id.locationText);
         //locationText.setText(Utilities.formatLocation(latLong.first, latLong.second));
@@ -96,77 +107,6 @@ public class MainActivity extends AppCompatActivity {
         //this.updateCompassWhenLocationChanges(33.812473718140716,-117.91903852984754);
     }
 
-//    /**
-//     * Setting the placement of the friend at the appropriate angle within the constraints of the circle
-//     *
-//     * @param ang
-//     */
-//    public void settingCircleAngle(int ang) {
-//        TextView friendtext = findViewById(R.id.best_friend);
-//        ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) friendtext.getLayoutParams();
-//
-//        layoutParams.circleRadius = ang;
-//        friendtext.setLayoutParams(layoutParams);
-//    }
-//
-//    /**
-//     * This will update the display of the user interface based on the new distance of user
-//     *
-//     * @param longitude
-//     * @param latitude
-//     */
-//    public void updateCompassWhenLocationChanges(Double longitude, Double latitude) {
-//        //Initializing the variables to find the miles
-//        double mile_total = distanceCalculation(longitude, latitude);
-//        double circle_ang;
-//
-//        //Starting the placement of friend onto screen
-//        if (mile_total < 1) {
-//            //Place it onto disk 1
-//            circle_ang = mile_total / 1.0;
-//            circle_ang *= 50.0;
-//            int ang = (int) Math.round(circle_ang);
-//
-//            settingCircleAngle(ang);
-//            System.out.println("we out here: disk  1");
-//        } else if (mile_total >= 1 && mile_total < 10) {
-//            //Place it onto disk 2
-//            circle_ang = mile_total / 10.0;
-//            //Space in between 50 - 100
-//            circle_ang *= 50;
-//
-//            circle_ang = circle_ang + 65;
-//
-//            int ang = (int) Math.round(circle_ang);
-//
-//            settingCircleAngle(ang);
-//            System.out.println("we out here: disk 2");
-//        } else if (mile_total >= 10 && mile_total < 500) {
-//            //Place it onto disk 3
-//            //490
-//            circle_ang = mile_total / 490.0;
-//            circle_ang *= 100;
-//            circle_ang = circle_ang + 135;
-//            int ang = (int) Math.round(circle_ang);
-//
-//            settingCircleAngle(ang);
-//            System.out.println("The angle is " + ang);
-//            System.out.println("we out here: disk 3");
-//        } else {
-//            //Placing it onto disk 4
-//
-//            circle_ang = mile_total / 12427.0;
-//            circle_ang *= 200;
-//
-//            circle_ang = circle_ang + 275;
-//
-//            int ang = (int) Math.round(circle_ang);
-//
-//            settingCircleAngle(ang);
-//            System.out.println("we out here: disk 4");
-//
-//        }
-//    }
 
     public void whenFriendLocationChanges() {
         //rad = angleCalculation(location);
@@ -190,36 +130,37 @@ public class MainActivity extends AppCompatActivity {
         bestFriendRad = Math.atan2(friendLocation.second - userLocation.second, friendLocation.first - userLocation.first);
     }
 
-    /**
-     * Calculating the distance between user and their specific friend
-     *
-     * @param longitude : Grabbing the longitude of friend
-     * @param latitude  : Grabbing the latitude of friend
-     * @return The distance calculated
-     */
 
+    private void updateGPSLabel(){
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        TextView gpsStatus = findViewById(R.id.gpsSignal);
+        if (this.poller != null && !this.poller.isCancelled()) {
+            poller.cancel(true);
+        }
+        //ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+        poller=executor.scheduleAtFixedRate(() -> {
+            Location lastLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if (lastLocation != null) {
+                long lastUpdateTime = lastLocation.getTime();
+                long currentTime = System.currentTimeMillis();
+                long timeSinceLastUpdate = currentTime - lastUpdateTime;
+                //gpsStatus.setText("offline");
+                System.out.println(timeSinceLastUpdate);
+                // Check if it's been more than a minute since the last GPS signal was received
+                if (timeSinceLastUpdate > 10000) {
+                    //System.out.println("10 seconds");
+                    gpsStatus.setVisibility(TextView.VISIBLE);
+                }
+                else{
+                    gpsStatus.setVisibility(TextView.INVISIBLE);
+                }
+            }
+        }, 0, 10, TimeUnit.SECONDS);
+    }
 
-
-
-    /**
-     * Retrieving the location of the friend
-     *
-     * @return : long and lat as a pair of strings
-     */
-//    private Pair<String, String> retrieveFriendLocation() {
-//        //TODO: Step 1: Retrieving their location based on their UID
-//
-//        String friendLongText = "33.804246573813415";
-//        String friendLatText = "-117.9106578940017";
-//
-//
-//        return new Pair<>(friendLongText, friendLatText);
-//    }
-
-
-    /**
-     * END OF US-13, starting US-14
-     */
 
 
 }
