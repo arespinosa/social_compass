@@ -32,7 +32,8 @@ public class FriendAdapter extends ArrayAdapter {
 
 
     public void setFriends(List<Friend> friends) {
-        this.friends = friends;
+        this.friends.clear();
+        this.friends.addAll(friends);
         notifyDataSetChanged();
     }
 
@@ -42,7 +43,7 @@ public class FriendAdapter extends ArrayAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        Log.d("ADAPTER", "notify data set changed");
+        Log.wtf("ADAPTER", "notify data set changed");
         // Inflate the view if it doesn't exist
         if (convertView == null) {
             convertView = LayoutInflater.from(context).inflate(R.layout.friend_item, parent, false);

@@ -5,13 +5,11 @@ import android.util.Log;
 import android.widget.TextView;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.util.Pair;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -44,16 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
         locationService = LocationService.singleton(this);
 
-        adapter = new FriendAdapter(this, 0, friends);
-
         viewModel = new ViewModelProvider(this).get(CompassViewModel.class);
-        adapter.setOnTextEditedHandler(viewModel::updateText);
-
-        for (Friend L : viewModel.getDao().getAll()) {
-            String uid = L.getUidString();
-            System.out.println(uid);
-            viewModel.getDao().delete(L);
-        }
 
         friend1.setUid("f8c3de3d-1fea-4d7c-a8b0-29f63c4c3454");
         friend2.setUid("c81d4e2e-bcf2-11e6-869b-7df92533d2db");
@@ -61,19 +50,17 @@ public class MainActivity extends AppCompatActivity {
         viewModel.getDao().upsert(friend1);
         viewModel.getDao().upsert(friend2);
 
-        System.out.println("They are in " + viewModel.getDao().get(UUID.fromString("f8c3de3d-1fea-4d7c-a8b0-29f63c4c3454")));
-        System.out.println(viewModel.getDao().get(UUID.fromString("c81d4e2e-bcf2-11e6-869b-7df92533d2db")));
+        adapter = new FriendAdapter(this, 0, viewModel.getDao().getAll());
+        adapter.setOnTextEditedHandler(viewModel::updateText);
+        int count = 1;
+        for (Friend L : adapter.getFriends()) {
+            String uid = L.getUidString();
+            System.out.println("" + count + " " + uid);
+            count++;
+        }
 
-        /*ArrayList j = new ArrayList();
-        j.add(new Friend());
-        j.add(new Friend());
-
-        this.friends = j;*/
-
-        //if (this.friends != null)
         this.reobserveLocation();
-
-
+        this.friends = adapter.getFriends();
         if (future != null) {
             this.future.cancel(true);
         }
@@ -95,10 +82,12 @@ public class MainActivity extends AppCompatActivity {
 
     private void reobserveFriendsLocation() {
         var friends = viewModel.getFriends();
-        friends.observe(this, adapter::setFriends);
+        runOnUiThread(() -> {
+            friends.observe(this, adapter::setFriends);
+        });
         this.friends = adapter.getFriends();
     }
-    
+
     private void onLocationChanged(Pair<Double, Double> latLong) {
         TextView locationText = findViewById(R.id.locationText);
         locationText.setText(Utilities.formatLocation(latLong.first, latLong.second));
@@ -107,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
         //whenFriendLocationChanges();
     }
 
-    public void whenFriendLocationChanges() {
+    /*public void whenFriendLocationChanges() {
         //rad = angleCalculation(location);
         var bestFriendLocationData1 = friends.get(0).getLocation();
 
@@ -133,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         }
-    }
+    }*/
 
     private double angleCalculation(Pair<Double, Double> friendLocation) {
         return Math.atan2(friendLocation.second - userLocation.second, friendLocation.first - userLocation.first);
