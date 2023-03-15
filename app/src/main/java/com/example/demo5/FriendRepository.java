@@ -3,8 +3,6 @@ package com.example.demo5;
 import java.util.List;
 import java.util.UUID;
 
-import androidx.lifecycle.LiveData;
-
 public class FriendRepository {
     private FriendDao dao;
 

@@ -28,7 +28,8 @@ public class CompassViewModel extends AndroidViewModel {
     }
 
     public MutableLiveData<List<Friend>> getFriends() {
-        friends = repo.getAllLocal();
+        if (friends == null)
+            friends = repo.getAllLocal();
         lst.postValue(friends);
         return lst;
     }

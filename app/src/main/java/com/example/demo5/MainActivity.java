@@ -58,11 +58,18 @@ public class MainActivity extends AppCompatActivity {
 
         System.out.println( viewModel.getDao().getAll());
 
-        /*for (Friend L : viewModel.getDao().getAll().getValue()) {
-            System.out.println( viewModel.getDao().getAll().getValue());
-        }*/
+        for (Friend L : viewModel.getDao().getAll()) {
+            String uid = L.getUidString();
+            System.out.println(uid);
+            viewModel.getDao().delete(L);
+        }
 
-        System.out.println("They are in" + viewModel.getDao().get(UUID.fromString("f8c3de3d-1fea-4d7c-a8b0-29f63c4c3454")));
+        for (Friend L : viewModel.getDao().getAll()) {
+            String uid = L.getUidString();
+            System.out.println("drake" + uid);
+        }
+
+        System.out.println("They are in " + viewModel.getDao().get(UUID.fromString("f8c3de3d-1fea-4d7c-a8b0-29f63c4c3454")));
         System.out.println(viewModel.getDao().get(UUID.fromString("c81d4e2e-bcf2-11e6-869b-7df92533d2db")));
 
         /*ArrayList j = new ArrayList();

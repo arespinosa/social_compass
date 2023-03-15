@@ -3,7 +3,6 @@ package com.example.demo5;
 import java.util.List;
 import java.util.UUID;
 
-import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Query;
@@ -25,7 +24,7 @@ public abstract class FriendDao {
     public abstract List<Friend> getAll();
 
     @Delete
-    public abstract int delete(Friend note);
+    public abstract int delete(Friend friend);
 
     @Upsert
     public abstract void upsertAll(List<Friend> list);
