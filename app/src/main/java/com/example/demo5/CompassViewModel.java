@@ -3,19 +3,17 @@ package com.example.demo5;
 import android.app.Application;
 
 import java.util.List;
+import java.util.UUID;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 
 public class CompassViewModel extends AndroidViewModel {
-
-    private List<Friend> friends;
     private FriendRepository repo;
     private FriendDao dao;
 
-    public MutableLiveData<List<Friend>> lst;
+    public LiveData<List<Friend>> friends;
 
     public CompassViewModel(@NonNull Application application) {
         super(application);
@@ -26,30 +24,23 @@ public class CompassViewModel extends AndroidViewModel {
         dao = db.getDao();
 
         this.repo = new FriendRepository(dao);
-        this.lst = new MutableLiveData<>();
     }
-
-    /*public LiveData<List<Friend>> getFriends() {
-        if (friends == null)
-            friends = repo.getAllLocal();
-
-        lst.postValue(friends);
-        return lst;
-    }*/
 
     public LiveData<List<Friend>> getFriends() {
-        if (lst == null) {
-            lst = (MutableLiveData<List<Friend>>) dao.getAllLive();
+        if (friends == null) {
+            friends = repo.getSynced();
         }
-        return lst;
+        return friends;
     }
 
-    public void updateText(Friend friend, String s) {
-        friend.name = s;
-        dao.upsert(friend);
+    public void putFriend(String uid) {
+        Friend friend = new Friend();
+        //friend.setLocation();
+        friend.setUid(uid);
+        repo.upsertLocal(friend);
     }
 
-    public FriendDao getDao() {
-        return this.dao;
+    public Friend getFriend(String uid) {
+        return dao.get(UUID.fromString(uid));
     }
 }
