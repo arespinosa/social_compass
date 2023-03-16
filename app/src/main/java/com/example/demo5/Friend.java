@@ -1,6 +1,7 @@
 package com.example.demo5;
 
 import android.util.Log;
+import android.widget.TextView;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -10,6 +11,7 @@ import java.util.UUID;
 import androidx.annotation.NonNull;
 import androidx.core.util.Pair;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 
@@ -22,6 +24,9 @@ public class Friend {
     Pair<Double, Double> loc;
 
     private double friendRad;
+
+    @Ignore
+    public TextView spot;
     @PrimaryKey
     @NonNull
     @SerializedName("uid")
@@ -30,6 +35,19 @@ public class Friend {
     Friend() {
         loc = new Pair<Double,Double>(0.0,0.0);
         uid = UUID.randomUUID();
+        this.name = "Suhaib";
+    }
+
+    String getName() {
+        return this.name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String toString () {
+        return this.getName();
     }
 
     public void setFriendRad(double val) {
@@ -85,7 +103,7 @@ public class Friend {
 
             try {
                 Thread.sleep(1000);
-                Log.i(getUidString(), loc.toString());
+                //Log.i(getUidString(), loc.toString());
             } catch (InterruptedException ex) {
                 throw new RuntimeException(ex);
             }

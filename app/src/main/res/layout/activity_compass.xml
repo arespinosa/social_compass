@@ -7,6 +7,16 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <LinearLayout
+        android:id="@+id/manager"
+        android:layout_width="430dp"
+        android:layout_height="404dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="@+id/compass"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/compass"></LinearLayout>
+
     <TextView
         android:id="@+id/locationText"
         android:layout_width="wrap_content"
@@ -42,22 +52,6 @@
             android:id="@+id/friend1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Friend 1"
-            app:layout_constraintBottom_toTopOf="@id/compass"
-            app:layout_constraintCircle="@id/compass"
-            app:layout_constraintCircleAngle="0"
-            app:layout_constraintCircleRadius="140dp"
-            app:layout_constraintEnd_toEndOf="@id/compass"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@id/compass"
-            app:layout_constraintTop_toTopOf="@id/compass"
-            app:layout_constraintVertical_bias="0.0" />
-
-        <TextView
-            android:id="@+id/friend2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Friend 2"
             app:layout_constraintBottom_toTopOf="@id/compass"
             app:layout_constraintCircle="@id/compass"
             app:layout_constraintCircleAngle="0"
@@ -120,4 +114,19 @@
             app:layout_constraintVertical_bias="0.0"
             app:srcCompat="@drawable/circle" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <Button
+        android:id="@+id/sub"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="61dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="56dp"
+        android:onClick="submit"
+        android:text="submit"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/enter_uid"
+        app:layout_constraintTop_toBottomOf="@+id/compass" />
 </androidx.constraintlayout.widget.ConstraintLayout>
