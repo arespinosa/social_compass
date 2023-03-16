@@ -21,11 +21,17 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.util.Pair;
 import androidx.lifecycle.LiveData;
+
+import static java.lang.Math.floor;
+
+
+import org.w3c.dom.Text;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -43,14 +49,16 @@ public class MainActivity extends AppCompatActivity {
     private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
     public Pair<Double, Double> userLocation;
     private Distance distance;
+    private GpsSignal gpsSignal;
     private ScheduledFuture<?> poller;
     private ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+    private LocationManager locationManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
 
         //setContentView(R.layout.activity_compass);
 
@@ -65,10 +73,13 @@ public class MainActivity extends AppCompatActivity {
             bestFriend.testMove2();
         });
 
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        System.out.println("LOCATION MANAGER: " + locationManager.toString());
+
+
         distance = new Distance(this);
+        gpsSignal = new GpsSignal(this);
         this.reobserveLocation();
-
-
 
         //Setting the time, just testing it out
         /*var timeService = TimeService.singleton();
@@ -83,6 +94,26 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void reobserveLocation() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        TextView gpsStatus = findViewById(R.id.gpsStatus);
+        Location lastLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        long lastUpdateTime = lastLocation.getTime();
+        long currTime = System.currentTimeMillis();
+        System.out.println("LAST KNOWN LOCATION: " + lastLocation);
+        System.out.println("LAST UPDATED TIME: " + lastUpdateTime);
+        System.out.println("CURRENT TIME: " + currTime);
+        if (lastLocation != null) {
+            long locationTimestamp = lastLocation.getTime();
+            long currentTimestamp = System.currentTimeMillis();
+            long timeDifference = currentTimestamp - locationTimestamp;
+            if (timeDifference > 10000) {
+                //gps Signal is initially off
+                gpsStatus.setText("GPS Status: Offline");
+            }
+        }
+
         var locationData = locationService.getLocation();
         locationData.observe(this, this::onLocationChanged);
     }
@@ -96,20 +127,16 @@ public class MainActivity extends AppCompatActivity {
      * @param latLong : The longitude and latitude of the User
      */
 
-    private void onLocationChanged(Pair<Double, Double> latLong) {
-        this.updateGPSLabel();
+    public void onLocationChanged(Pair<Double, Double> latLong) {
+        //this.updateGPSLabel();
         distance.updateCompassWhenLocationChanges(latLong.first, latLong.second);
-        //TextView locationText = findViewById(R.id.locationText);
-        //locationText.setText(Utilities.formatLocation(latLong.first, latLong.second));
         userLocation = latLong;
         whenFriendLocationChanges();
         distance.updateCompassWhenLocationChanges(latLong.first, latLong.second);
-        //this.updateCompassWhenLocationChanges(33.812473718140716,-117.91903852984754);
+        gpsSignal.updateGPSLabel(locationManager);
     }
 
-
     public void whenFriendLocationChanges() {
-        //rad = angleCalculation(location);
         var bestFriendLocationData = bestFriend.getLocation();
         bestFriendLocationData.observe(this, this::angleCalculation);
         updateFriendDirection();
@@ -131,36 +158,73 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void updateGPSLabel(){
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-        TextView gpsStatus = findViewById(R.id.gpsSignal);
-        if (this.poller != null && !this.poller.isCancelled()) {
-            poller.cancel(true);
-        }
-        //ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-        poller=executor.scheduleAtFixedRate(() -> {
-            Location lastLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            if (lastLocation != null) {
-                long lastUpdateTime = lastLocation.getTime();
-                long currentTime = System.currentTimeMillis();
-                long timeSinceLastUpdate = currentTime - lastUpdateTime;
-                //gpsStatus.setText("offline");
-                System.out.println(timeSinceLastUpdate);
-                // Check if it's been more than a minute since the last GPS signal was received
-                if (timeSinceLastUpdate > 10000) {
-                    //System.out.println("10 seconds");
-                    gpsStatus.setVisibility(TextView.VISIBLE);
-                }
-                else{
-                    gpsStatus.setVisibility(TextView.INVISIBLE);
-                }
-            }
-        }, 0, 10, TimeUnit.SECONDS);
-    }
+//    private void updateGPSLabel(){
+//        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+//        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//            return;
+//        }
+//        TextView gpsStatus = findViewById(R.id.gpsStatus);
+//        TextView gpsTime = findViewById(R.id.timeSinceLastUpdated);
+//
+//        if (this.poller != null && !this.poller.isCancelled()) {
+//            poller.cancel(true);
+//        }
+//        //ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+//        poller=executor.scheduleAtFixedRate(() -> {
+//            Location lastLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+//            if (lastLocation != null) {
+//                long lastUpdateTime = lastLocation.getTime();
+//                long currentTime = System.currentTimeMillis();
+//                long timeSinceLastUpdate = currentTime - lastUpdateTime;
+//
+//                System.out.println(timeSinceLastUpdate);
+//                // Check if it's been more than a minute since the last GPS signal was received
+//                if (timeSinceLastUpdate > 10000) {
+//                    //offline
+//                    runOnUiThread(()-> gpsStatus.setText("GPS Status: Offline"));
+//                    runOnUiThread(() -> gpsTime.setVisibility(TextView.VISIBLE));
+//                    runOnUiThread(() -> gpsTime.setText(timeSinceGPSLastUpdated(timeSinceLastUpdate)));
+//                }
+//                else{
+//                    //online
+//                    runOnUiThread(()-> gpsStatus.setText("GPS Status: Online"));
+//                    runOnUiThread(() -> gpsTime.setVisibility(TextView.INVISIBLE));
+//                }
+//            }
+//        }, 0, 10, TimeUnit.SECONDS);
+//    }
 
-
-
+//    private String timeSinceGPSLastUpdated(long lastUpdateTime) {
+//        System.out.println(Math.floor(lastUpdateTime));
+//        TextView gpsTime = findViewById(R.id.timeSinceLastUpdated);
+//        String time = String.valueOf(lastUpdateTime);
+//        double milli = Double.parseDouble(time);
+//        double seconds = (int)(milli/1000);
+//        double minutes = seconds/60;
+//        seconds = seconds % 60;
+//        double hours = minutes / 60;
+//        minutes = minutes % 60;
+//
+//        Math.floor(seconds);
+//        Math.floor(minutes);
+//        Math.floor(hours);
+//
+//        String secondsString = String.valueOf((int) seconds);
+//        String minutesString = String.valueOf((int) minutes);
+//        String hoursString = String.valueOf((int) hours);
+//
+//        if(hours >= 1.0) {
+//            return "Time since last updated: " +
+//                    hoursString + " hours";
+//        }
+//        if(minutes >= 1.0) {
+//            return "Time since last updated: " +
+//                    minutesString + " minutes";
+//        }
+//        else {
+//            return "Time since last updated: " +
+//                    secondsString + " seconds";
+//        }
+//    }
 }
+

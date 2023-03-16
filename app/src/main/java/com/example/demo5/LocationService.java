@@ -62,9 +62,6 @@ public class LocationService implements LocationListener {
         return instance;
     }
 
-
-
-
     /**
      * Constructor for LocationService
      *

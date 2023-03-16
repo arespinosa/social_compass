@@ -98,19 +98,33 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
-        android:id="@+id/gpsSignal"
+        android:id="@+id/gpsStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="142dp"
         android:layout_marginTop="71dp"
         android:layout_marginEnd="136dp"
         android:layout_marginBottom="76dp"
-        android:text="GPS Signal is Offline! "
-        android:visibility="invisible"
+        android:text="GPS Status: "
         app:layout_constraintBottom_toTopOf="@+id/compass"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0" />
+
+    <TextView
+        android:id="@+id/timeSinceLastUpdated"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="179dp"
+        android:layout_marginTop="3dp"
+        android:layout_marginEnd="174dp"
+        android:layout_marginBottom="54dp"
+        android:text="Time since last updated: "
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/compass"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/gpsStatus" />
 </androidx.constraintlayout.widget.ConstraintLayout>
 
