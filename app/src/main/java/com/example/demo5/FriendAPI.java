@@ -5,6 +5,7 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.List;
 
@@ -35,6 +36,12 @@ public class FriendAPI {
         Request request = new Request.Builder()
                 .url("https://socialcompass.goto.ucsd.edu/locations")
                 .build();
+        try {
+            client.newCall(request).execute();
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
 
         try (Response response = client.newCall(request).execute()) {
 

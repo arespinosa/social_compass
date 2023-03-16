@@ -1,18 +1,9 @@
 package com.example.demo5;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.util.LayoutDirection;
-import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.GridView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
-import android.util.Log;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -35,6 +26,8 @@ public class MainActivity extends AppCompatActivity {
     public Pair<Double, Double> userLocation;
     private LiveData<List<Friend>> friends;
     private LiveData<Friend> friend;
+    private CompassViewModel viewModel;
+    private List<Friend> friendsList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +49,8 @@ public class MainActivity extends AppCompatActivity {
         viewModel.getDao().upsert(friend2);*/
 
         // get all friends from the database and display them in the adapter
-        friends = viewModel.getDao().getAll();
+        friends = viewModel.getFriends();
+        friends.observe(this, this::setFriends);
 
         //Clear local database
 /*        for (Friend curr : viewModel.getDao().getAll()) {
@@ -64,8 +58,8 @@ public class MainActivity extends AppCompatActivity {
         }*/
 
         userLocation = new Pair<Double,Double>(0.0,0.0);
-
-        for (Friend curr : friends) {
+        
+        for (Friend curr : friendsList) {
             ConstraintLayout layout = (ConstraintLayout) findViewById(R.id.compass);
 
             TextView friend = new TextView(this);
@@ -85,54 +79,15 @@ public class MainActivity extends AppCompatActivity {
 
         this.reobserveLocation();
 
-        if (future != null) {
-            this.future.cancel(true);
-        }
-        this.future = backgroundThreadExecutor.submit(() -> {
-            for (Friend friend : this.friends) {
-                friend.testMove();
-            }
-        });
+    }
 
-        viewModel.getDao().upsert(friend1);
-        viewModel.getDao().upsert(friend2);
+    private void setFriends(List<Friend> friends) {
+        this.friendsList = friends;
+    }
 
-        FriendAdapter adapter = new FriendAdapter();
-        var friends = viewModel.getFriends();
-        friends.observe(this, adapter::setFriends);
-
+    private void reobserveLocation() {
         var locationData = locationService.getLocation();
-        locationData.observe(this, latLong -> {
-            TextView locationText = findViewById(R.id.locationText);
-            locationText.setText(Utilities.formatLocation(latLong.first, latLong.second));
-            userLocation = latLong;
-            viewModel.getFriends().observe(this, adapter::setFriends);
-        });
-
-        Log.i("CHECK", "Make sure friends locations 0,0");
-        for (Friend f : adapter.getFriends()) {
-            String uid = f.getUidString();
-            Log.i(f.loc.toString(), uid);
-        }
-
-        adapter.getFriends().get(0).setLocation();
-        adapter.getFriends().get(1).setLocation();
-
-        Log.i("RECHECK", "Make sure friends locations changed");
-        for (Friend f : adapter.getFriends()) {
-            String uid = f.getUidString();
-            Log.d(f.loc.toString(), uid);
-        }
-
-        new Handler().postDelayed(() -> {
-            // display the locations of the friends in the database to show that they have been updated
-            Log.i("RECHECK", "Make sure friends are in database");
-            for (Friend f : viewModel.getDao().getAll()) {
-                String uid = f.getUidString();
-                Log.i(f.loc.toString(), uid);
-            }
-        }, 1000);
-
+        locationData.observe(this, this::onLocationChanged);
     }
 
     private void onLocationChanged(Pair<Double, Double> latLong) {
@@ -149,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
     public void whenFriendLocationChanges() {
         //rad = angleCalculation(location);
 
-        for (Friend friend : this.friends) {
+        for (Friend friend : this.friends.getValue()) {
             var bestFriendLocationData1 = friend.getLocation();
 
             friend.setFriendRad(angleCalculation(bestFriendLocationData1));
@@ -160,32 +115,6 @@ public class MainActivity extends AppCompatActivity {
             friend.spot.setLayoutParams(lay);
             //System.out.println(friend.getName());
         }
-
-
-        /*for (int i = 0; i <= 1; ++i) {
-            int ind = i;
-
-            bestFriendLocationData1.observe(this, friendLocation -> {
-                friends.get(ind).setFriendRad(angleCalculation(friendLocation));
-            });
-
-            if (i == 0) {
-                TextView bestFriend1 = findViewById(R.id.best_friend1);
-                ConstraintLayout.LayoutParams layoutParams1 = (ConstraintLayout.LayoutParams)
-                        bestFriend1.getLayoutParams();
-                layoutParams1.circleAngle = (float) Math.toDegrees(friends.get(i).getFriendRad());
-                bestFriend1.setLayoutParams(layoutParams1);
-
-            }
-            else {
-                TextView bestFriend1 = findViewById(R.id.best_friend2);
-                ConstraintLayout.LayoutParams layoutParams1 = (ConstraintLayout.LayoutParams)
-                        bestFriend1.getLayoutParams();
-                layoutParams1.circleAngle = (float) Math.toDegrees(friends.get(i).getFriendRad());
-                bestFriend1.setLayoutParams(layoutParams1);
-
-            }
-        }*/
     }
 
     public void submit(View view) {
@@ -199,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
 
         Friend newfriend = new Friend();
         newfriend.setName(name);
-        this.friends.add(newfriend);
+        this.friends.getValue().add(newfriend);
         newfriend.spot = friend;
         viewModel.getDao().upsert(newfriend);
 

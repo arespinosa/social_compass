@@ -1,13 +1,12 @@
 package com.example.demo5;
 
-import android.util.Log;
 import android.widget.TextView;
-
 
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
 import androidx.annotation.NonNull;
+import androidx.core.util.Pair;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
@@ -111,5 +110,8 @@ public class Friend {
         this.label = label;
     }
 
+    public Pair<Double, Double> getLocation() {
+        return new Pair<>(latitude, longitude);
+    }
 }
 
