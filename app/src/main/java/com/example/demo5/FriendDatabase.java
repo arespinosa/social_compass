@@ -16,7 +16,7 @@ import androidx.room.TypeConverter;
 import androidx.room.TypeConverters;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-@Database(entities = {Friend.class}, version = 2, exportSchema = false)
+@Database(entities = {Friend.class}, version = 5, exportSchema = false)
 @TypeConverters(PairConverter.class)
 public abstract class FriendDatabase extends RoomDatabase {
     static public List<Friend> list = new ArrayList<>();

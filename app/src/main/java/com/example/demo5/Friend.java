@@ -4,13 +4,10 @@ import android.util.Log;
 import android.widget.TextView;
 
 
+import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.Random;
-import java.util.UUID;
-
 import androidx.annotation.NonNull;
-import androidx.core.util.Pair;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
@@ -18,32 +15,33 @@ import androidx.room.PrimaryKey;
 
 @Entity(tableName = "friends")
 public class Friend {
-    @SerializedName("name")
-    public String name;
 
-    @SerializedName("loc")
-    Pair<Double, Double> loc;
+    private String label;
+    private double latitude;
+    private double longitude;
+    private String createdAt;
+    private String updatedAt;
 
+    @Ignore
     private double friendRad;
 
     @Ignore
     public TextView spot;
     @PrimaryKey
     @NonNull
-    @SerializedName("uid")
-    UUID uid;
+    @SerializedName("public_code")
+    String uid;
 
     Friend() {
-        loc = new Pair<Double,Double>(0.0,0.0);
-        uid = UUID.randomUUID();
-        this.name = "Suhaib";
+        uid = "UUID.randomUUID()";
+        this.label = "Suhaib";
     }
 
     String getName() {
-        return this.name;
+        return this.label;
     }
     public void setName(String name) {
-        this.name = name;
+        this.label = name;
     }
 
     @Override
@@ -59,26 +57,58 @@ public class Friend {
         return this.friendRad;
     }
 
-    public UUID getUid() {
+    public String getUid() {
         return uid;
     }
 
-    public void setUid(String uuid) {
-        uid = UUID.fromString(uuid);
+    public void setUid(String uid) { this.uid = uid; }
+
+    public static Friend fromJSON(String json) {
+        return new Gson().fromJson(json, Friend.class);
     }
 
-    public String getUidString() {
-        return getUid().toString();
+    public String toJSON() {
+        return new Gson().toJson(this);
     }
 
-    public Pair<Double, Double> getLocation() {
-        return loc;
+    public String getUpdatedAt() {
+        return updatedAt;
     }
 
-    public void setLocation() {
-        Double newLat = (new Random()).nextDouble() * 200 - 100;
-        Double newLong = (new Random()).nextDouble() * 200 - 100;
-        loc = new Pair<>(newLat, newLong);
+    public void setUpdatedAt(String updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 
 }
