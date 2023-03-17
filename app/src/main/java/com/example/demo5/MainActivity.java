@@ -40,6 +40,10 @@ public class MainActivity extends AppCompatActivity {
 
         viewModel = new ViewModelProvider(this).get(CompassViewModel.class);
 
+        // add friends to the database
+        /*viewModel.getDao().upsert(friend1);
+        viewModel.getDao().upsert(friend2);*/
+
         // get all friends from the database and display them in the adapter
         friends = viewModel.getDao().getAll();
 
@@ -51,20 +55,15 @@ public class MainActivity extends AppCompatActivity {
         userLocation = new Pair<Double,Double>(0.0,0.0);
 
         for (Friend curr : friends) {
-            System.out.println("hey");
+            ConstraintLayout layout = (ConstraintLayout) findViewById(R.id.compass);
 
-            ConstraintLayout layout = findViewById(R.id.compass);
+            TextView friend = new TextView(this);
 
-            var friend = LayoutInflater.from(layout.getContext())
-                    .inflate(R.layout.friend_item, layout, false);
+            String name = curr.getName();
+            friend.setText(name);
+            curr.spot = friend;
 
-            ConstraintLayout.LayoutParams lay = new ConstraintLayout.LayoutParams(friend.getLayoutParams());
-
-            TextView friendText = findViewById(R.id.friend);
-
-            /*String name = curr.getName();
-            friendText.setText(name);*/
-            curr.spot = friendText;
+            ConstraintLayout.LayoutParams lay = new ConstraintLayout.LayoutParams(findViewById(R.id.friend1).getLayoutParams());
 
             lay.circleConstraint = R.id.compass;
             lay.circleRadius = 400;
@@ -111,12 +110,7 @@ public class MainActivity extends AppCompatActivity {
         newfriend.setName(name);
         this.friends.add(newfriend);
         newfriend.spot = friend;
-
-        System.out.println(viewModel.getDao().getAll().size());
-
         viewModel.getDao().upsert(newfriend);
-
-        System.out.println(viewModel.getDao().getAll().size());
 
         //friend.setId(5);
         ConstraintLayout.LayoutParams lay = new ConstraintLayout.LayoutParams(findViewById(R.id.friend1).getLayoutParams());
