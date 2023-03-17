@@ -62,6 +62,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //userLocation = new Pair<>(33.7450, -117.8872);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -88,7 +90,8 @@ public class MainActivity extends AppCompatActivity {
 
         //default view
         zoomCounter = 2;
-        zoomFeature = new ZoomFeature(zoomCounter, this);
+        zoomFeature = new ZoomFeature(this);
+        zoomFeature.PerformZoom(zoomCounter, distance, userLocation);
 
 
         //Setting the time, just testing it out
@@ -136,10 +139,12 @@ public class MainActivity extends AppCompatActivity {
 
     public void onLocationChanged(Pair<Double, Double> latLong) {
         //this.updateGPSLabel();
-        distance.updateCompassWhenLocationChanges(latLong.first, latLong.second);
+        //distance.updateCompassWhenLocationChanges(latLong.first, latLong.second);
+
         userLocation = latLong;
         whenFriendLocationChanges();
-        distance.updateCompassWhenLocationChanges(latLong.first, latLong.second);
+        zoomFeature.PerformZoom(zoomCounter, distance, userLocation);
+        //distance.updateCompassWhenLocationChanges(latLong.first, latLong.second);
         gpsSignal.updateGPSLabel(locationManager);
     }
 
@@ -165,17 +170,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onZoomInClick(View view) {
+
         assert view instanceof  Button;
         Button btn  = (Button) view;
 
         //can be zoomed in
         if(zoomCounter != 1) {
             zoomCounter--;
-            zoomFeature= new ZoomFeature(zoomCounter, this);
+            System.out.println("Clicking the zoom in feature");
+            zoomFeature.PerformZoom(zoomCounter, distance, userLocation);
         }
         //cannot be zoomed in anymore
         else {
-            zoomFeature = new ZoomFeature(1, this);
+            zoomFeature.PerformZoom(zoomCounter, distance, userLocation);
         }
     }
 
@@ -186,11 +193,11 @@ public class MainActivity extends AppCompatActivity {
         //can be zoomed out
         if(zoomCounter != 4) {
             zoomCounter++;
-            zoomFeature = new ZoomFeature(zoomCounter, this);
+            zoomFeature.PerformZoom(zoomCounter, distance, userLocation);
         }
         //cannot be zoomed out anymore
         else {
-            zoomFeature = new ZoomFeature(4, this);
+            zoomFeature.PerformZoom(zoomCounter, distance, userLocation);
         }
     }
 }
