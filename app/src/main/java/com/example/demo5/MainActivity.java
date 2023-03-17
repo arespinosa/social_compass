@@ -11,6 +11,8 @@ import android.location.LocationProvider;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,7 +31,6 @@ import androidx.core.util.Pair;
 import androidx.lifecycle.LiveData;
 
 import static java.lang.Math.floor;
-
 
 import org.w3c.dom.Text;
 
@@ -54,9 +55,15 @@ public class MainActivity extends AppCompatActivity {
     private ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
     private LocationManager locationManager;
 
+    public int zoomCounter;
+
+    public ZoomFeature zoomFeature;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //userLocation = new Pair<>(33.7450, -117.8872);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -81,6 +88,12 @@ public class MainActivity extends AppCompatActivity {
         gpsSignal = new GpsSignal(this);
         this.reobserveLocation();
 
+        //default view
+        zoomCounter = 2;
+        zoomFeature = new ZoomFeature(this);
+        zoomFeature.PerformZoom(zoomCounter, distance, userLocation);
+
+
         //Setting the time, just testing it out
         /*var timeService = TimeService.singleton();
         var timeData = timeService.getTimeData();
@@ -94,6 +107,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void reobserveLocation() {
+
+
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
@@ -101,9 +116,6 @@ public class MainActivity extends AppCompatActivity {
         Location lastLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         long lastUpdateTime = lastLocation.getTime();
         long currTime = System.currentTimeMillis();
-        System.out.println("LAST KNOWN LOCATION: " + lastLocation);
-        System.out.println("LAST UPDATED TIME: " + lastUpdateTime);
-        System.out.println("CURRENT TIME: " + currTime);
         if (lastLocation != null) {
             long locationTimestamp = lastLocation.getTime();
             long currentTimestamp = System.currentTimeMillis();
@@ -113,11 +125,9 @@ public class MainActivity extends AppCompatActivity {
                 gpsStatus.setText("GPS Status: Offline");
             }
         }
-
         var locationData = locationService.getLocation();
         locationData.observe(this, this::onLocationChanged);
     }
-
 
 
     /**
@@ -129,10 +139,12 @@ public class MainActivity extends AppCompatActivity {
 
     public void onLocationChanged(Pair<Double, Double> latLong) {
         //this.updateGPSLabel();
-        distance.updateCompassWhenLocationChanges(latLong.first, latLong.second);
+        //distance.updateCompassWhenLocationChanges(latLong.first, latLong.second);
+
         userLocation = latLong;
         whenFriendLocationChanges();
-        distance.updateCompassWhenLocationChanges(latLong.first, latLong.second);
+        zoomFeature.PerformZoom(zoomCounter, distance, userLocation);
+        //distance.updateCompassWhenLocationChanges(latLong.first, latLong.second);
         gpsSignal.updateGPSLabel(locationManager);
     }
 
@@ -157,74 +169,36 @@ public class MainActivity extends AppCompatActivity {
         bestFriendRad = Math.atan2(friendLocation.second - userLocation.second, friendLocation.first - userLocation.first);
     }
 
+    public void onZoomInClick(View view) {
 
-//    private void updateGPSLabel(){
-//        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-//        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//            return;
-//        }
-//        TextView gpsStatus = findViewById(R.id.gpsStatus);
-//        TextView gpsTime = findViewById(R.id.timeSinceLastUpdated);
-//
-//        if (this.poller != null && !this.poller.isCancelled()) {
-//            poller.cancel(true);
-//        }
-//        //ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-//        poller=executor.scheduleAtFixedRate(() -> {
-//            Location lastLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-//            if (lastLocation != null) {
-//                long lastUpdateTime = lastLocation.getTime();
-//                long currentTime = System.currentTimeMillis();
-//                long timeSinceLastUpdate = currentTime - lastUpdateTime;
-//
-//                System.out.println(timeSinceLastUpdate);
-//                // Check if it's been more than a minute since the last GPS signal was received
-//                if (timeSinceLastUpdate > 10000) {
-//                    //offline
-//                    runOnUiThread(()-> gpsStatus.setText("GPS Status: Offline"));
-//                    runOnUiThread(() -> gpsTime.setVisibility(TextView.VISIBLE));
-//                    runOnUiThread(() -> gpsTime.setText(timeSinceGPSLastUpdated(timeSinceLastUpdate)));
-//                }
-//                else{
-//                    //online
-//                    runOnUiThread(()-> gpsStatus.setText("GPS Status: Online"));
-//                    runOnUiThread(() -> gpsTime.setVisibility(TextView.INVISIBLE));
-//                }
-//            }
-//        }, 0, 10, TimeUnit.SECONDS);
-//    }
+        assert view instanceof  Button;
+        Button btn  = (Button) view;
 
-//    private String timeSinceGPSLastUpdated(long lastUpdateTime) {
-//        System.out.println(Math.floor(lastUpdateTime));
-//        TextView gpsTime = findViewById(R.id.timeSinceLastUpdated);
-//        String time = String.valueOf(lastUpdateTime);
-//        double milli = Double.parseDouble(time);
-//        double seconds = (int)(milli/1000);
-//        double minutes = seconds/60;
-//        seconds = seconds % 60;
-//        double hours = minutes / 60;
-//        minutes = minutes % 60;
-//
-//        Math.floor(seconds);
-//        Math.floor(minutes);
-//        Math.floor(hours);
-//
-//        String secondsString = String.valueOf((int) seconds);
-//        String minutesString = String.valueOf((int) minutes);
-//        String hoursString = String.valueOf((int) hours);
-//
-//        if(hours >= 1.0) {
-//            return "Time since last updated: " +
-//                    hoursString + " hours";
-//        }
-//        if(minutes >= 1.0) {
-//            return "Time since last updated: " +
-//                    minutesString + " minutes";
-//        }
-//        else {
-//            return "Time since last updated: " +
-//                    secondsString + " seconds";
-//        }
-//    }
+        //can be zoomed in
+        if(zoomCounter != 1) {
+            zoomCounter--;
+            System.out.println("Clicking the zoom in feature");
+            zoomFeature.PerformZoom(zoomCounter, distance, userLocation);
+        }
+        //cannot be zoomed in anymore
+        else {
+            zoomFeature.PerformZoom(zoomCounter, distance, userLocation);
+        }
+    }
+
+    public void onZoomOutClick(View view) {
+        assert view instanceof  Button;
+        Button btn = (Button) view;
+
+        //can be zoomed out
+        if(zoomCounter != 4) {
+            zoomCounter++;
+            zoomFeature.PerformZoom(zoomCounter, distance, userLocation);
+        }
+        //cannot be zoomed out anymore
+        else {
+            zoomFeature.PerformZoom(zoomCounter, distance, userLocation);
+        }
+    }
 }
 
