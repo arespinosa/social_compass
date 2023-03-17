@@ -50,6 +50,8 @@ public class Distance extends AppCompatActivity {
     }
 
     public void updateCompassWhenLocationChanges(Double longitude, Double latitude) {
+
+
         //Initializing the variables to find the miles
 
         //Initializing the variables to find the miles
@@ -64,7 +66,6 @@ public class Distance extends AppCompatActivity {
             int ang = (int) Math.round(circle_ang);
 
             settingCircleAngle(ang);
-            System.out.println("we out here: disk  1");
         } else if (mile_total >= 1 && mile_total < 10) {
             //Place it onto disk 2
             circle_ang = mile_total / 10.0;
@@ -76,7 +77,6 @@ public class Distance extends AppCompatActivity {
             int ang = (int) Math.round(circle_ang);
 
             settingCircleAngle(ang);
-            System.out.println("we out here: disk 2");
         } else if (mile_total >= 10 && mile_total < 500) {
             //Place it onto disk 3
             //490
@@ -86,8 +86,6 @@ public class Distance extends AppCompatActivity {
             int ang = (int) Math.round(circle_ang);
 
             settingCircleAngle(ang);
-            System.out.println("The angle is " + ang);
-            System.out.println("we out here: disk 3");
         } else {
             //Placing it onto disk 4
 
@@ -99,8 +97,6 @@ public class Distance extends AppCompatActivity {
             int ang = (int) Math.round(circle_ang);
 
             settingCircleAngle(ang);
-            System.out.println("we out here: disk 4");
-
         }
     }
     public double distanceCalculation(Double longitude, Double latitude) {
@@ -133,7 +129,7 @@ public class Distance extends AppCompatActivity {
         double distance = Math.acos(Math.sin(lat1) * Math.sin(lat2) + Math.cos(lat1) * Math.cos(lat2) * Math.cos(lon2 - lon1)) * 6371 * 0.621371;
 
         //Will return the distance in miles
-        System.out.println("Mile distance = " + distance);
+        //System.out.println("Mile distance = " + distance);
         return distance;
     }
 

@@ -46,8 +46,8 @@
 
         <ImageView
             android:id="@+id/user"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="15dp"
+            android:layout_height="17dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -126,5 +126,33 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/gpsStatus" />
+
+    <Button
+        android:id="@+id/plus_btn"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="357dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="7dp"
+        android:onClick="onZoomInClick"
+        android:text="+"
+        app:layout_constraintBottom_toTopOf="@+id/minus_btn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/compass" />
+
+    <Button
+        android:id="@+id/minus_btn"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="46dp"
+        android:layout_marginEnd="7dp"
+        android:layout_marginBottom="76dp"
+        android:onClick="onZoomOutClick"
+        android:text="-"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/enter_uid"
+        app:layout_constraintTop_toBottomOf="@+id/plus_btn" />
 </androidx.constraintlayout.widget.ConstraintLayout>
 
