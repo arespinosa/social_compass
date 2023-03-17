@@ -1,15 +1,37 @@
 package com.example.demo5;
 
+import android.Manifest;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.location.GpsStatus;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.location.LocationProvider;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
 import androidx.core.util.Pair;
+import androidx.lifecycle.LiveData;
+
+import static java.lang.Math.floor;
+
+
+import org.w3c.dom.Text;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -26,16 +48,22 @@ public class MainActivity extends AppCompatActivity {
     private Future<?> future;
     private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
     public Pair<Double, Double> userLocation;
+    private Distance distance;
+    private GpsSignal gpsSignal;
+    private ScheduledFuture<?> poller;
+    private ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+    private LocationManager locationManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         //setContentView(R.layout.activity_compass);
 
         locationService = LocationService.singleton(this);
+
         bestFriend = new BestFriend();
 
         if (future != null) {
@@ -45,6 +73,12 @@ public class MainActivity extends AppCompatActivity {
             bestFriend.testMove2();
         });
 
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        System.out.println("LOCATION MANAGER: " + locationManager.toString());
+
+
+        distance = new Distance(this);
+        gpsSignal = new GpsSignal(this);
         this.reobserveLocation();
 
         //Setting the time, just testing it out
@@ -53,21 +87,37 @@ public class MainActivity extends AppCompatActivity {
         timeData.observe(this, this::onTimeChanged);*/
     }
 
-    /**
-     * Declaring the longitude and lattitude
-     * TODO: Implement their distances based on the friend's location
-     */
-    double latitude;
-    double longitude;
-
 
     /**
      * Reobserving the location of the user by calling onLocationChanged
      */
+
+
     public void reobserveLocation() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        TextView gpsStatus = findViewById(R.id.gpsStatus);
+        Location lastLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        long lastUpdateTime = lastLocation.getTime();
+        long currTime = System.currentTimeMillis();
+        System.out.println("LAST KNOWN LOCATION: " + lastLocation);
+        System.out.println("LAST UPDATED TIME: " + lastUpdateTime);
+        System.out.println("CURRENT TIME: " + currTime);
+        if (lastLocation != null) {
+            long locationTimestamp = lastLocation.getTime();
+            long currentTimestamp = System.currentTimeMillis();
+            long timeDifference = currentTimestamp - locationTimestamp;
+            if (timeDifference > 10000) {
+                //gps Signal is initially off
+                gpsStatus.setText("GPS Status: Offline");
+            }
+        }
+
         var locationData = locationService.getLocation();
         locationData.observe(this, this::onLocationChanged);
     }
+
 
 
     /**
@@ -76,88 +126,17 @@ public class MainActivity extends AppCompatActivity {
      *
      * @param latLong : The longitude and latitude of the User
      */
-    private void onLocationChanged(Pair<Double, Double> latLong) {
-        updateCompassWhenLocationChanges(latLong.first, latLong.second);
-        //TextView locationText = findViewById(R.id.locationText);
-        //locationText.setText(Utilities.formatLocation(latLong.first, latLong.second));
+
+    public void onLocationChanged(Pair<Double, Double> latLong) {
+        //this.updateGPSLabel();
+        distance.updateCompassWhenLocationChanges(latLong.first, latLong.second);
         userLocation = latLong;
         whenFriendLocationChanges();
-        //this.updateCompassWhenLocationChanges(33.812473718140716,-117.91903852984754);
-    }
-
-    /**
-     * Setting the placement of the friend at the appropriate angle within the constraints of the circle
-     *
-     * @param ang
-     */
-    public void settingCircleAngle(int ang) {
-        TextView friendtext = findViewById(R.id.best_friend);
-        ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) friendtext.getLayoutParams();
-
-        layoutParams.circleRadius = ang;
-        friendtext.setLayoutParams(layoutParams);
-    }
-
-    /**
-     * This will update the display of the user interface based on the new distance of user
-     *
-     * @param longitude
-     * @param latitude
-     */
-    public void updateCompassWhenLocationChanges(Double longitude, Double latitude) {
-        //Initializing the variables to find the miles
-        double mile_total = distanceCalculation(longitude, latitude);
-        double circle_ang;
-
-        //Starting the placement of friend onto screen
-        if (mile_total < 1) {
-            //Place it onto disk 1
-            circle_ang = mile_total / 1.0;
-            circle_ang *= 50.0;
-            int ang = (int) Math.round(circle_ang);
-
-            settingCircleAngle(ang);
-            System.out.println("we out here: disk  1");
-        } else if (mile_total >= 1 && mile_total < 10) {
-            //Place it onto disk 2
-            circle_ang = mile_total / 10.0;
-            //Space in between 50 - 100
-            circle_ang *= 50;
-
-            circle_ang = circle_ang + 65;
-
-            int ang = (int) Math.round(circle_ang);
-
-            settingCircleAngle(ang);
-            System.out.println("we out here: disk 2");
-        } else if (mile_total >= 10 && mile_total < 500) {
-            //Place it onto disk 3
-            //490
-            circle_ang = mile_total / 490.0;
-            circle_ang *= 100;
-            circle_ang = circle_ang + 135;
-            int ang = (int) Math.round(circle_ang);
-
-            settingCircleAngle(ang);
-            System.out.println("The angle is " + ang);
-            System.out.println("we out here: disk 3");
-        } else {
-            //Placing it onto disk 4
-
-            circle_ang = mile_total / 12427.0;
-            circle_ang *= 200;
-
-            circle_ang = circle_ang + 275;
-
-            int ang = (int) Math.round(circle_ang);
-
-            settingCircleAngle(ang);
-            System.out.println("we out here: disk 4");
-        }
+        distance.updateCompassWhenLocationChanges(latLong.first, latLong.second);
+        gpsSignal.updateGPSLabel(locationManager);
     }
 
     public void whenFriendLocationChanges() {
-        //rad = angleCalculation(location);
         var bestFriendLocationData = bestFriend.getLocation();
         bestFriendLocationData.observe(this, this::angleCalculation);
         updateFriendDirection();
@@ -178,68 +157,74 @@ public class MainActivity extends AppCompatActivity {
         bestFriendRad = Math.atan2(friendLocation.second - userLocation.second, friendLocation.first - userLocation.first);
     }
 
-    /**
-     * Calculating the distance between user and their specific friend
-     *
-     * @param longitude : Grabbing the longitude of friend
-     * @param latitude  : Grabbing the latitude of friend
-     * @return The distance calculated
-     */
 
-    public double distanceCalculation(Double longitude, Double latitude) {
-        Pair<String, String> friendLocation = retrieveFriendLocation();
-        String parentLongText = friendLocation.first;
-        String parentLatText = friendLocation.second;
+//    private void updateGPSLabel(){
+//        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+//        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//            return;
+//        }
+//        TextView gpsStatus = findViewById(R.id.gpsStatus);
+//        TextView gpsTime = findViewById(R.id.timeSinceLastUpdated);
+//
+//        if (this.poller != null && !this.poller.isCancelled()) {
+//            poller.cancel(true);
+//        }
+//        //ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+//        poller=executor.scheduleAtFixedRate(() -> {
+//            Location lastLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+//            if (lastLocation != null) {
+//                long lastUpdateTime = lastLocation.getTime();
+//                long currentTime = System.currentTimeMillis();
+//                long timeSinceLastUpdate = currentTime - lastUpdateTime;
+//
+//                System.out.println(timeSinceLastUpdate);
+//                // Check if it's been more than a minute since the last GPS signal was received
+//                if (timeSinceLastUpdate > 10000) {
+//                    //offline
+//                    runOnUiThread(()-> gpsStatus.setText("GPS Status: Offline"));
+//                    runOnUiThread(() -> gpsTime.setVisibility(TextView.VISIBLE));
+//                    runOnUiThread(() -> gpsTime.setText(timeSinceGPSLastUpdated(timeSinceLastUpdate)));
+//                }
+//                else{
+//                    //online
+//                    runOnUiThread(()-> gpsStatus.setText("GPS Status: Online"));
+//                    runOnUiThread(() -> gpsTime.setVisibility(TextView.INVISIBLE));
+//                }
+//            }
+//        }, 0, 10, TimeUnit.SECONDS);
+//    }
 
-        double friend_lat;
-        double friend_long;
-
-        double lat1;
-        double lon1;
-        double lat2;
-        double lon2;
-
-        try {
-            friend_lat = Double.parseDouble(parentLatText);
-            friend_long = Double.parseDouble(parentLongText);
-        } catch (Exception e) {
-            friend_lat = 0;
-            friend_long = 0;
-        }
-
-        //Calculating the distance
-        lat1 = Math.toRadians(friend_lat);
-        lon1 = Math.toRadians(friend_long);
-        lat2 = Math.toRadians(latitude);
-        lon2 = Math.toRadians(longitude);
-
-        double distance = Math.acos(Math.sin(lat1) * Math.sin(lat2) + Math.cos(lat1) * Math.cos(lat2) * Math.cos(lon2 - lon1)) * 6371 * 0.621371;
-
-        //Will return the distance in miles
-        System.out.println("Mile distance = " + distance);
-        return distance;
-    }
-
-
-    /**
-     * Retrieving the location of the friend
-     *
-     * @return : long and lat as a pair of strings
-     */
-    private Pair<String, String> retrieveFriendLocation() {
-        //TODO: Step 1: Retrieving their location based on their UID
-
-        String friendLongText = "33.804246573813415";
-        String friendLatText = "-117.9106578940017";
-
-
-        return new Pair<>(friendLongText, friendLatText);
-    }
-
-
-    /**
-     * DONT DELETE
-     * @param time
-     */
-//    @Override
+//    private String timeSinceGPSLastUpdated(long lastUpdateTime) {
+//        System.out.println(Math.floor(lastUpdateTime));
+//        TextView gpsTime = findViewById(R.id.timeSinceLastUpdated);
+//        String time = String.valueOf(lastUpdateTime);
+//        double milli = Double.parseDouble(time);
+//        double seconds = (int)(milli/1000);
+//        double minutes = seconds/60;
+//        seconds = seconds % 60;
+//        double hours = minutes / 60;
+//        minutes = minutes % 60;
+//
+//        Math.floor(seconds);
+//        Math.floor(minutes);
+//        Math.floor(hours);
+//
+//        String secondsString = String.valueOf((int) seconds);
+//        String minutesString = String.valueOf((int) minutes);
+//        String hoursString = String.valueOf((int) hours);
+//
+//        if(hours >= 1.0) {
+//            return "Time since last updated: " +
+//                    hoursString + " hours";
+//        }
+//        if(minutes >= 1.0) {
+//            return "Time since last updated: " +
+//                    minutesString + " minutes";
+//        }
+//        else {
+//            return "Time since last updated: " +
+//                    secondsString + " seconds";
+//        }
+//    }
 }
+
