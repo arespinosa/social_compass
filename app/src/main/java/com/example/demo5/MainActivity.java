@@ -1,17 +1,16 @@
 package com.example.demo5;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledExecutorService;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -53,15 +52,19 @@ public class MainActivity extends AppCompatActivity {
 
         for (Friend curr : friends) {
             System.out.println("hey");
-            ConstraintLayout layout = (ConstraintLayout) findViewById(R.id.compass);
 
-            TextView friend = new TextView(this);
+            ConstraintLayout layout = findViewById(R.id.compass);
 
-            String name = curr.getName();
-            friend.setText(name);
-            curr.spot = friend;
+            var friend = LayoutInflater.from(layout.getContext())
+                    .inflate(R.layout.friend_item, layout, false);
 
-            ConstraintLayout.LayoutParams lay = new ConstraintLayout.LayoutParams(findViewById(R.id.friend1).getLayoutParams());
+            ConstraintLayout.LayoutParams lay = new ConstraintLayout.LayoutParams(friend.getLayoutParams());
+
+            TextView friendText = findViewById(R.id.friend);
+
+            /*String name = curr.getName();
+            friendText.setText(name);*/
+            curr.spot = friendText;
 
             lay.circleConstraint = R.id.compass;
             lay.circleRadius = 400;
