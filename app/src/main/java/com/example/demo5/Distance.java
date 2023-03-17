@@ -1,6 +1,10 @@
 package com.example.demo5;
 
 //import android.util.Pair;
+
+import android.app.Activity;
+import android.widget.TextView;
+
 import android.app.Activity;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -36,9 +40,6 @@ public class Distance extends AppCompatActivity {
 
 
 
-//    private void onLocationChanged(Pair<Double, Double> latLong) {
-//        updateCompassWhenLocationChanges(latLong.first, latLong.second);
-//    }
 
     public void settingCircleAngle(int ang) {
         TextView friendtext = this.activity.findViewById(R.id.best_friend);
@@ -49,52 +50,58 @@ public class Distance extends AppCompatActivity {
 
 
     }
-//    public void updateCompassWhenLocationChanges(Double longitude, Double latitude) {
-//        //Initializing the variables to find the miles
-//        double mile_total = distanceCalculation(longitude, latitude);
-//        double circle_ang;
-//
-//        //Starting the placement of friend onto screen
-//        if (mile_total < 1) {
-//            //Place it onto disk 1
-//            circle_ang = mile_total / 1.0;
-//            circle_ang *= 50.0;
-//            int ang = (int) Math.round(circle_ang);
-//
-//            settingCircleAngle(ang);
-//        } else if (mile_total >= 1 && mile_total < 10) {
-//            //Place it onto disk 2
-//            circle_ang = mile_total / 10.0;
-//            //Space in between 50 - 100
-//            circle_ang *= 50;
-//
-//            circle_ang = circle_ang + 65;
-//
-//            int ang = (int) Math.round(circle_ang);
-//
-//            settingCircleAngle(ang);
-//        } else if (mile_total >= 10 && mile_total < 500) {
-//            //Place it onto disk 3
-//            //490
-//            circle_ang = mile_total / 490.0;
-//            circle_ang *= 100;
-//            circle_ang = circle_ang + 135;
-//            int ang = (int) Math.round(circle_ang);
-//
-//            settingCircleAngle(ang);
-//        } else {
-//            //Placing it onto disk 4
-//
-//            circle_ang = mile_total / 12427.0;
-//            circle_ang *= 200;
-//
-//            circle_ang = circle_ang + 275;
-//
-//            int ang = (int) Math.round(circle_ang);
-//
-//            settingCircleAngle(ang);
-//        }
-//    }
+
+    public void updateCompassWhenLocationChanges(Double longitude, Double latitude) {
+
+
+        //Initializing the variables to find the miles
+
+        //Initializing the variables to find the miles
+        double mile_total = distanceCalculation(longitude, latitude);
+        double circle_ang;
+
+        //Starting the placement of friend onto screen
+        if (mile_total < 1) {
+            //Place it onto disk 1
+            circle_ang = mile_total / 1.0;
+            circle_ang *= 50.0;
+            int ang = (int) Math.round(circle_ang);
+
+            settingCircleAngle(ang);
+        } else if (mile_total >= 1 && mile_total < 10) {
+            //Place it onto disk 2
+            circle_ang = mile_total / 10.0;
+            //Space in between 50 - 100
+            circle_ang *= 50;
+
+            circle_ang = circle_ang + 65;
+
+            int ang = (int) Math.round(circle_ang);
+
+            settingCircleAngle(ang);
+        } else if (mile_total >= 10 && mile_total < 500) {
+            //Place it onto disk 3
+            //490
+            circle_ang = mile_total / 490.0;
+            circle_ang *= 100;
+            circle_ang = circle_ang + 135;
+            int ang = (int) Math.round(circle_ang);
+
+            settingCircleAngle(ang);
+        } else {
+            //Placing it onto disk 4
+
+            circle_ang = mile_total / 12427.0;
+            circle_ang *= 200;
+
+            circle_ang = circle_ang + 275;
+
+            int ang = (int) Math.round(circle_ang);
+
+            settingCircleAngle(ang);
+        }
+    }
+
     public double distanceCalculation(Double longitude, Double latitude) {
         Pair<String, String> friendLocation = retrieveFriendLocation();
         String parentLongText = friendLocation.first;

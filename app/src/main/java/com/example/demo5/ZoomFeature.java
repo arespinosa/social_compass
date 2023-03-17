@@ -2,6 +2,8 @@ package com.example.demo5;
 
 import android.app.Activity;
 import android.widget.ImageView;
+
+import androidx.appcompat.app.AppCompatActivity;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,7 +12,6 @@ import androidx.core.util.Pair;
 public class ZoomFeature extends AppCompatActivity{
     public int zoomCounter;
     public Activity activity;
-
     public Distance distance;
 
     public ZoomFeature(Activity activity){
@@ -230,10 +231,7 @@ public class ZoomFeature extends AppCompatActivity{
 
 
     public void zoom1(ImageView default_sizeC1, ImageView default_sizeC2, ImageView default_sizeC3, ImageView default_sizeC4) {
-//        float currentScale = default_sizeC1.getScaleX();
-//        default_sizeC1.setScaleX(currentScale + 15);
-//        currentScale = default_sizeC1.getScaleY();
-//        default_sizeC1.setScaleY(currentScale + 15);
+
         default_sizeC1.setScaleX(8.0f);
         default_sizeC1.setScaleY(8.0f);
 

@@ -3,52 +3,42 @@ package com.example.demo5;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.location.GpsStatus;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
-import android.location.LocationProvider;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
+import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.util.Pair;
 import androidx.lifecycle.LiveData;
-
-import static java.lang.Math.floor;
-
-import org.w3c.dom.Text;
+import androidx.lifecycle.ViewModelProvider;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final int DEGREES_IN_A_CIRCLE = 360;
-    private static final String P_LAT_STRING = "parentLatitude";
-    private static final String P_LONG_STRING = "parentLongitude";
-    private static final String ZERO_STRING = "0";
-    private static final String BLANK_STRING = "";
-    private static final String HOUSE_LABEL_STRING = "houseLabel";
     private LocationService locationService;
     private OrientationService orientationService;
-    public BestFriend bestFriend;
-    private double bestFriendRad;
+
     private Future<?> future;
     private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
-    public Pair<Double, Double> userLocation;
+    public LiveData<List<Friend>> friends;
+    private CompassViewModel viewModel;
+    private List<Friend> friendsList;
+
+    boolean skip1 = false;
+    public Pair<Double, Double> userLocation = new Pair<>(0.0,0.0);
     private Distance distance;
     private GpsSignal gpsSignal;
     private ScheduledFuture<?> poller;
@@ -65,20 +55,33 @@ public class MainActivity extends AppCompatActivity {
         //userLocation = new Pair<>(33.7450, -117.8872);
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
-        //setContentView(R.layout.activity_compass);
+        setContentView(R.layout.activity_compass);
+
+        friendsList = new ArrayList<>();
 
         locationService = LocationService.singleton(this);
 
-        bestFriend = new BestFriend();
+        viewModel = new ViewModelProvider(this).get(CompassViewModel.class);
 
-        if (future != null) {
-            this.future.cancel(true);
-        }
-        this.future = backgroundThreadExecutor.submit(() -> {
-            bestFriend.testMove2();
-        });
+        // add friends to the database
+        /*viewModel.getDao().upsert(friend1);
+        viewModel.getDao().upsert(friend2);*/
+
+        // get all friends from the database and display them in the adapter
+        friends = viewModel.getFriends();
+
+        //Clear local database
+        /*for (Friend curr : viewModel.getDao().getAll()) {
+            viewModel.getDao().delete(curr);
+        }*/
+
+        friends.observe(this, this::setFriends);
+
+        userLocation = new Pair<Double, Double>(0.0, 0.0);
+
+        locationService = LocationService.singleton(this);
+
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         System.out.println("LOCATION MANAGER: " + locationManager.toString());
@@ -88,6 +91,40 @@ public class MainActivity extends AppCompatActivity {
         gpsSignal = new GpsSignal(this);
         this.reobserveLocation();
 
+    }
+
+    private void setFriends(List<Friend> friends) {
+        boolean skip = false;
+
+        for (Friend curr : friends) {
+            ConstraintLayout layout = (ConstraintLayout) findViewById(R.id.compass);
+
+            for (Friend fri : friendsList) {
+                if (fri.getName() == curr.getName()) {
+                    skip = true;
+                    break;
+                }
+            }
+
+            if (skip)
+                break;
+
+            TextView friend = new TextView(this);
+
+            String name = curr.getName();
+            friend.setText(name);
+            curr.spot = friend;
+
+            ConstraintLayout.LayoutParams lay = new ConstraintLayout.LayoutParams(findViewById(R.id.friend1).getLayoutParams());
+
+            lay.circleConstraint = R.id.compass;
+            lay.circleRadius = 400;
+            lay.circleAngle = (float) angleCalculation(curr.getLocation());
+
+            layout.addView(friend, lay);
+        }
+
+        friendsList.addAll(friends);
         //default view
         zoomCounter = 2;
         zoomFeature = new ZoomFeature(this);
@@ -127,6 +164,7 @@ public class MainActivity extends AppCompatActivity {
         }
         var locationData = locationService.getLocation();
         locationData.observe(this, this::onLocationChanged);
+
     }
 
 
@@ -138,35 +176,73 @@ public class MainActivity extends AppCompatActivity {
      */
 
     public void onLocationChanged(Pair<Double, Double> latLong) {
-        //this.updateGPSLabel();
-        //distance.updateCompassWhenLocationChanges(latLong.first, latLong.second);
 
         userLocation = latLong;
-        whenFriendLocationChanges();
         zoomFeature.PerformZoom(zoomCounter, distance, userLocation);
-        //distance.updateCompassWhenLocationChanges(latLong.first, latLong.second);
         gpsSignal.updateGPSLabel(locationManager);
     }
 
-    public void whenFriendLocationChanges() {
-        var bestFriendLocationData = bestFriend.getLocation();
-        bestFriendLocationData.observe(this, this::angleCalculation);
-        updateFriendDirection();
-    }
+    private double angleCalculation(Pair<Double, Double> friendLocation) {
+        return Math.atan2(friendLocation.second - userLocation.second, friendLocation.first - userLocation.first);
 
-    public void updateFriendDirection() {
-        TextView bestFriend = findViewById(R.id.best_friend);
-        ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams)
-                bestFriend.getLayoutParams();
-        layoutParams.circleAngle = (float) Math.toDegrees(bestFriendRad);
-        bestFriend.setLayoutParams(layoutParams);
     }
 
 
-    public void angleCalculation(Pair<Double, Double> friendLocation) {
-        //returns in radians
-        //rad = Math.atan2(bestFriend.getLongitude() - userLocation.second, bestFriend.getLatitude() - userLocation.first);
-        bestFriendRad = Math.atan2(friendLocation.second - userLocation.second, friendLocation.first - userLocation.first);
+    public void submit(View view) {
+
+
+        ConstraintLayout layout = (ConstraintLayout) findViewById(R.id.compass);
+
+        TextView friend = new TextView(this);
+
+        EditText inp = (EditText) findViewById(R.id.enter_uid);
+        String name = inp.getText().toString();
+
+        LiveData<Friend> fr = viewModel.getFriend(name);
+        
+        // Check if in server
+        fr.observe(this, this::checkServ);
+        
+        if (skip1)
+            return;
+
+        friend.setText(name);
+
+        Friend newfriend = new Friend(name);
+        newfriend.setName(name);
+        this.friendsList.add(newfriend);
+        newfriend.spot = friend;
+        viewModel.getDao().upsert(newfriend);
+
+        //friend.setId(5);
+        ConstraintLayout.LayoutParams lay = new ConstraintLayout.LayoutParams(findViewById(R.id.friend1).getLayoutParams());
+
+        lay.circleConstraint = R.id.compass;
+        lay.circleRadius = 400;
+        lay.circleAngle = (float) angleCalculation(newfriend.getLocation());
+        //friend.setLayoutParams(linearLayout.getLayoutParams());
+        layout.addView(friend, lay);
+
+        //friend.setText("Jay");
+
+
+    }
+
+    private void checkServ(Friend friend) {
+        if (friend == null)
+            skip1 = true;
+    }
+
+    public void onClearClick(View view) {
+        assert view instanceof Button;
+        Button btn = (Button) view;
+
+        for(Friend curr : friendsList) {
+            String name = curr.getName();
+            System.out.println("CLEARING: " + name);
+            viewModel.getDao().delete(curr);
+        }
+        setContentView(R.layout.activity_compass);
     }
 
     public void onZoomInClick(View view) {
@@ -201,4 +277,3 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 }
-

@@ -16,6 +16,9 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+
 public class GpsSignal extends AppCompatActivity {
     private ScheduledFuture<?> poller;
     private ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
