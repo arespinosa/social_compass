@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
 
         // get all friends from the database and display them in the adapter
 //        friends = viewModel.getFriends();
-        friends = viewModel.getFriends();
+        this.friendsList = viewModel.getFriends();
 
         //Clear local database
 /*        for (Friend curr : viewModel.getDao().getAll()) {
