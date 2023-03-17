@@ -5,15 +5,19 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.util.Pair;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 
 public class MainActivity extends AppCompatActivity {
@@ -24,10 +28,10 @@ public class MainActivity extends AppCompatActivity {
     private Future<?> future;
     private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
     public Pair<Double, Double> userLocation;
-    private LiveData<List<Friend>> friends;
-    private LiveData<Friend> friend;
+    private LiveData<List<Friend>> friends = new MutableLiveData<>();
+    private LiveData<Friend> friend = new MutableLiveData<>();
     private CompassViewModel viewModel;
-    private List<Friend> friendsList;
+    private List<Friend> friendsList = Collections.EMPTY_LIST;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,12 +40,12 @@ public class MainActivity extends AppCompatActivity {
 
         locationService = LocationService.singleton(this);
 
-        CompassViewModel viewModel = new ViewModelProvider(this).get(CompassViewModel.class);
+        viewModel = new ViewModelProvider(this).get(CompassViewModel.class);
 
-        Friend friend1 = new Friend();
+        /*Friend friend1 = new Friend();
         Friend friend2 = new Friend();
         friend1.setUid("f8c3de3d-1fea-4d7c-a8b0-29f63c4c3454");
-        friend2.setUid("c81d4e2e-bcf2-11e6-869b-7df92533d2db");
+        friend2.setUid("c81d4e2e-bcf2-11e6-869b-7df92533d2db");*/
 
 
         // add friends to the database
@@ -49,17 +53,58 @@ public class MainActivity extends AppCompatActivity {
         viewModel.getDao().upsert(friend2);*/
 
         // get all friends from the database and display them in the adapter
+//        friends = viewModel.getFriends();
         friends = viewModel.getFriends();
-        friends.observe(this, this::setFriends);
 
         //Clear local database
 /*        for (Friend curr : viewModel.getDao().getAll()) {
             viewModel.getDao().delete(curr);
         }*/
 
+
+        friends.observe(this, this::setFriends);
+
+       /* this.future = backgroundThreadExecutor.submit(() -> {
+        });*/
+
+        System.out.println(friends.getValue());
+
+
+        /*for (Friend curr : friendsList) {
+            //System.out.println("This is " + curr);
+            ConstraintLayout layout = (ConstraintLayout) findViewById(R.id.compass);
+
+            TextView friend = new TextView(this);
+
+            String name = curr.getName();
+            friend.setText(name);
+            curr.spot = friend;
+
+            ConstraintLayout.LayoutParams lay = new ConstraintLayout.LayoutParams(findViewById(R.id.friend1).getLayoutParams());
+
+            lay.circleConstraint = R.id.compass;
+            lay.circleRadius = 400;
+            lay.circleAngle = (float) angleCalculation(curr.getLocation());
+
+            layout.addView(friend, lay);
+        }*/
+
         userLocation = new Pair<Double,Double>(0.0,0.0);
-        
+        //System.out.println(friendsList);
+
+
+        this.reobserveLocation();
+
+    }
+
+    private void setFriends(List<Friend> friends) {
+        if (friends.size() != 0)
+            this.friendsList = friends;
+
+        System.out.println(this.friendsList.size());
+
         for (Friend curr : friendsList) {
+            //System.out.println("This is " + curr);
             ConstraintLayout layout = (ConstraintLayout) findViewById(R.id.compass);
 
             TextView friend = new TextView(this);
@@ -76,18 +121,12 @@ public class MainActivity extends AppCompatActivity {
 
             layout.addView(friend, lay);
         }
-
-        this.reobserveLocation();
-
-    }
-
-    private void setFriends(List<Friend> friends) {
-        this.friendsList = friends;
     }
 
     private void reobserveLocation() {
         var locationData = locationService.getLocation();
         locationData.observe(this, this::onLocationChanged);
+
     }
 
     private void onLocationChanged(Pair<Double, Double> latLong) {
@@ -95,6 +134,7 @@ public class MainActivity extends AppCompatActivity {
         locationText.setText(Utilities.formatLocation(latLong.first, latLong.second));
         userLocation = latLong;
         //whenFriendLocationChanges();
+
     }
 
     private double angleCalculation(Pair<Double, Double> friendLocation) {
@@ -128,9 +168,9 @@ public class MainActivity extends AppCompatActivity {
 
         Friend newfriend = new Friend();
         newfriend.setName(name);
-        this.friends.getValue().add(newfriend);
+        //this.friends.getValue().add(newfriend);
         newfriend.spot = friend;
-        viewModel.getDao().upsert(newfriend);
+        viewModel.save(newfriend);
 
         //friend.setId(5);
         ConstraintLayout.LayoutParams lay = new ConstraintLayout.LayoutParams(findViewById(R.id.friend1).getLayoutParams());

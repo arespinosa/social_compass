@@ -39,7 +39,7 @@ public class CompassViewModel extends AndroidViewModel {
     }
 
     public void save(Friend friend) {
-        //repo.upsertLocal(note);
+        repo.upsertLocal(friend);
         repo.upsertRemote(friend);
     }
 
