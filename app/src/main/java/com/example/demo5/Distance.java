@@ -5,6 +5,11 @@ package com.example.demo5;
 import android.app.Activity;
 import android.widget.TextView;
 
+import android.app.Activity;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.util.Pair;
@@ -35,12 +40,9 @@ public class Distance extends AppCompatActivity {
 
 
 
-    private void onLocationChanged(Pair<Double, Double> latLong) {
-        updateCompassWhenLocationChanges(latLong.first, latLong.second);
-    }
 
     public void settingCircleAngle(int ang) {
-        TextView friendtext = this.activity.findViewById(R.id.friend);
+        TextView friendtext = this.activity.findViewById(R.id.best_friend);
         ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) friendtext.getLayoutParams();
 
         layoutParams.circleRadius = ang;
@@ -99,6 +101,7 @@ public class Distance extends AppCompatActivity {
             settingCircleAngle(ang);
         }
     }
+
     public double distanceCalculation(Double longitude, Double latitude) {
         Pair<String, String> friendLocation = retrieveFriendLocation();
         String parentLongText = friendLocation.first;
