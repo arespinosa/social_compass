@@ -64,9 +64,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setFriends(List<Friend> friends) {
-        friendsList.addAll(friends);
+        boolean skip = false;
+
         for (Friend curr : friends) {
             ConstraintLayout layout = (ConstraintLayout) findViewById(R.id.compass);
+
+            for (Friend fri : friendsList) {
+                if (fri.getName() == curr.getName()) {
+                    skip = true;
+                    break;
+                }
+            }
+
+            if (skip)
+                break;
 
             TextView friend = new TextView(this);
 
@@ -82,6 +93,8 @@ public class MainActivity extends AppCompatActivity {
 
             layout.addView(friend, lay);
         }
+
+        friendsList.addAll(friends);
     }
 
     private void reobserveLocation() {
