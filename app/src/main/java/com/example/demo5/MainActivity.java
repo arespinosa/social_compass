@@ -2,10 +2,11 @@ package com.example.demo5;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -14,6 +15,7 @@ import java.util.concurrent.Future;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.util.Pair;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 
 public class MainActivity extends AppCompatActivity {
@@ -23,15 +25,17 @@ public class MainActivity extends AppCompatActivity {
 
     private Future<?> future;
     private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
-    public Pair<Double, Double> userLocation = new Pair<Double,Double>(0.0,0.0);
-    public List<Friend> friends;
+    public Pair<Double, Double> userLocation = new Pair<Double, Double>(0.0, 0.0);
+    public LiveData<List<Friend>> friends;
     private CompassViewModel viewModel;
-    private List<Friend> friendsList = Collections.EMPTY_LIST;
+    private List<Friend> friendsList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_compass);
+
+        friendsList = new ArrayList<>();
 
         locationService = LocationService.singleton(this);
 
@@ -42,15 +46,25 @@ public class MainActivity extends AppCompatActivity {
         viewModel.getDao().upsert(friend2);*/
 
         // get all friends from the database and display them in the adapter
-        friends = viewModel.getDao().getAll();
+        friends = viewModel.getFriends();
 
         //Clear local database
-/*        for (Friend curr : viewModel.getDao().getAll()) {
+        /*for (Friend curr : viewModel.getDao().getAll()) {
             viewModel.getDao().delete(curr);
         }*/
 
-        userLocation = new Pair<Double,Double>(0.0,0.0);
+        friends.observe(this, this::setFriends);
 
+        userLocation = new Pair<Double, Double>(0.0, 0.0);
+
+
+
+        this.reobserveLocation();
+
+    }
+
+    private void setFriends(List<Friend> friends) {
+        friendsList.addAll(friends);
         for (Friend curr : friends) {
             ConstraintLayout layout = (ConstraintLayout) findViewById(R.id.compass);
 
@@ -68,11 +82,7 @@ public class MainActivity extends AppCompatActivity {
 
             layout.addView(friend, lay);
         }
-
-        this.reobserveLocation();
-
     }
-
 
     private void reobserveLocation() {
         var locationData = locationService.getLocation();
@@ -105,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
 
         Friend newfriend = new Friend(name);
         newfriend.setName(name);
-        this.friends.add(newfriend);
+        this.friendsList.add(newfriend);
         newfriend.spot = friend;
         viewModel.getDao().upsert(newfriend);
 
@@ -121,5 +131,17 @@ public class MainActivity extends AppCompatActivity {
         //friend.setText("Jay");
 
 
+    }
+
+    public void onClearClick(View view) {
+        assert view instanceof Button;
+        Button btn = (Button) view;
+
+        for(Friend curr : friendsList) {
+            String name = curr.getName();
+            System.out.println("CLEARING: " + name);
+            viewModel.getDao().delete(curr);
+        }
+        setContentView(R.layout.activity_compass);
     }
 }

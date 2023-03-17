@@ -26,6 +26,6 @@ public abstract class FriendDao {
     @Upsert
     public abstract void upsertAll(List<Friend> list);
 
-    @Query("SELECT * FROM `friends` ORDER BY `uid`")
-    public abstract List<Friend> getAll();
+    @Query("SELECT * FROM friends ORDER BY uid")
+    public abstract LiveData<List<Friend>> getAll();
 }

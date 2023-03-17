@@ -34,8 +34,7 @@ public class FriendRepository {
     }
 
     public LiveData<List<Friend>> getAllLocal() {
-        //return dao.getAll();
-        return null;
+        return dao.getAll();
     }
 
     public void upsertLocal(Friend friend) {
@@ -52,23 +51,6 @@ public class FriendRepository {
         return dao.exists(uid);
     }
 
-    public LiveData<List<Friend>> getAllRemote() {
-
-        if (this.poller != null && !this.poller.isCancelled()) {
-            poller.cancel(true);
-        }
-
-        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-
-        poller = executor.scheduleAtFixedRate(() -> {
-            friends = api.getFriends();
-            realFriendsData.postValue(friends);
-        }, 0, 3000, TimeUnit.MILLISECONDS);
-
-        System.out.println(poller);
-
-        return realFriendsData;
-    }
 
     public LiveData<Friend> getRemote(String public_code) {
 
@@ -86,23 +68,6 @@ public class FriendRepository {
         System.out.println(poller);
 
         return realFriendData;
-    }
-
-    public LiveData<List<Friend>> getAllSynced() {
-        var friends = new MediatorLiveData<List<Friend>>();
-
-        Observer<List<Friend>> updateFromRemote = theirFriends -> {
-            var ourFriends = friends.getValue();
-            if (theirFriends == null) return; // do nothing
-            if (ourFriends == null ) {
-                upsertAllLocal(theirFriends);
-            }
-        };
-        
-        friends.addSource(getAllLocal(), friends::postValue);
-        friends.addSource(getAllRemote(), updateFromRemote);
-
-        return friends;
     }
 
     public LiveData<Friend> getSynced(String public_code) {

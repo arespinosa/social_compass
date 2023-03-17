@@ -27,7 +27,7 @@ public class CompassViewModel extends AndroidViewModel {
 
     public LiveData<List<Friend>> getFriends() {
         if (friends == null) {
-            friends = repo.getAllSynced();
+            friends = repo.getAllLocal();
         }
 
         return friends;
