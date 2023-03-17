@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.util.Pair;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 
 public class MainActivity extends AppCompatActivity {
@@ -29,6 +30,9 @@ public class MainActivity extends AppCompatActivity {
     public LiveData<List<Friend>> friends;
     private CompassViewModel viewModel;
     private List<Friend> friendsList;
+
+    boolean skip1 = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,12 +122,23 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void submit(View view) {
+
+
         ConstraintLayout layout = (ConstraintLayout) findViewById(R.id.compass);
 
         TextView friend = new TextView(this);
 
         EditText inp = (EditText) findViewById(R.id.enter_uid);
         String name = inp.getText().toString();
+
+        LiveData<Friend> fr = viewModel.getFriend(name);
+        
+        // Check if in server
+        fr.observe(this, this::checkServ);
+        
+        if (skip1)
+            return;
+
         friend.setText(name);
 
         Friend newfriend = new Friend(name);
@@ -144,6 +159,11 @@ public class MainActivity extends AppCompatActivity {
         //friend.setText("Jay");
 
 
+    }
+
+    private void checkServ(Friend friend) {
+        if (friend == null)
+            skip1 = true;
     }
 
     public void onClearClick(View view) {

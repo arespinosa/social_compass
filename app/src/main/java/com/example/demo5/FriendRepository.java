@@ -81,7 +81,7 @@ public class FriendRepository {
             }
         };
 
-        friend.addSource(getLocal(public_code), friend::postValue);
+        //friend.addSource(getLocal(public_code), friend::postValue);
         friend.addSource(getRemote(public_code), updateFromRemote);
 
         return friend;
