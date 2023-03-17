@@ -31,9 +31,9 @@ public class Friend {
     @SerializedName("public_code")
     String uid;
 
-    Friend() {
-        uid = "UUID.randomUUID()";
-        this.label = "Suhaib";
+    Friend(String label) {
+        uid = label;
+        this.label = label;
     }
 
     String getName() {

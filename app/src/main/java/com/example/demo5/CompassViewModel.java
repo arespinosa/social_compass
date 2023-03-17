@@ -11,7 +11,8 @@ import androidx.lifecycle.LiveData;
 public class CompassViewModel extends AndroidViewModel {
     private FriendRepository repo;
     private FriendDao dao;
-    private List<Friend> friends;
+    private LiveData<List<Friend>> friends;
+    private List<Friend> friendds;
 
     public CompassViewModel(@NonNull Application application) {
         super(application);
@@ -24,9 +25,9 @@ public class CompassViewModel extends AndroidViewModel {
         this.repo = new FriendRepository(dao);
     }
 
-    public List<Friend> getFriends() {
+    public LiveData<List<Friend>> getFriends() {
         if (friends == null) {
-            friends = repo.getAllSynced().getValue();
+            friends = repo.getAllSynced();
         }
 
         return friends;

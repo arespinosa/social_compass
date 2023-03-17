@@ -34,7 +34,8 @@ public class FriendRepository {
     }
 
     public LiveData<List<Friend>> getAllLocal() {
-        return dao.getAll();
+        //return dao.getAll();
+        return null;
     }
 
     public void upsertLocal(Friend friend) {
