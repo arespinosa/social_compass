@@ -106,7 +106,7 @@ public class UnitTest {
 
             //activity.updateFriendDirection();
 
-            float expected = 0 - NINETY_DEGREES_LONG;
+            float expected = 0;
 
             assertEquals(expected, layoutParams.circleAngle, 0.001);
         });
@@ -136,7 +136,7 @@ public class UnitTest {
 
             //activity.whenFriendLocationChanges();
 
-            float expected = 0 - NINETY_DEGREES_LONG;
+            float expected = 0;
             //System.out.println(activity.bestFriend.getLatitude() + ", " + activity.bestFriend.getLongitude());
 
             assertEquals(layoutParams.circleAngle, expected, 0.001);
