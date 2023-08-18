@@ -1,6 +1,18 @@
-MS1 Demo
+# Social Compass
+
+An android application where the app identifies the user's current location and displays the directions of locations meaningful to the user. To elaborate, it prompts the user to provide meaningful locations(i.e family homes) onto the app and it will indicate what direction those locations are based on the user's current location. 
 
 
-Milestone 1 Burndown Chart
 
-![burndownchart](https://user-images.githubusercontent.com/98721893/219993640-29a9d8b2-0a6e-4c3f-9891-4a370fb42d50.jpg)
+# What I Learned
+
+* Working with ScheduledExecutor Interfaces, GoogleMaps API, and AndroidStudio Packages
+* Continuous Integration, JUnit Testing, Espresso Testing, & Object Mocking
+* Agile software process, Behavior-Driven Development
+
+
+# Role on the Team
+* Main Software Tester
+* Assigned to Work on Several Features: GPS Signal, Distance Feature, Adding Labels for New Locations.
+
+
